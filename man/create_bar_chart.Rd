@@ -15,7 +15,8 @@ create_bar_chart(
   w.pos = "dodge",
   est.type = "percent",
   w.dec = 0,
-  w.color = "psrc_distinct_10"
+  w.color = "psrc_distinct_10",
+  w.interactive = "no"
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ create_bar_chart(
 \item{w.dec}{Number of decimal points in labels - defaults to 0}
 
 \item{w.color}{Name of color palette to use - defaults to "psrc_distinct_10"}
+
+\item{w.interactive}{Enable hover text and other interactive features - defaults to "no"}
 }
 \value{
 bar chart that is either static or interactive depending on choice
@@ -70,6 +73,13 @@ my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year",
                              w.color="psrc_distinct_4_light",
                              w.title="Mode Share to Work",
                              w.sub.title="by Census Year")
+                             
+# Create a chart for mode shares by year without error bars with Titles and make interactive
+my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
+                             w.color="psrc_distinct_4_light",
+                             w.title="Mode Share to Work",
+                             w.sub.title="by Census Year",
+                             w.interactive="yes")                              
 
 }
 

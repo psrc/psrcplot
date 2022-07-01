@@ -17,5 +17,6 @@ LazyData: true
 Imports: 
     magrittr,
     scales,
-    ggplot2
+    ggplot2,
+    ggiraph
 RoxygenNote: 7.2.0

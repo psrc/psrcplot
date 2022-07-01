@@ -3,6 +3,7 @@
 #'
 #' This function allows you to add the PSRC theme to your ggplot graphics.
 #' @importFrom magrittr %<>% %>%
+#' @export
 #'
 
 psrc_style <- function() {

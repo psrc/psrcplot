@@ -96,6 +96,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
 #' @param w.dec Number of decimal points in labels - defaults to 0
 #' @param w.color Name of color palette to use - defaults to "psrc_distinct_10"
+#' @param w.interactive Enable hover text and other interactive features - defaults to "no"
 #' @return bar chart that is either static or interactive depending on choice
 #' @importFrom magrittr %<>% %>%
 #' 
@@ -122,13 +123,20 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #'                              w.color="psrc_distinct_4_light",
 #'                              w.title="Mode Share to Work",
 #'                              w.sub.title="by Census Year")
+#'                              
+#' # Create a chart for mode shares by year without error bars with Titles and make interactive
+#' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
+#'                              w.color="psrc_distinct_4_light",
+#'                              w.title="Mode Share to Work",
+#'                              w.sub.title="by Census Year",
+#'                              w.interactive="yes")                              
 #' 
 #' }
 #' 
 #' @export
 #'
 
-create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.title=NULL, w.pos="dodge", est.type="percent", w.dec = 0, w.color="psrc_distinct_10") {
+create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.title=NULL, w.pos="dodge", est.type="percent", w.dec = 0, w.color="psrc_distinct_10", w.interactive='no') {
   
   l.sz=4
   
@@ -158,25 +166,55 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
     w.label=scales::label_comma()
   }
   
-  c <- ggplot2::ggplot(data=t,
+  if (w.interactive == 'yes') {
+    
+    c <- ggplot2::ggplot(data=t,
+                         ggplot2::aes(y=get(eval(w.y)),
+                                      x=get(eval(w.x)),
+                                      fill = get(eval(f)),
+                                      tooltip=paste0(p,prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
+                                      data_id=get(eval(w.y)))) +
+      ggiraph::geom_bar_interactive(position=w.pos, stat="identity")+
+      ggplot2::scale_y_continuous(labels = w.label) +
+      scale_fill_discrete_psrc(w.color)  +
+      psrc_style()
+    
+    if (!(is.null(w.moe))) {
+    
+      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
+    
+    }
+    
+    if (!(is.null(w.title))) {
+      c <- c + ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+    } else {
+      c <- c
+    }
+    
+    c <- ggiraph::girafe(ggobj = c)
+    
+  } else {
+  
+    c <- ggplot2::ggplot(data=t,
                        ggplot2::aes(y=get(eval(w.y)),
                                     x=get(eval(w.x)),
                                     fill = get(eval(f)))) +
-    ggplot2::geom_bar(position=w.pos, stat="identity") +
-    ggplot2::scale_y_continuous(labels = w.label) +
-    scale_fill_discrete_psrc(w.color)  +
-    psrc_style()
-    
-  if (!(is.null(w.moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
-  } else {
-    c <- c + ggplot2::geom_text(ggplot2::aes(label = paste0(p,prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s)), vjust = l, colour = l.clr, size=l.sz, fontface='bold', position = ggplot2::position_dodge(1))    
-  }
+      ggplot2::geom_bar(position=w.pos, stat="identity") +
+      ggplot2::scale_y_continuous(labels = w.label) +
+      scale_fill_discrete_psrc(w.color)  +
+      psrc_style()
+
+    if (!(is.null(w.moe))) {
+      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
+    } else {
+      c <- c + ggplot2::geom_text(ggplot2::aes(label = paste0(p,prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s)), vjust = l, colour = l.clr, size=l.sz, fontface='bold', position = ggplot2::position_dodge(1))    
+    }
   
-  if (!(is.null(w.title))) {
-    c <- c + ggplot2::ggtitle(w.title, subtitle = w.sub.title)
-  } else {
-    c <- c
+    if (!(is.null(w.title))) {
+      c <- c + ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+    } else {
+      c <- c
+    }
   }
   
   return(c)
