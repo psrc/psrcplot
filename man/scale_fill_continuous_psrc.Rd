@@ -6,6 +6,9 @@
 \usage{
 scale_fill_continuous_psrc(name)
 }
+\arguments{
+\item{name}{The name of the continuous color palette}
+}
 \description{
 Function for a continuous color fill for use in ggplot2
 }

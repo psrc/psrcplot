@@ -2,7 +2,7 @@
 % Please edit documentation in R/psrc_charts.R
 \name{create_facet_bar_chart}
 \alias{create_facet_bar_chart}
-\title{Create PSRC Charts}
+\title{Create PSRC Facet Bar Charts}
 \usage{
 create_facet_bar_chart(
   t,
@@ -29,7 +29,7 @@ create_facet_bar_chart(
 
 \item{g}{The name of the variable to be the facets}
 
-\item{est.type}{Type for the Y values - enter "percent", "currency" or "number", default in "percent"}
+\item{est.type}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{w.scales}{Value for axis in facets, either "fixed" or "free" - defaults to "free"}
 
@@ -46,4 +46,24 @@ facet bar chart that is either static or interactive depending on choice
 }
 \description{
 This function allows you to create facet bar charts.
+}
+\examples{
+\dontrun{
+library(dplyr)
+
+# Read in the example data and filter to 2020 Population by Race by County
+df <- read.csv("inst/extdata/example_data.csv") \%>\% 
+      filter(Category=="Population by Race" & Year==2020) \%>\%
+      filter(Geography!="Region" & Race!="Total")
+
+# Create a facet chart for population by race using counties as the facet
+my.chart <- create_facet_bar_chart(t=df, w.x="Race", w.y="share", 
+                                   f="Race", g="Geography", 
+                                   w.facet=2, w.scales="fixed")
+
+# Create a facet chart for population by race using race as the facet
+my.chart <- create_facet_bar_chart(t=df, w.x="Geography", w.y="share", 
+                                   f="Geography", g="Race", w.scales="fixed")
+}
+
 }

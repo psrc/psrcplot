@@ -13,13 +13,13 @@ psrc_style <- function() {
     #Text format:
     #This sets the font, size, type and color of text for the chart's title
     plot.title = ggplot2::element_text(family=font,
-                                       size=24,
+                                       size=18,
                                        face="bold",
                                        color="#4C4C4C"),
 
     #This sets the font, size, type and color of text for the chart's subtitle, as well as setting a margin between the title and the subtitle
     plot.subtitle = ggplot2::element_text(family=font,
-                                          size=20,
+                                          size=14,
                                           margin=ggplot2::margin(9,0,9,0)),
 
     #This leaves the caption text element empty, because it is set elsewhere in the finalise plot function

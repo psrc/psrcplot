@@ -6,6 +6,9 @@
 \usage{
 scale_fill_discrete_psrc(name)
 }
+\arguments{
+\item{name}{The name of the discrete color palette}
+}
 \description{
 Function for a discrete color fill for use in ggplot2
 }
