@@ -129,7 +129,14 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #'                              w.color="psrc_distinct_4_light",
 #'                              w.title="Mode Share to Work",
 #'                              w.sub.title="by Census Year",
-#'                              w.interactive="yes")                              
+#'                              w.interactive="yes")   
+#'                                                         
+#' # Create a chart for mode shares by year with error bars with Main Title only and make interactive
+#' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
+#'                              w.color="psrc_distinct_4_light",
+#'                              w.title="Mode Share to Work",
+#'                              w.moe="share_moe",
+#'                              w.interactive="yes") 
 #' 
 #' }
 #' 
@@ -172,7 +179,7 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
                          ggplot2::aes(y=get(eval(w.y)),
                                       x=get(eval(w.x)),
                                       fill = get(eval(f)),
-                                      tooltip=paste0(p,prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
+                                      tooltip=paste0(get(eval(f)), ": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
                                       data_id=get(eval(w.y)))) +
       ggiraph::geom_bar_interactive(position=w.pos, stat="identity")+
       ggplot2::scale_y_continuous(labels = w.label) +

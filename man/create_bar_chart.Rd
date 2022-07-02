@@ -79,7 +79,14 @@ my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year",
                              w.color="psrc_distinct_4_light",
                              w.title="Mode Share to Work",
                              w.sub.title="by Census Year",
-                             w.interactive="yes")                              
+                             w.interactive="yes")   
+                                                        
+# Create a chart for mode shares by year with error bars with Main Title only and make interactive
+my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
+                             w.color="psrc_distinct_4_light",
+                             w.title="Mode Share to Work",
+                             w.moe="share_moe",
+                             w.interactive="yes") 
 
 }
 
