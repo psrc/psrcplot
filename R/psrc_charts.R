@@ -82,7 +82,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
   return(c)
 }
 
-#' Create PSRC Bar Charts
+#' Create PSRC Bar Chart
 #'
 #' This function allows you to create bar charts.
 #' @param t A tibble or dataframe in long form for plotting
@@ -95,7 +95,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #' @param w.pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
 #' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
 #' @param w.dec Number of decimal points in labels - defaults to 0
-#' @param w.color Name of color palette to use - defaults to "psrc_distinct_10"
+#' @param w.color Name of color palette to use - defaults to "psrc_dark"
 #' @param w.interactive Enable hover text and other interactive features - defaults to "no"
 #' @return bar chart that is either static or interactive depending on choice
 #' @importFrom magrittr %<>% %>%
@@ -112,28 +112,28 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #' 
 #' # Create a chart for mode shares by year with error bars
 #' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", w.moe="share_moe", 
-#'                              w.color="psrc_distinct_4_light")
+#'                              w.color="psrc_light")
 #'
 #' # Create a chart for mode shares by year without error bars
 #' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-#'                              w.color="psrc_distinct_4_light")
+#'                              w.color="psrc_light")
 #'                              
 #' # Create a chart for mode shares by year without error bars with Titles
 #' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-#'                              w.color="psrc_distinct_4_light",
+#'                              w.color="psrc_light",
 #'                              w.title="Mode Share to Work",
 #'                              w.sub.title="by Census Year")
 #'                              
 #' # Create a chart for mode shares by year without error bars with Titles and make interactive
 #' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-#'                              w.color="psrc_distinct_4_light",
+#'                              w.color="psrc_light",
 #'                              w.title="Mode Share to Work",
 #'                              w.sub.title="by Census Year",
 #'                              w.interactive="yes")   
 #'                                                         
 #' # Create a chart for mode shares by year with error bars with Main Title only and make interactive
 #' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-#'                              w.color="psrc_distinct_4_light",
+#'                              w.color="psrc_light",
 #'                              w.title="Mode Share to Work",
 #'                              w.moe="share_moe",
 #'                              w.interactive="yes") 
@@ -143,7 +143,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #' @export
 #'
 
-create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.title=NULL, w.pos="dodge", est.type="percent", w.dec = 0, w.color="psrc_light", w.interactive='no') {
+create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.title=NULL, w.pos="dodge", est.type="percent", w.dec = 0, w.color="psrc_dark", w.interactive='no') {
   
   # Estimate type determines the labels for the axis and the format of the number for the hover-text
   if (est.type=="percent") {
@@ -214,6 +214,76 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
     }
   }
   
+  return(c)
+}
+
+#' Create PSRC TreeMap Chart
+#'
+#' This function allows you to create bar charts.
+#' @param t A tibble or dataframe in long form for plotting
+#' @param w.area The name of the variable with thee value you want to use to size the bars
+#' @param w.fill The name of the variable you want to fill the bars
+#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
+#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param w.dec Number of decimal points in labels - defaults to 0
+#' @param w.color Name of color palette to use - defaults to "psrc_light"
+#' @return static treemap chart
+#' @importFrom magrittr %<>% %>%
+#' 
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#' 
+#' # Read in the example data and filter to Mode to Work for Everyone for all years in the data
+#' df <- read.csv("inst/extdata/example_data.csv") %>% 
+#'       filter(Category=="Mode to Work by Race") %>%
+#'       filter(Geography=="Region" & Race=="Total") %>%
+#'       mutate(Year = as.character(Year)) %>%
+#'       filter(Year=="2020")
+#' 
+#' my.chart <- create_treemap_chart(t=df, w.area="share", w.fill="Mode", w.title="Mode Share to Work")
+#' 
+#' }
+#' 
+#' @export
+#'
+
+create_treemap_chart <- function(t, w.area, w.fill, w.title=NULL, w.sub.title=NULL, est.type="percent", w.dec=0, w.color="psrc_light") {
+
+  # Estimate type determines the labels
+  if (est.type=="percent") {
+    w.factor=100
+    p=""
+    s="%"
+  
+  } else if (est.type=="currency") {
+    w.factor=1
+    p="$"
+    s=""
+  
+  } else {
+    w.factor=1
+    p=""
+    s=""
+  }
+
+  c <- ggplot2::ggplot(t,
+                       ggplot2::aes(area = get(eval(w.area)),
+                                    fill = get(eval(w.fill)), 
+                                    label = paste(get(eval(w.fill)), paste0(p, prettyNum(round(get(eval(w.area))*w.factor,w.dec), big.mark = ","), s), sep = "\n"))) +
+    treemapify::geom_treemap() +
+    treemapify::geom_treemap_text(colour = "white",
+                                place = "centre",
+                                size = 28) +
+    psrc_style() +
+    ggplot2::theme(legend.position = "none") +
+    scale_fill_discrete_psrc(w.color)
+
+  if (!(is.null(w.title))) {
+    c <- c + ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+  }
+
   return(c)
 }
 

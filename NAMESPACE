@@ -2,6 +2,7 @@
 
 export(create_bar_chart)
 export(create_facet_bar_chart)
+export(create_treemap_chart)
 export(psrc_style)
 export(scale_fill_continuous_psrc)
 export(scale_fill_discrete_psrc)
