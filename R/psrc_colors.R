@@ -10,10 +10,11 @@ psrc_colors = list(
   psrc_greens = c("#3f6618", "#588527", "#8CC63E", "#A9D46E", "#C0E095", "#E2F1CF"),
   psrc_blues = c("#005753", "#00716c", "#00A7A0", "#40BDB8", "#73CFCB", "#BFE9E7"),
   psrc_grays = c("#2f3030", "#3E4040", "#4C4C4C", "#76787A", "#999999", "#BCBEC0"),
-  psrc_distinct_10 = c("#630460", "#9f3913", "#588527", "#00716c","#3e4040", "#C388C2", "#F7A489", "#C0E095", "#73CFCB", "#999999"),
-  psrc_distinct_4_light = c("#A9D46E", "#73CFCB", "#F4835E", "#C388C2"))
+  psrc_dark = c("#630460", "#9f3913", "#588527", "#00716c","#3e4040", "#C388C2", "#F7A489", "#C0E095", "#73CFCB", "#999999"),
+  psrc_light = c("#A9D46E", "#73CFCB", "#F4835E", "#C388C2","#76787A","#588527","#00716c","#9f3913","#630460","#3e4040"),
+  psrc_pairs = c("#91268F","#C388C2","#8CC63E","#C0E095","#F05A28","#F7A489","#00A7A0","#73CFCB","#4C4C4C","#999999"))
 
-psrc_palettes = function(name, n, all_palettes = psrc_colors, type = c("continuous","continuous","continuous","continuous","continuous","discrete","discrete")) {
+psrc_palettes = function(name, n, all_palettes = psrc_colors, type = c("continuous","continuous","continuous","continuous","continuous","discrete","discrete","discrete")) {
   palette = all_palettes[[name]]
   if (missing(n)) {
     n = length(palette)

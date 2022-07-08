@@ -37,7 +37,7 @@
 #' @export
 #'
 
-create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scales="free", w.facet=3, w.dec = 0, l.pos="above", w.color="psrc_distinct_10") {
+create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scales="free", w.facet=3, w.dec = 0, l.pos="above", w.color="psrc_dark") {
 
   l.clr ="#4C4C4C"
   l.sz=4
@@ -143,17 +143,9 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #' @export
 #'
 
-create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.title=NULL, w.pos="dodge", est.type="percent", w.dec = 0, w.color="psrc_distinct_10", w.interactive='no') {
+create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.title=NULL, w.pos="dodge", est.type="percent", w.dec = 0, w.color="psrc_light", w.interactive='no') {
   
-  l.sz=4
-  
-  if (!(is.null(w.moe))) {
-    l = 1.5
-    l.clr ="black"
-  } else {
-    l = -0.5
-    l.clr ="#4C4C4C"}
-  
+  # Estimate type determines the labels for the axis and the format of the number for the hover-text
   if (est.type=="percent") {
     w.factor=100
     p=""
@@ -213,8 +205,6 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
 
     if (!(is.null(w.moe))) {
       c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
-    } else {
-      c <- c + ggplot2::geom_text(ggplot2::aes(label = paste0(p,prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s)), vjust = l, colour = l.clr, size=l.sz, fontface='bold', position = ggplot2::position_dodge(1))    
     }
   
     if (!(is.null(w.title))) {

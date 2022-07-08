@@ -15,7 +15,7 @@ create_facet_bar_chart(
   w.facet = 3,
   w.dec = 0,
   l.pos = "above",
-  w.color = "psrc_distinct_10"
+  w.color = "psrc_dark"
 )
 }
 \arguments{

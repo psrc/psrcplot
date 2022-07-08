@@ -15,7 +15,7 @@ create_bar_chart(
   w.pos = "dodge",
   est.type = "percent",
   w.dec = 0,
-  w.color = "psrc_distinct_10",
+  w.color = "psrc_light",
   w.interactive = "no"
 )
 }
