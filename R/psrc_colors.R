@@ -2,6 +2,7 @@
 #'
 #' Functions to create PSRC Color Palettes
 #' @importFrom magrittr %<>% %>%
+#' @export
 #'
 
 psrc_colors = list(
