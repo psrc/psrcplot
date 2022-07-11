@@ -19,5 +19,6 @@ Imports:
     scales,
     ggplot2,
     ggiraph,
-    treemapify
+    treemapify,
+    dplyr
 RoxygenNote: 7.2.0
