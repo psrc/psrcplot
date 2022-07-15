@@ -39,11 +39,11 @@ static treemap chart
 This function allows you to create treemap charts.
 }
 \examples{
-\dontrun{
+
 library(dplyr)
 
 # Read in the example data and filter to Mode to Work for Everyone for all years in the data
-df <- read.csv("inst/extdata/example_data.csv") \%>\% 
+df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
       filter(Category=="Mode to Work by Race") \%>\%
       filter(Geography=="Region" & Race=="Total") \%>\%
       mutate(Year = as.character(Year)) \%>\%
@@ -51,6 +51,5 @@ df <- read.csv("inst/extdata/example_data.csv") \%>\%
 
 my.chart <- create_treemap_chart(t=df, w.area="share", w.fill="Mode", w.title="Mode Share to Work")
 
-}
 
 }

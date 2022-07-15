@@ -67,17 +67,17 @@ psrc_print_palette <- function() {
   n <- 1
   plot(1, type="n", xlab="", ylab="", xlim=x, ylim=y,axes=FALSE, frame.plot=FALSE)
   for (p in psrc_colors) {
-    rect(0,i,3,i-1, col = p[1], border = bordercolor, lwd = 2)
-    rect(3,i,6,i-1, col = p[2], border = bordercolor, lwd = 2)
-    rect(6,i,9,i-1, col = p[3], border = bordercolor, lwd = 2)
-    rect(9,i,12,i-1, col = p[4], border = bordercolor, lwd = 2)
-    rect(12,i,15,i-1, col = p[5], border = bordercolor, lwd = 2)
-    rect(15,i,18,i-1, col = p[6], border = bordercolor, lwd = 2)
-    rect(18,i,21,i-1, col = p[7], border = bordercolor, lwd = 2)
-    rect(21,i,24,i-1, col = p[8], border = bordercolor, lwd = 2)
-    rect(24,i,27,i-1, col = p[9], border = bordercolor, lwd = 2)
-    rect(27,i,30,i-1, col = p[10], border = bordercolor, lwd = 2)
-    text(x = -10, y = i-.5, # Coordinates
+    graphics::rect(0,i,3,i-1, col = p[1], border = bordercolor, lwd = 2)
+    graphics::rect(3,i,6,i-1, col = p[2], border = bordercolor, lwd = 2)
+    graphics::rect(6,i,9,i-1, col = p[3], border = bordercolor, lwd = 2)
+    graphics::rect(9,i,12,i-1, col = p[4], border = bordercolor, lwd = 2)
+    graphics::rect(12,i,15,i-1, col = p[5], border = bordercolor, lwd = 2)
+    graphics::rect(15,i,18,i-1, col = p[6], border = bordercolor, lwd = 2)
+    graphics::rect(18,i,21,i-1, col = p[7], border = bordercolor, lwd = 2)
+    graphics::rect(21,i,24,i-1, col = p[8], border = bordercolor, lwd = 2)
+    graphics::rect(24,i,27,i-1, col = p[9], border = bordercolor, lwd = 2)
+    graphics::rect(27,i,30,i-1, col = p[10], border = bordercolor, lwd = 2)
+    graphics::text(x = -10, y = i-.5, # Coordinates
          label = names(psrc_colors[n]), pos =4)
     i = i-3
     n= n+1

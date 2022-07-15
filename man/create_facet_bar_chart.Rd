@@ -48,11 +48,10 @@ facet bar chart that is either static or interactive depending on choice
 This function allows you to create facet bar charts.
 }
 \examples{
-\dontrun{
-library(dplyr)
 
+library(dplyr)
 # Read in the example data and filter to 2020 Population by Race by County
-df <- read.csv("inst/extdata/example_data.csv") \%>\% 
+df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
       filter(Category=="Population by Race" & Year==2020) \%>\%
       filter(Geography!="Region" & Race!="Total")
 
@@ -60,10 +59,5 @@ df <- read.csv("inst/extdata/example_data.csv") \%>\%
 my.chart <- create_facet_bar_chart(t=df, w.x="Race", w.y="share", 
                                    f="Race", g="Geography", 
                                    w.facet=2, w.scales="fixed")
-
-# Create a facet chart for population by race using race as the facet
-my.chart <- create_facet_bar_chart(t=df, w.x="Geography", w.y="share", 
-                                   f="Geography", g="Race", w.scales="fixed")
-}
 
 }

@@ -16,11 +16,10 @@
 #' @importFrom magrittr %<>% %>%
 #' 
 #' @examples
-#' \dontrun{
-#' library(dplyr)
 #' 
+#' library(dplyr)
 #' # Read in the example data and filter to 2020 Population by Race by County
-#' df <- read.csv("inst/extdata/example_data.csv") %>% 
+#' df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
 #'       filter(Category=="Population by Race" & Year==2020) %>%
 #'       filter(Geography!="Region" & Race!="Total")
 #' 
@@ -28,11 +27,6 @@
 #' my.chart <- create_facet_bar_chart(t=df, w.x="Race", w.y="share", 
 #'                                    f="Race", g="Geography", 
 #'                                    w.facet=2, w.scales="fixed")
-#' 
-#' # Create a facet chart for population by race using race as the facet
-#' my.chart <- create_facet_bar_chart(t=df, w.x="Geography", w.y="share", 
-#'                                    f="Geography", g="Race", w.scales="fixed")
-#' }
 #' 
 #' @export
 #'
@@ -98,14 +92,16 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #' @param w.color Name of color palette to use - defaults to "psrc_dark"
 #' @param w.interactive Enable hover text and other interactive features - defaults to "no"
 #' @return bar chart that is either static or interactive depending on choice
+#' 
 #' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
 #' 
 #' @examples
-#' \dontrun{
+#' 
 #' library(dplyr)
 #' 
 #' # Read in the example data and filter to Mode to Work for Everyone for all years in the data
-#' df <- read.csv("inst/extdata/example_data.csv") %>% 
+#' df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
 #'       filter(Category=="Mode to Work by Race") %>%
 #'       filter(Geography=="Region" & Race=="Total") %>%
 #'       mutate(Year = as.character(Year))
@@ -123,14 +119,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #'                              w.color="psrc_light",
 #'                              w.title="Mode Share to Work",
 #'                              w.sub.title="by Census Year")
-#'                              
-#' # Create a chart for mode shares by year without error bars with Titles and make interactive
-#' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-#'                              w.color="psrc_light",
-#'                              w.title="Mode Share to Work",
-#'                              w.sub.title="by Census Year",
-#'                              w.interactive="yes")   
-#'                                                         
+#'                                                                                   
 #' # Create a chart for mode shares by year with error bars with Main Title only and make interactive
 #' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
 #'                              w.color="psrc_light",
@@ -138,7 +127,6 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, est.type="percent", w.scal
 #'                              w.moe="share_moe",
 #'                              w.interactive="yes") 
 #' 
-#' }
 #' 
 #' @export
 #'
@@ -229,14 +217,16 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
 #' @param w.dec Number of decimal points in labels - defaults to 0
 #' @param w.color Name of color palette to use - defaults to "psrc_light"
 #' @return static treemap chart
+#' 
 #' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
 #' 
 #' @examples
-#' \dontrun{
+#' 
 #' library(dplyr)
 #' 
 #' # Read in the example data and filter to Mode to Work for Everyone for all years in the data
-#' df <- read.csv("inst/extdata/example_data.csv") %>% 
+#' df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
 #'       filter(Category=="Mode to Work by Race") %>%
 #'       filter(Geography=="Region" & Race=="Total") %>%
 #'       mutate(Year = as.character(Year)) %>%
@@ -244,7 +234,6 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
 #' 
 #' my.chart <- create_treemap_chart(t=df, w.area="share", w.fill="Mode", w.title="Mode Share to Work")
 #' 
-#' }
 #' 
 #' @export
 #'
@@ -287,99 +276,3 @@ create_treemap_chart <- function(t, w.area, w.fill, w.title=NULL, w.sub.title=NU
   return(c)
 }
 
-#' Create PSRC Line Chart
-#'
-#' This function allows you to create line charts.
-#' @param t A tibble or dataframe in long form for plotting
-#' @param w.x The name of the variable you want plotted on the X-Axis
-#' @param w.y The name of the variable you want plotted on the Y-Axis
-#' @param w.g The name of the variable you want to fill the bars
-#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
-#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
-#' @param w.dec Number of decimal points in labels - defaults to 0
-#' @param x.type Type of Data being plotted on the X-Axis - enter "Date" or "Continuous", defaults "Date"
-#' @param d.form If the X-axis is for Dates, format of labels for Axis, defaults to "%b-%Y" 
-#' @param w.breaks If the X-axis is Continuous, define the number of breaks- defaults to "NULL"
-#' @param w.lwidth Line width - defaults to "1"
-#' @param w.color Name of color palette to use - defaults to "psrc_light"
-#' @return static line chart
-#' @importFrom magrittr %<>% %>%
-#' 
-#' @examples
-#' \dontrun{
-#' library(dplyr)
-#' 
-#' # Read in the example data and filter to Mode to Work for Everyone for all years in the data
-#' df <- read.csv("inst/extdata/example_data.csv") %>% 
-#'       filter(Category=="Mode to Work by Race") %>%
-#'       filter(Geography=="Region" & Race=="Total") %>%
-#'       mutate(Year = as.character(Year)) %>%
-#'       filter(Year=="2020")
-#' 
-#' my.chart <- create_line_chart(t=seatac.airport, w.x='day', w.y='passenger_screenings', w.g='year', est.type="number", 
-#'                               w.title="Weekly Passsenger Screenings: 2019 to 2022", d.form = "%B", w.lwidth=3)
-#' 
-#' }
-#' 
-#' @export
-#'
-create.line.chart <- function(t, w.x, w.y, w.g, w.title=NULL, w.sub.title=NULL, est.type="percent", w.dec=0, x.type="Date", d.form="%b-%Y", w.breaks=NULL, w.lwidth=1, w.color="psrc_light") {
-  
-  grps <- t %>% dplyr::select(.data[[w.g]]) %>% unique() %>% dplyr::pull()
-  num.grps <- length(grps)
-  l.colors <- unlist(psrc_colors[w.color])
-  l.colors <- l.colors[1:num.grps]
-  cols <- setNames(l.colors, grps)
-  
-  # Estimate type determines the labels for the axis and the format of the number for the hover-text
-  if (est.type=="percent") {
-    w.factor=100
-    p=""
-    s="%"
-    w.label=scales::label_percent()
-    
-  } else if (est.type=="currency") {
-    w.factor=1
-    p="$"
-    s=""
-    w.label=scales::label_dollar()
-    
-  } else {
-    w.factor=1
-    p=""
-    s=""
-    w.label=scales::label_comma()
-  }
-  
-  if (x.type=="Continuous") {
-    g <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=get(eval(w.x)),
-                                      y=get(eval(w.y)), 
-                                      group=get(eval(w.g))))  + 
-      ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size=w.lwidth, linejoin = "round") +
-      ggplot2::geom_point(ggplot2::aes(color=get(eval(w.g))))+
-      ggplot2::scale_x_discrete(breaks=w.breaks) +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      ggplot2::scale_color_manual(values=cols)  +
-      ggplot2::ggtitle(w.title) +
-      psrc_style()
-    
-    
-  } else {
-    
-    g <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=get(eval(w.x)),
-                                      y=get(eval(w.y)), 
-                                      group=get(eval(w.g))))  + 
-      ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round") +
-      ggplot2::scale_x_date(labels = scales::date_format(d.form)) +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      ggplot2::scale_color_manual(values=cols)  +
-      ggplot2::ggtitle(w.title) +
-      psrc_style()
-    
-  }
-  
-  return(g)
-}

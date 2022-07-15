@@ -51,11 +51,11 @@ bar chart that is either static or interactive depending on choice
 This function allows you to create bar charts.
 }
 \examples{
-\dontrun{
+
 library(dplyr)
 
 # Read in the example data and filter to Mode to Work for Everyone for all years in the data
-df <- read.csv("inst/extdata/example_data.csv") \%>\% 
+df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
       filter(Category=="Mode to Work by Race") \%>\%
       filter(Geography=="Region" & Race=="Total") \%>\%
       mutate(Year = as.character(Year))
@@ -73,14 +73,7 @@ my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year",
                              w.color="psrc_light",
                              w.title="Mode Share to Work",
                              w.sub.title="by Census Year")
-                             
-# Create a chart for mode shares by year without error bars with Titles and make interactive
-my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-                             w.color="psrc_light",
-                             w.title="Mode Share to Work",
-                             w.sub.title="by Census Year",
-                             w.interactive="yes")   
-                                                        
+                                                                                  
 # Create a chart for mode shares by year with error bars with Main Title only and make interactive
 my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
                              w.color="psrc_light",
@@ -88,6 +81,5 @@ my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year",
                              w.moe="share_moe",
                              w.interactive="yes") 
 
-}
 
 }
