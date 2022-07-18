@@ -335,3 +335,102 @@ create_bubble_chart <- function(t, w.x, w.y, f, s, w.color="psrc_light", w.title
   return(p)
   
 }
+
+
+#' Create PSRC Line Chart
+#'
+#' This function allows you to create a line chart.
+#' @param t A tibble or dataframe in long form for plotting
+#' @param w.x The name of the variable you want plotted on the X-Axis
+#' @param w.y The name of the variable you want plotted on the Y-Axis
+#' @param w.g The name of the variable you want the fill color of the lines to be based on
+#' @param w.color Name of color palette to use - defaults to "psrc_light"
+#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
+#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "number"
+#' @param w.dec Number of decimal points in labels - defaults to 0
+#' @param x.type Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"
+#' @param d.form Format for Date values 
+#' @param w.breaks Break points to use if using a continuous scale, defaults to NULL
+#' @param w.lwidth Width of lines, defaults to 1
+#' 
+#' @return line chart
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+#' 
+#' @examples
+#' 
+#' library(dplyr)
+#' library(psrctrends)
+#' library(psrcplot)
+#' 
+#' airport.operations <- process_sea_operations_data(c.yr=2022, c.mo=4, f.yr = 2019)
+#' sea.chart.2022 <- create.line.chart(t=airport.operations %>% 
+#'                                     dplyr::filter(variable == "PASSENGER GRAND TOTAL"),
+#'                                     w.x="equiv_day", w.y="estimate", w.g="year", 
+#'                                     d.form="%B", w.lwidth=2,
+#'                                     w.title = "Monthly Passenger Enplanements: 2019 to 2022", 
+#'                                     w.sub.title = "Seattle-Tacoma International Airport")
+#' 
+#' @export
+#'
+create.line.chart <- function(t, w.x, w.y, w.g, w.title=NULL, w.sub.title=NULL, est.type="number", w.dec=0, x.type="Date", d.form="%b-%Y", w.breaks=NULL, w.lwidth=1, w.color="psrc_light") {
+  
+  grps <- t %>% dplyr::select(.data[[w.g]]) %>% unique() %>% dplyr::pull()
+  num.grps <- length(grps)
+  l.colors <- unlist(psrc_colors[w.color])
+  l.colors <- l.colors[1:num.grps]
+  cols <- stats::setNames(l.colors, grps)
+  
+  # Estimate type determines the labels for the axis and the format of the number for the hover-text
+  if (est.type=="percent") {
+    w.factor=100
+    p=""
+    s="%"
+    w.label=scales::label_percent()
+    
+  } else if (est.type=="currency") {
+    w.factor=1
+    p="$"
+    s=""
+    w.label=scales::label_dollar()
+    
+  } else {
+    w.factor=1
+    p=""
+    s=""
+    w.label=scales::label_comma()
+  }
+  
+  if (x.type=="Continuous") {
+    g <- ggplot2::ggplot(data=t, 
+                         ggplot2::aes(x=get(eval(w.x)),
+                                      y=get(eval(w.y)), 
+                                      group=get(eval(w.g))))  + 
+      ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size=w.lwidth, linejoin = "round") +
+      ggplot2::geom_point(ggplot2::aes(color=get(eval(w.g))))+
+      ggplot2::scale_x_discrete(breaks=w.breaks) +
+      ggplot2::scale_y_continuous(labels = w.label) +
+      ggplot2::scale_color_manual(values=cols)  +
+      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
+      psrc_style()
+    
+    
+  } else {
+    
+    g <- ggplot2::ggplot(data=t, 
+                         ggplot2::aes(x=get(eval(w.x)),
+                                      y=get(eval(w.y)), 
+                                      group=get(eval(w.g))))  + 
+      ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round") +
+      ggplot2::scale_x_date(labels = scales::date_format(d.form)) +
+      ggplot2::scale_y_continuous(labels = w.label) +
+      ggplot2::scale_color_manual(values=cols)  +
+      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
+      psrc_style()
+    
+  }
+  
+  return(g)
+}
