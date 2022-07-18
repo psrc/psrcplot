@@ -13,7 +13,9 @@
 #' @param w.dec Number of decimal points in labels - defaults to 0
 #' @param w.color Name of color palette to use - defaults to "psrc_distinct_10"
 #' @return facet bar chart that is either static or interactive depending on choice
+#' 
 #' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
 #' 
 #' @examples
 #' 
@@ -276,3 +278,59 @@ create_treemap_chart <- function(t, w.area, w.fill, w.title=NULL, w.sub.title=NU
   return(c)
 }
 
+#' Create PSRC Bubble Chart
+#'
+#' This function allows you to create a bubble charts.
+#' @param t A tibble or dataframe in long form for plotting
+#' @param w.x The name of the variable you want plotted on the X-Axis
+#' @param w.y The name of the variable you want plotted on the Y-Axis
+#' @param f The name of the variable you want the fill color of the bubbles to be based on
+#' @param s The name of the variable used to size the bubbles
+#' @param w.color Name of color palette to use - defaults to "psrc_light"
+#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
+#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
+#' 
+#' @return bubble chart
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+#' 
+#' @examples
+#' 
+#' library(dplyr)
+#' library(psrctrends)
+#' library(psrcplot)
+#' 
+#' # Pull NTD Transit Data by Urbanized Area
+#' uza.data <- process_ntd_uza_data(yr="2022", census.yr="2020")
+#' 
+#' # Create Bubble chart for Transit Boardings per Capita
+#' uza.chart <- create_bubble_chart(t=uza.data %>% dplyr::filter(variable == "Boardings per Capita"),
+#'                                  w.x="population", w.y="estimate", f <- "plot_id", 
+#'                                  s <- "population", w.color <- "psrc_light",
+#'                                  w.title = "Boardings per Capita", 
+#'                                  w.sub.title = "Urbanized Areas with at least 1 million people")
+#' 
+#' @export
+#'
+create_bubble_chart <- function(t, w.x, w.y, f, s, w.color="psrc_light", w.title=NULL, w.sub.title=NULL) {
+  
+  # Create a color palette from PSRC palette
+  grps <- t %>% dplyr::select(.data[[f]]) %>% unique() %>% dplyr::pull()
+  num.grps <- length(grps)
+  l.colors <- unlist(psrc_colors[w.color])
+  l.colors <- l.colors[1:num.grps]
+  cols <- stats::setNames(l.colors, grps)
+  
+  p <- ggplot2::ggplot(data=t, ggplot2::aes(x = get(eval(w.x)), y = get(eval(w.y)))) + 
+    ggplot2::geom_point(ggplot2::aes(color = get(eval(f)), size = get(eval(s))), alpha = 1.0) +
+    ggplot2::scale_size(range = c(0.5, 12)) +
+    ggplot2::scale_color_manual(values=cols) +
+    ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
+    psrc_style() +
+    ggplot2::theme(legend.position = "none",
+                   axis.text.x = ggplot2::element_blank())
+  
+  return(p)
+  
+}
