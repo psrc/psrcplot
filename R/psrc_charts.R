@@ -328,7 +328,8 @@ create_bubble_chart <- function(t, w.x, w.y, f, s, w.color="psrc_light", w.title
     ggplot2::scale_color_manual(values=cols) +
     ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
     psrc_style() +
-    ggplot2::theme(legend.position = "none",
+    ggplot2::guides(size = "none") +
+    ggplot2::theme(legend.position = "bottom",
                    axis.text.x = ggplot2::element_blank())
   
   return(p)
