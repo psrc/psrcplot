@@ -10,6 +10,7 @@ create_facet_bar_chart(
   w.y,
   f,
   g,
+  w.moe = NULL,
   est.type = "percent",
   w.scales = "free",
   w.facet = 3,
@@ -29,6 +30,8 @@ create_facet_bar_chart(
 
 \item{g}{The name of the variable to be the facets}
 
+\item{w.moe}{The name of the variable to be used for error bars, if desired - default to "NULL"}
+
 \item{est.type}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{w.scales}{Value for axis in facets, either "fixed" or "free" - defaults to "free"}
@@ -39,7 +42,7 @@ create_facet_bar_chart(
 
 \item{l.pos}{Position for the bar labels of "above" or "within" - defaults to "above"}
 
-\item{w.color}{Name of color palette to use - defaults to "psrc_distinct_10"}
+\item{w.color}{Name of color palette to use - defaults to "psrc_dark"}
 }
 \value{
 facet bar chart that is either static or interactive depending on choice
