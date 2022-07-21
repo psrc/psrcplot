@@ -353,6 +353,7 @@ create_bubble_chart <- function(t, w.x, w.y, f, s, w.color="psrc_light", w.title
 #' @param d.form Format for Date values 
 #' @param w.breaks Break points to use if using a continuous scale, defaults to NULL
 #' @param w.lwidth Width of lines, defaults to 1
+#' @param w.interactive Enable hover text and other interactive features - defaults to "no"
 #' 
 #' @return line chart
 #' 
@@ -372,10 +373,21 @@ create_bubble_chart <- function(t, w.x, w.y, f, s, w.color="psrc_light", w.title
 #'                                     d.form="%B", w.lwidth=2,
 #'                                     w.title = "Monthly Passenger Enplanements: 2019 to 2022", 
 #'                                     w.sub.title = "Seattle-Tacoma International Airport")
+#'
+#' jobs.data <- process_qcew_monthly_msa(c.yr=2022, c.mo=5)
+#'
+#' tbl <- jobs.data %>% filter(variable=="Total Nonfarm"
+#'                            & year>="2018"
+#'                            & !(geography %in% c("Washington State", "Region")))
+#'                            
+#' jobs.chart <- create.line.chart(t=tbl, w.x="data_day", w.y="estimate", 
+#'                                 w.g="geography", w.lwidth=2, d.form ="%Y", 
+#'                                 w.interactive="yes",
+#'                                 w.title = "Monthly Wage & Salary Jobs: 2018 to 2022")                            
 #' 
 #' @export
 #'
-create.line.chart <- function(t, w.x, w.y, w.g, w.title=NULL, w.sub.title=NULL, est.type="number", w.dec=0, x.type="Date", d.form="%b-%Y", w.breaks=NULL, w.lwidth=1, w.color="psrc_light") {
+create.line.chart <- function(t, w.x, w.y, w.g, w.title=NULL, w.sub.title=NULL, est.type="number", w.dec=0, x.type="Date", d.form="%b-%Y", w.breaks=NULL, w.lwidth=1, w.color="psrc_light", w.interactive='no') {
   
   grps <- t %>% dplyr::select(.data[[w.g]]) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
@@ -403,34 +415,80 @@ create.line.chart <- function(t, w.x, w.y, w.g, w.title=NULL, w.sub.title=NULL, 
     w.label=scales::label_comma()
   }
   
-  if (x.type=="Continuous") {
-    g <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=get(eval(w.x)),
-                                      y=get(eval(w.y)), 
-                                      group=get(eval(w.g))))  + 
-      ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size=w.lwidth, linejoin = "round") +
-      ggplot2::geom_point(ggplot2::aes(color=get(eval(w.g))))+
-      ggplot2::scale_x_discrete(breaks=w.breaks) +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      ggplot2::scale_color_manual(values=cols)  +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-      psrc_style()
+  if (w.interactive == 'yes') {
     
-    
+    if (x.type!="Continuous") {
+      
+      g <- ggplot2::ggplot(data=t, 
+                           ggplot2::aes(x=get(eval(w.x)),
+                                        y=get(eval(w.y)), 
+                                        group=get(eval(w.g))))  + 
+        ggiraph::geom_line_interactive(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round")+
+        ggiraph::geom_point_interactive(ggplot2::aes(x=get(eval(w.x)),
+                                                     y=get(eval(w.y)),
+                                                     color=get(eval(w.g)),
+                                                     tooltip = paste0(get(eval(w.g)), ": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
+                                                     data_id = get(eval(w.y))), size = w.lwidth/2) +
+        ggplot2::scale_x_date(labels = scales::date_format(d.form)) +
+        ggplot2::scale_y_continuous(labels = w.label) +
+        ggplot2::scale_color_manual(values=cols)  +
+        ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
+        psrc_style()
+      
+      g <- ggiraph::girafe(ggobj = g)
+      
+    } else {
+      
+      g <- ggplot2::ggplot(data=t, 
+                           ggplot2::aes(x=get(eval(w.x)),
+                                        y=get(eval(w.y)), 
+                                        group=get(eval(w.g))))  + 
+        ggiraph::geom_line_interactive(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round")+
+        ggiraph::geom_point_interactive(ggplot2::aes(x=get(eval(w.x)),
+                                                     y=get(eval(w.y)),
+                                                     color=get(eval(w.g)),
+                                                     tooltip = paste0(get(eval(w.g)), ": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
+                                                     data_id = get(eval(w.y))), size = w.lwidth/2) +
+        ggplot2::scale_x_discrete(breaks=w.breaks) +
+        ggplot2::scale_y_continuous(labels = w.label) +
+        ggplot2::scale_color_manual(values=cols)  +
+        ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
+        psrc_style()
+      
+      g <- ggiraph::girafe(ggobj = g)
+      
+    }
   } else {
     
-    g <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=get(eval(w.x)),
-                                      y=get(eval(w.y)), 
-                                      group=get(eval(w.g))))  + 
-      ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round") +
-      ggplot2::scale_x_date(labels = scales::date_format(d.form)) +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      ggplot2::scale_color_manual(values=cols)  +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-      psrc_style()
-    
+    if (x.type=="Continuous") {
+      g <- ggplot2::ggplot(data=t, 
+                           ggplot2::aes(x=get(eval(w.x)),
+                                        y=get(eval(w.y)), 
+                                        group=get(eval(w.g))))  + 
+        ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size=w.lwidth, linejoin = "round") +
+        ggplot2::geom_point(ggplot2::aes(color=get(eval(w.g))))+
+        ggplot2::scale_x_discrete(breaks=w.breaks) +
+        ggplot2::scale_y_continuous(labels = w.label) +
+        ggplot2::scale_color_manual(values=cols)  +
+        ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
+        psrc_style()
+      
+    } else {
+      
+      g <- ggplot2::ggplot(data=t, 
+                           ggplot2::aes(x=get(eval(w.x)),
+                                        y=get(eval(w.y)), 
+                                        group=get(eval(w.g))))  + 
+        ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round") +
+        ggplot2::scale_x_date(labels = scales::date_format(d.form)) +
+        ggplot2::scale_y_continuous(labels = w.label) +
+        ggplot2::scale_color_manual(values=cols)  +
+        ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
+        psrc_style()
+      
+    }
   }
   
   return(g)
 }
+

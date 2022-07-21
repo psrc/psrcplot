@@ -17,7 +17,8 @@ create.line.chart(
   d.form = "\%b-\%Y",
   w.breaks = NULL,
   w.lwidth = 1,
-  w.color = "psrc_light"
+  w.color = "psrc_light",
+  w.interactive = "no"
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ create.line.chart(
 \item{w.lwidth}{Width of lines, defaults to 1}
 
 \item{w.color}{Name of color palette to use - defaults to "psrc_light"}
+
+\item{w.interactive}{Enable hover text and other interactive features - defaults to "no"}
 }
 \value{
 line chart
@@ -66,5 +69,16 @@ sea.chart.2022 <- create.line.chart(t=airport.operations \%>\%
                                     d.form="\%B", w.lwidth=2,
                                     w.title = "Monthly Passenger Enplanements: 2019 to 2022", 
                                     w.sub.title = "Seattle-Tacoma International Airport")
+
+jobs.data <- process_qcew_monthly_msa(c.yr=2022, c.mo=5)
+
+tbl <- jobs.data \%>\% filter(variable=="Total Nonfarm"
+                           & year>="2018"
+                           & !(geography \%in\% c("Washington State", "Region")))
+                           
+jobs.chart <- create.line.chart(t=tbl, w.x="data_day", w.y="estimate", 
+                                w.g="geography", w.lwidth=2, d.form ="\%Y", 
+                                w.interactive="yes",
+                                w.title = "Monthly Wage & Salary Jobs: 2018 to 2022")                            
 
 }
