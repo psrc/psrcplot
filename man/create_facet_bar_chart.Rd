@@ -16,7 +16,10 @@ create_facet_bar_chart(
   w.facet = 3,
   w.dec = 0,
   l.pos = "above",
-  w.color = "psrc_dark"
+  w.color = "psrc_dark",
+  w.title = NULL,
+  w.sub.title = NULL,
+  w.interactive = "no"
 )
 }
 \arguments{
@@ -43,6 +46,12 @@ create_facet_bar_chart(
 \item{l.pos}{Position for the bar labels of "above" or "within" - defaults to "above"}
 
 \item{w.color}{Name of color palette to use - defaults to "psrc_dark"}
+
+\item{w.title}{Title to be used for chart, if desired - defaults to "NULL"}
+
+\item{w.sub.title}{Sub-title to be used for chart, if desired - defaults to "NULL"}
+
+\item{w.interactive}{Enable hover text and other interactive features - defaults to "no"}
 }
 \value{
 facet bar chart that is either static or interactive depending on choice
