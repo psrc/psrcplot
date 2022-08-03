@@ -278,40 +278,62 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
 #'
 
 create_treemap_chart <- function(t, w.area, w.fill, w.title=NULL, w.sub.title=NULL, est.type="percent", w.dec=0, w.color="psrc_light") {
-
+  
+  tot <- t %>% dplyr::select(.data[[w.area]]) %>% dplyr::pull() %>% sum()
+  t <- t %>% dplyr::mutate(total_share = .data[[w.area]]/tot)
+  
   # Estimate type determines the labels
   if (est.type=="percent") {
     w.factor=100
     p=""
     s="%"
-  
+    
   } else if (est.type=="currency") {
     w.factor=1
     p="$"
     s=""
-  
+    
   } else {
     w.factor=1
     p=""
     s=""
   }
-
-  c <- ggplot2::ggplot(t,
-                       ggplot2::aes(area = get(eval(w.area)),
-                                    fill = get(eval(w.fill)), 
-                                    label = paste(get(eval(w.fill)), paste0(p, prettyNum(round(get(eval(w.area))*w.factor,w.dec), big.mark = ","), s), sep = "\n"))) +
-    treemapify::geom_treemap() +
-    treemapify::geom_treemap_text(colour = "white",
-                                place = "centre",
-                                size = 28) +
-    psrc_style() +
-    ggplot2::theme(legend.position = "none") +
-    scale_fill_discrete_psrc(w.color)
-
-  if (!(is.null(w.title))) {
-    c <- c + ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+  
+  if (est.type=="percent") {
+    c <- ggplot2::ggplot(t,
+                         ggplot2::aes(area = get(eval(w.area)),
+                                      fill = get(eval(w.fill)), 
+                                      label = paste(get(eval(w.fill)), 
+                                                    paste0(p, prettyNum(round(get(eval(w.area))*w.factor,w.dec), big.mark = ","), s),
+                                                    sep = "\n"))) +
+      treemapify::geom_treemap() +
+      treemapify::geom_treemap_text(colour = "white",
+                                    place = "centre",
+                                    size = 28) +
+      psrc_style() +
+      ggplot2::theme(legend.position = "none") +
+      scale_fill_discrete_psrc(w.color) +
+      ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+    
+  } else {
+    
+    c <- ggplot2::ggplot(t,
+                         ggplot2::aes(area = get(eval(w.area)),
+                                      fill = get(eval(w.fill)), 
+                                      label = paste(get(eval(w.fill)), 
+                                                    paste0(p, prettyNum(round(get(eval(w.area))*w.factor,w.dec), big.mark = ","), s),
+                                                    paste0(prettyNum(round(.data$total_share*100,0), big.mark = ","), "%"), 
+                                                    sep = "\n"))) +
+      treemapify::geom_treemap() +
+      treemapify::geom_treemap_text(colour = "white",
+                                    place = "centre",
+                                    size = 28) +
+      psrc_style() +
+      ggplot2::theme(legend.position = "none") +
+      scale_fill_discrete_psrc(w.color) +
+      ggplot2::ggtitle(w.title, subtitle = w.sub.title)
   }
-
+  
   return(c)
 }
 
