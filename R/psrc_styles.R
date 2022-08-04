@@ -7,7 +7,7 @@
 #'
 
 psrc_style <- function() {
-  font <- "sans"
+  font <- "Poppins"
 
   ggplot2::theme(
 

@@ -24,5 +24,7 @@ Imports:
     ggiraph,
     treemapify,
     rlang,
-    graphics
+    graphics,
+    sysfonts,
+    showtext
 RoxygenNote: 7.2.0
