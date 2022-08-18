@@ -9,6 +9,9 @@ create_bar_chart(
   w.x,
   w.y,
   f,
+  h.ref = NULL,
+  h.ref.nm = NULL,
+  h.ref.cl = NULL,
   w.moe = NULL,
   w.title = NULL,
   w.sub.title = NULL,
@@ -28,7 +31,13 @@ create_bar_chart(
 
 \item{f}{The name of the variable you want the fill color of the bars to be based on}
 
-\item{w.moe}{The name of the variable to be used for error bars, if desired - default to "NULL"}
+\item{h.ref}{A list of values to be used for any horizontal reference lines - default is "NULL"}
+
+\item{h.ref.nm}{A list of names to be used for any horizontal reference lines - default is "NULL"}
+
+\item{h.ref.cl}{A list of colors to be used for any horizontal reference lines - default is "NULL"}
+
+\item{w.moe}{The name of the variable to be used for error bars, if desired - default is "NULL"}
 
 \item{w.title}{Title to be used for chart, if desired - defaults to "NULL"}
 
@@ -53,33 +62,60 @@ This function allows you to create bar charts.
 \examples{
 
 library(dplyr)
+library(psrccensus)
 
-# Read in the example data and filter to Mode to Work for Everyone for all years in the data
-df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
-      filter(Category=="Mode to Work by Race") \%>\%
-      filter(Geography=="Region" & Race=="Total") \%>\%
-      mutate(Year = as.character(Year))
+# Modes
+total.work.trips <- c("B08006_001")
+da.work.trips <- c("B08006_003")
+cp.work.trips <- c("B08006_004")
+trn.work.trips <- c("B08006_008")
+bke.work.trips <- c("B08006_014")
+wlk.work.trips <- c("B08006_015")
+oth.work.trips <- c("B08006_016")
+wfh.work.trips <- c("B08006_017")
 
-# Create a chart for mode shares by year with error bars
-my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", w.moe="share_moe", 
-                             w.color="psrc_light")
+all.trips <- c(total.work.trips, da.work.trips, 
+               cp.work.trips, trn.work.trips, 
+               bke.work.trips, wlk.work.trips, 
+               oth.work.trips, wfh.work.trips)
+               
+non.da.trips <- c(cp.work.trips, trn.work.trips,
+                  bke.work.trips, wlk.work.trips,
+                  wfh.work.trips)
 
-# Create a chart for mode shares by year without error bars
-my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-                             w.color="psrc_light")
-                             
-# Create a chart for mode shares by year without error bars with Titles
-my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-                             w.color="psrc_light",
-                             w.title="Mode Share to Work",
-                             w.sub.title="by Census Year")
-                                                                                  
-# Create a chart for mode shares by year with error bars with Main Title only and make interactive
-my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-                             w.color="psrc_light",
-                             w.title="Mode Share to Work",
-                             w.moe="share_moe",
-                             w.interactive="yes") 
+rtp <- 0.49
+fed <- 0.333
 
+work.mode <- get_acs_recs(geography = 'county',
+                          table.names = c('B08006'), 
+                          years=c(2010,2015,2020), 
+                          acs.type = 'acs5') \%>\% 
+             filter(variable \%in\% all.trips)
+             
+mode.totals <- work.mode \%>\% 
+               filter(variable \%in\% total.work.trips) \%>\% 
+               select(name, year, estimate) \%>\% 
+               rename(total=estimate)
+               
+work.mode <- left_join(work.mode, mode.totals, by=c("name","year")) \%>\% 
+             mutate(share=estimate/total)
+             
+tbl <- work.mode \%>\%
+       filter(variable \%in\% non.da.trips) \%>\%
+       filter(name=="Region") \%>\%
+       select(name, year, share) \%>\%
+       group_by(name, year) \%>\%
+       summarise(share=sum(share)) \%>\%
+       as_tibble() \%>\%
+       mutate(year=as.character(year))
+
+
+# Chart with Reference Lines        
+ms.chart <- create_bar_chart(t=tbl, w.x="year", w.y="share", f="name",
+                             h.ref = c(rtp,fed), 
+                             h.ref.nm = c("2050 RTP Forecast","Federal Performance Target"),
+                             h.ref.cl = psrc_colors$PrGn,
+                             w.title= "Non-SOV Mode Share to Work", 
+                             w.sub.title="ACS 5yr Data Table B08006")
 
 }

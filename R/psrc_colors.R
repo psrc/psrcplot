@@ -34,7 +34,7 @@ psrc_colors = list(
   OrPr = c("#EC9B21", "#4A0048"),
   PrBk = c("#4A0048","#2F3030"),
   BkPr = c("#2F3030","#4A0048"),
-  # Orange Paris with Balck
+  # Orange Pairs with Black
   OrBk = c("#EC9B21", "#2F3030"),
   BkOr = c("#2F3030", "#EC9B21"))
 
@@ -82,12 +82,12 @@ scale_fill_continuous_psrc = function(name) {
 #' @examples
 #' 
 #' # Print the PSRC palettes to the viewer window
-#' psrc_print_palette()
+#' print_psrc_palette()
 #' 
 #' @export
 #'
 
-psrc_print_palette <- function() {
+print_psrc_palette <- function() {
   bordercolor <- "black"
   x <- c(-8,30)
   y <- c(0,(length(psrc_colors)*3))

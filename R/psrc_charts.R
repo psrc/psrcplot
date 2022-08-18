@@ -122,7 +122,10 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' @param w.x The name of the variable you want plotted on the X-Axis
 #' @param w.y The name of the variable you want plotted on the Y-Axis
 #' @param f The name of the variable you want the fill color of the bars to be based on
-#' @param w.moe The name of the variable to be used for error bars, if desired - default to "NULL"
+#' @param h.ref A list of values to be used for any horizontal reference lines - default is "NULL"
+#' @param h.ref.nm A list of names to be used for any horizontal reference lines - default is "NULL"
+#' @param h.ref.cl A list of colors to be used for any horizontal reference lines - default is "NULL"
+#' @param w.moe The name of the variable to be used for error bars, if desired - default is "NULL"
 #' @param w.title Title to be used for chart, if desired - defaults to "NULL"
 #' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
 #' @param w.pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
@@ -138,39 +141,70 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' @examples
 #' 
 #' library(dplyr)
+#' library(psrccensus)
 #' 
-#' # Read in the example data and filter to Mode to Work for Everyone for all years in the data
-#' df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
-#'       filter(Category=="Mode to Work by Race") %>%
-#'       filter(Geography=="Region" & Race=="Total") %>%
-#'       mutate(Year = as.character(Year))
+#' # Modes
+#' total.work.trips <- c("B08006_001")
+#' da.work.trips <- c("B08006_003")
+#' cp.work.trips <- c("B08006_004")
+#' trn.work.trips <- c("B08006_008")
+#' bke.work.trips <- c("B08006_014")
+#' wlk.work.trips <- c("B08006_015")
+#' oth.work.trips <- c("B08006_016")
+#' wfh.work.trips <- c("B08006_017")
 #' 
-#' # Create a chart for mode shares by year with error bars
-#' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", w.moe="share_moe", 
-#'                              w.color="psrc_light")
+#' all.trips <- c(total.work.trips, da.work.trips, 
+#'                cp.work.trips, trn.work.trips, 
+#'                bke.work.trips, wlk.work.trips, 
+#'                oth.work.trips, wfh.work.trips)
+#'                
+#' non.da.trips <- c(cp.work.trips, trn.work.trips,
+#'                   bke.work.trips, wlk.work.trips,
+#'                   wfh.work.trips)
+#' 
+#' rtp <- 0.49
+#' fed <- 0.333
+#' 
+#' work.mode <- get_acs_recs(geography = 'county',
+#'                           table.names = c('B08006'), 
+#'                           years=c(2010,2015,2020), 
+#'                           acs.type = 'acs5') %>% 
+#'              filter(variable %in% all.trips)
+#'              
+#' mode.totals <- work.mode %>% 
+#'                filter(variable %in% total.work.trips) %>% 
+#'                select(name, year, estimate) %>% 
+#'                rename(total=estimate)
+#'                
+#' work.mode <- left_join(work.mode, mode.totals, by=c("name","year")) %>% 
+#'              mutate(share=estimate/total)
+#'              
+#' tbl <- work.mode %>%
+#'        filter(variable %in% non.da.trips) %>%
+#'        filter(name=="Region") %>%
+#'        select(name, year, share) %>%
+#'        group_by(name, year) %>%
+#'        summarise(share=sum(share)) %>%
+#'        as_tibble() %>%
+#'        mutate(year=as.character(year))
 #'
-#' # Create a chart for mode shares by year without error bars
-#' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-#'                              w.color="psrc_light")
-#'                              
-#' # Create a chart for mode shares by year without error bars with Titles
-#' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-#'                              w.color="psrc_light",
-#'                              w.title="Mode Share to Work",
-#'                              w.sub.title="by Census Year")
-#'                                                                                   
-#' # Create a chart for mode shares by year with error bars with Main Title only and make interactive
-#' my.chart <- create_bar_chart(t=df, w.x="Mode", w.y="share", f="Year", 
-#'                              w.color="psrc_light",
-#'                              w.title="Mode Share to Work",
-#'                              w.moe="share_moe",
-#'                              w.interactive="yes") 
-#' 
+#'
+#' # Chart with Reference Lines        
+#' ms.chart <- create_bar_chart(t=tbl, w.x="year", w.y="share", f="name",
+#'                              h.ref = c(rtp,fed), 
+#'                              h.ref.nm = c("2050 RTP Forecast","Federal Performance Target"),
+#'                              h.ref.cl = psrc_colors$PrGn,
+#'                              w.title= "Non-SOV Mode Share to Work", 
+#'                              w.sub.title="ACS 5yr Data Table B08006")
 #' 
 #' @export
 #'
 
-create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.title=NULL, w.pos="dodge", est.type="percent", w.dec = 0, w.color="psrc_dark", w.interactive='no') {
+create_bar_chart <- function(t, w.x, w.y, f, 
+                             h.ref=NULL, h.ref.nm=NULL, h.ref.cl=NULL,
+                             w.moe=NULL, w.title=NULL, w.sub.title=NULL, 
+                             w.pos="dodge", est.type="percent", 
+                             w.dec = 0, w.color="psrc_dark", w.interactive='no') {
   
   # Estimate type determines the labels for the axis and the format of the number for the hover-text
   if (est.type=="percent") {
@@ -178,18 +212,21 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
     p=""
     s="%"
     w.label=scales::label_percent()
+    annot = 0.01
     
   } else if (est.type=="currency") {
     w.factor=1
     p="$"
     s=""
     w.label=scales::label_dollar()
+    annot = 1
     
   } else {
     w.factor=1
     p=""
     s=""
     w.label=scales::label_comma()
+    annot = 1
   }
   
   if (w.interactive == 'yes') {
@@ -203,16 +240,21 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
       ggiraph::geom_bar_interactive(position=w.pos, stat="identity")+
       ggplot2::scale_y_continuous(labels = w.label) +
       scale_fill_discrete_psrc(w.color)  +
+      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
       psrc_style()
     
     if (!(is.null(w.moe))) {
-    
+      
       c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
-    
+      
     }
     
-    if (!(is.null(w.title))) {
-      c <- c + ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+    if (!(is.null(h.ref))) {
+      
+      c <- c + 
+        ggplot2::geom_hline(yintercept = h.ref, color=h.ref.cl, linetype='solid', size=2, show.legend = FALSE) +
+        ggplot2::annotate("text", x = 1, y = h.ref+annot, label = h.ref.nm)
+      
     } else {
       c <- c
     }
@@ -220,29 +262,37 @@ create_bar_chart <- function(t, w.x, w.y, f, w.moe=NULL, w.title=NULL, w.sub.tit
     c <- ggiraph::girafe(ggobj = c)
     
   } else {
-  
+    
     c <- ggplot2::ggplot(data=t,
-                       ggplot2::aes(y=get(eval(w.y)),
-                                    x=get(eval(w.x)),
-                                    fill = get(eval(f)))) +
+                         ggplot2::aes(y=get(eval(w.y)),
+                                      x=get(eval(w.x)),
+                                      fill = get(eval(f)))) +
       ggplot2::geom_bar(position=w.pos, stat="identity") +
       ggplot2::scale_y_continuous(labels = w.label) +
+      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
       scale_fill_discrete_psrc(w.color)  +
       psrc_style()
-
+    
     if (!(is.null(w.moe))) {
       c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
     }
-  
-    if (!(is.null(w.title))) {
-      c <- c + ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+    
+    if (!(is.null(h.ref))) {
+      
+      c <- c + 
+        ggplot2::geom_hline(yintercept = h.ref, color=h.ref.cl, linetype='solid', size=2, show.legend = FALSE) +
+        ggplot2::annotate("text", x = 1, y = h.ref+annot, label = h.ref.nm)
+      
     } else {
       c <- c
     }
+    
   }
+  
   
   return(c)
 }
+
 
 #' Create PSRC TreeMap Chart
 #'
