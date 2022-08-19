@@ -115,10 +115,10 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
   return(c)
 }
 
-#' Create PSRC Bar Chart
+#' Create Column Chart
 #'
-#' This function allows you to create bar charts.
-#' @param t A tibble or dataframe in long form for plotting
+#' This function allows you to create column charts (vertical bars).
+#' @param t A tibble in long form for plotting
 #' @param w.x The name of the variable you want plotted on the X-Axis
 #' @param w.y The name of the variable you want plotted on the Y-Axis
 #' @param f The name of the variable you want the fill color of the bars to be based on
@@ -133,7 +133,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' @param w.dec Number of decimal points in labels - defaults to 0
 #' @param w.color Name of color palette to use - defaults to "psrc_dark"
 #' @param w.interactive Enable hover text and other interactive features - defaults to "no"
-#' @return bar chart that is either static or interactive depending on choice
+#' @return column (vertical bar) chart that is either static or interactive depending on choice
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
@@ -190,7 +190,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #'
 #'
 #' # Chart with Reference Lines        
-#' ms.chart <- create_bar_chart(t=tbl, w.x="year", w.y="share", f="name",
+#' ms.chart <- create_column_chart(t=tbl, w.x="year", w.y="share", f="name",
 #'                              h.ref = c(rtp,fed), 
 #'                              h.ref.nm = c("2050 RTP Forecast","Federal Performance Target"),
 #'                              h.ref.cl = psrc_colors$PrGn,
@@ -200,7 +200,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' @export
 #'
 
-create_bar_chart <- function(t, w.x, w.y, f, 
+create_column_chart <- function(t, w.x, w.y, f, 
                              h.ref=NULL, h.ref.nm=NULL, h.ref.cl=NULL,
                              w.moe=NULL, w.title=NULL, w.sub.title=NULL, 
                              w.pos="dodge", est.type="percent", 
@@ -293,6 +293,72 @@ create_bar_chart <- function(t, w.x, w.y, f,
   return(c)
 }
 
+#' Create Bar Chart
+#'
+#' This function allows you to create bar charts (horizontal bars).
+#' @param t A tibble in long form for plotting
+#' @param w.x The name of the variable you want plotted on the X-Axis
+#' @param w.y The name of the variable you want plotted on the Y-Axis
+#' @param f The name of the variable you want the fill color of the bars to be based on
+#' @param h.ref A list of values to be used for any horizontal reference lines - default is "NULL"
+#' @param h.ref.nm A list of names to be used for any horizontal reference lines - default is "NULL"
+#' @param h.ref.cl A list of colors to be used for any horizontal reference lines - default is "NULL"
+#' @param w.moe The name of the variable to be used for error bars, if desired - default is "NULL"
+#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
+#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param w.pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
+#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param w.dec Number of decimal points in labels - defaults to 0
+#' @param w.color Name of color palette to use - defaults to "psrc_dark"
+#' @param w.interactive Enable hover text and other interactive features - defaults to "no"
+#' @return bar (horizontal bar) chart that is either static or interactive depending on choice
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+#' 
+#' @examples
+#' 
+#' library(psrcplot)
+#' library(psrctrends)
+#' library(dplyr)
+#' 
+#' install_psrc_fonts()
+#' 
+#' ev_registration <- get_ev_registration()
+#' 
+#' tbl <- ev_registration %>% 
+#'        filter(county=="PSRC Region" & VEH_TYPE!="Total")
+#'
+#' ev.share.chart <- create_bar_chart(t=tbl, 
+#'                                    w.x="date", w.y="share", f="VEH_TYPE",
+#'                                    w.title= "Monthly EV Share of Vehicle Registrations", 
+#'                                    w.sub.title="Source: Washington State Open Data Portal",
+#'                                    est.type = "percent",
+#'                                    w.pos = "stack")
+#'                                   
+#' 
+#' @export
+#'
+
+create_bar_chart <- function(t, w.x, w.y, f, 
+                             h.ref=NULL, h.ref.nm=NULL, h.ref.cl=NULL,
+                             w.moe=NULL, w.title=NULL, w.sub.title=NULL, 
+                             w.pos="dodge", est.type="percent", 
+                             w.dec = 0, w.color="psrc_dark", w.interactive='no') {
+  
+  c <- psrcplot::create_column_chart(t, w.x, w.y, f, 
+                                     h.ref, h.ref.nm, h.ref.cl,
+                                     w.moe, w.title, w.sub.title, 
+                                     w.pos, est.type, 
+                                     w.dec, w.color, w.interactive)
+  
+  c <- c + ggplot2::coord_flip() +
+    ggplot2::theme(panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"),
+                   panel.grid.major.y = ggplot2::element_blank(),
+                   axis.line.x = ggplot2::element_line(color="#cbcbcb"))
+  
+  return(c)
+}
 
 #' Create PSRC TreeMap Chart
 #'

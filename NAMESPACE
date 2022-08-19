@@ -3,6 +3,7 @@
 export(create.line.chart)
 export(create_bar_chart)
 export(create_bubble_chart)
+export(create_column_chart)
 export(create_facet_bar_chart)
 export(create_treemap_chart)
 export(install_psrc_fonts)

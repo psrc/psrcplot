@@ -2,7 +2,7 @@
 % Please edit documentation in R/psrc_charts.R
 \name{create_bar_chart}
 \alias{create_bar_chart}
-\title{Create PSRC Bar Chart}
+\title{Create Bar Chart}
 \usage{
 create_bar_chart(
   t,
@@ -23,7 +23,7 @@ create_bar_chart(
 )
 }
 \arguments{
-\item{t}{A tibble or dataframe in long form for plotting}
+\item{t}{A tibble in long form for plotting}
 
 \item{w.x}{The name of the variable you want plotted on the X-Axis}
 
@@ -54,68 +54,30 @@ create_bar_chart(
 \item{w.interactive}{Enable hover text and other interactive features - defaults to "no"}
 }
 \value{
-bar chart that is either static or interactive depending on choice
+bar (horizontal bar) chart that is either static or interactive depending on choice
 }
 \description{
-This function allows you to create bar charts.
+This function allows you to create bar charts (horizontal bars).
 }
 \examples{
 
+library(psrcplot)
+library(psrctrends)
 library(dplyr)
-library(psrccensus)
 
-# Modes
-total.work.trips <- c("B08006_001")
-da.work.trips <- c("B08006_003")
-cp.work.trips <- c("B08006_004")
-trn.work.trips <- c("B08006_008")
-bke.work.trips <- c("B08006_014")
-wlk.work.trips <- c("B08006_015")
-oth.work.trips <- c("B08006_016")
-wfh.work.trips <- c("B08006_017")
+install_psrc_fonts()
 
-all.trips <- c(total.work.trips, da.work.trips, 
-               cp.work.trips, trn.work.trips, 
-               bke.work.trips, wlk.work.trips, 
-               oth.work.trips, wfh.work.trips)
-               
-non.da.trips <- c(cp.work.trips, trn.work.trips,
-                  bke.work.trips, wlk.work.trips,
-                  wfh.work.trips)
+ev_registration <- get_ev_registration()
 
-rtp <- 0.49
-fed <- 0.333
+tbl <- ev_registration \%>\% 
+       filter(county=="PSRC Region" & VEH_TYPE!="Total")
 
-work.mode <- get_acs_recs(geography = 'county',
-                          table.names = c('B08006'), 
-                          years=c(2010,2015,2020), 
-                          acs.type = 'acs5') \%>\% 
-             filter(variable \%in\% all.trips)
-             
-mode.totals <- work.mode \%>\% 
-               filter(variable \%in\% total.work.trips) \%>\% 
-               select(name, year, estimate) \%>\% 
-               rename(total=estimate)
-               
-work.mode <- left_join(work.mode, mode.totals, by=c("name","year")) \%>\% 
-             mutate(share=estimate/total)
-             
-tbl <- work.mode \%>\%
-       filter(variable \%in\% non.da.trips) \%>\%
-       filter(name=="Region") \%>\%
-       select(name, year, share) \%>\%
-       group_by(name, year) \%>\%
-       summarise(share=sum(share)) \%>\%
-       as_tibble() \%>\%
-       mutate(year=as.character(year))
-
-
-# Chart with Reference Lines        
-ms.chart <- create_bar_chart(t=tbl, w.x="year", w.y="share", f="name",
-                             h.ref = c(rtp,fed), 
-                             h.ref.nm = c("2050 RTP Forecast","Federal Performance Target"),
-                             h.ref.cl = psrc_colors$PrGn,
-                             w.title= "Non-SOV Mode Share to Work", 
-                             w.sub.title="ACS 5yr Data Table B08006")
+ev.share.chart <- create_bar_chart(t=tbl, 
+                                   w.x="date", w.y="share", f="VEH_TYPE",
+                                   w.title= "Monthly EV Share of Vehicle Registrations", 
+                                   w.sub.title="Source: Washington State Open Data Portal",
+                                   est.type = "percent",
+                                   w.pos = "stack")
+                                  
 
 }
