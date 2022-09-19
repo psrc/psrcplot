@@ -24,9 +24,10 @@ psrc_style <- function() {
                                           margin=ggplot2::margin(9,0,9,0)),
 
     #This leaves the caption text element empty, because it is set elsewhere in the finalise plot function
-    plot.caption = ggplot2::element_blank(),
-
-
+    plot.caption =  ggplot2::element_text(family=font,
+                                          size=12,
+                                          face="bold",
+                                          color="#4C4C4C"),
     #Legend format
     #This sets the position and alignment of the legend, removes a title and background for it and sets the requirements for any text within the legend.
     legend.position = "bottom",
