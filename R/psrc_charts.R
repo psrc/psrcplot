@@ -119,20 +119,21 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #'
 #' This function allows you to create column charts (vertical bars).
 #' @param t A tibble in long form for plotting
-#' @param w.x The name of the variable you want plotted on the X-Axis
-#' @param w.y The name of the variable you want plotted on the Y-Axis
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
 #' @param f The name of the variable you want the fill color of the bars to be based on
-#' @param h.ref A list of values to be used for any horizontal reference lines - default is "NULL"
-#' @param h.ref.nm A list of names to be used for any horizontal reference lines - default is "NULL"
-#' @param h.ref.cl A list of colors to be used for any horizontal reference lines - default is "NULL"
-#' @param w.moe The name of the variable to be used for error bars, if desired - default is "NULL"
-#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
-#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param w.pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
-#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
-#' @param w.dec Number of decimal points in labels - defaults to 0
-#' @param w.color Name of color palette to use - defaults to "psrc_dark"
-#' @param w.interactive Enable hover text and other interactive features - defaults to "no"
+#' @param pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param moe The name of the variable to be used for error bars, if desired - default is "NULL"
+#' @param href A list of values to be used for any horizontal reference lines - default is "NULL"
+#' @param hrefnm A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
+#' @param hrefcl A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param source Source reference to be used for chart, if desired - defaults to "NULL"
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param color Name of color palette to use - defaults to "psrc_dark"
+#' @param interactive Enable hover text and other interactive features - defaults to "no"
 #' @return column (vertical bar) chart that is either static or interactive depending on choice
 #' 
 #' @importFrom magrittr %<>% %>%
@@ -141,154 +142,95 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' @examples
 #' 
 #' library(dplyr)
-#' library(psrccensus)
-#' 
-#' # Modes
-#' total.work.trips <- c("B08006_001")
-#' da.work.trips <- c("B08006_003")
-#' cp.work.trips <- c("B08006_004")
-#' trn.work.trips <- c("B08006_008")
-#' bke.work.trips <- c("B08006_014")
-#' wlk.work.trips <- c("B08006_015")
-#' oth.work.trips <- c("B08006_016")
-#' wfh.work.trips <- c("B08006_017")
-#' 
-#' all.trips <- c(total.work.trips, da.work.trips, 
-#'                cp.work.trips, trn.work.trips, 
-#'                bke.work.trips, wlk.work.trips, 
-#'                oth.work.trips, wfh.work.trips)
-#'                
-#' non.da.trips <- c(cp.work.trips, trn.work.trips,
-#'                   bke.work.trips, wlk.work.trips,
-#'                   wfh.work.trips)
-#' 
-#' rtp <- 0.49
-#' fed <- 0.333
-#' 
-#' work.mode <- get_acs_recs(geography = 'county',
-#'                           table.names = c('B08006'), 
-#'                           years=c(2010,2015,2020), 
-#'                           acs.type = 'acs5') %>% 
-#'              filter(variable %in% all.trips)
-#'              
-#' mode.totals <- work.mode %>% 
-#'                filter(variable %in% total.work.trips) %>% 
-#'                select(name, year, estimate) %>% 
-#'                rename(total=estimate)
-#'                
-#' work.mode <- left_join(work.mode, mode.totals, by=c("name","year")) %>% 
-#'              mutate(share=estimate/total)
-#'              
-#' tbl <- work.mode %>%
-#'        filter(variable %in% non.da.trips) %>%
-#'        filter(name=="Region") %>%
-#'        select(name, year, share) %>%
-#'        group_by(name, year) %>%
-#'        summarise(share=sum(share)) %>%
-#'        as_tibble() %>%
-#'        mutate(year=as.character(year))
+#' modes_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+#'  filter(Category=="Mode to Work by Race") %>%
+#'  filter(Geography=="Region" & Race=="Total") %>%
+#'  mutate(Year = as.character(Year))
 #'
-#'
-#' # Chart with Reference Lines        
-#' ms.chart <- create_column_chart(t=tbl, w.x="year", w.y="share", f="name",
-#'                              h.ref = c(rtp,fed), 
-#'                              h.ref.nm = c("2050 RTP Forecast","Federal Performance Target"),
-#'                              h.ref.cl = psrc_colors$PrGn,
-#'                              w.title= "Non-SOV Mode Share to Work", 
-#'                              w.sub.title="ACS 5yr Data Table B08006")
+#' # Static Chart with Error Bars         
+#' static_chart <- create_column_chart(t=modes_shares, x="Mode",y="share", f="Year",
+#'                                     title="Mode Share to Work",
+#'                                     source="Source: ACS 5yr Data Table B3002",
+#'                                     moe="share_moe", color="psrc_light")
 #' 
+#' # Interactive Chart without Error Bars         
+#' interactive_chart <- create_column_chart(t=modes_shares, x="Mode",y="share", f="Year",
+#'                                          title="Mode Share to Work",
+#'                                          source="Source: ACS 5yr Data Table B3002",
+#'                                          color="psrc_light", interactive='yes')
+#'                                          
 #' @export
 #'
 
-create_column_chart <- function(t, w.x, w.y, f, 
-                             h.ref=NULL, h.ref.nm=NULL, h.ref.cl=NULL,
-                             w.moe=NULL, w.title=NULL, w.sub.title=NULL, 
-                             w.pos="dodge", est.type="percent", 
-                             w.dec = 0, w.color="psrc_dark", w.interactive='no') {
+create_column_chart <- function(t, x, y, f, 
+                                pos="dodge", est="percent", moe=NULL,
+                                href=NULL, hrefnm=NULL, hrefcl=NULL,
+                                title=NULL, subtitle=NULL, source=NULL, 
+                                dec = 0, color="psrc_dark", interactive='no') {
+  
+  # Create a color palette from PSRC palette
+  grps <- t %>% dplyr::select(.data[[f]]) %>% unique() %>% dplyr::pull()
+  num.grps <- length(grps)
+  l.colors <- unlist(psrcplot::psrc_colors[color])
+  l.colors <- l.colors[1:num.grps]
+  cols <- stats::setNames(l.colors, grps)
   
   # Estimate type determines the labels for the axis and the format of the number for the hover-text
-  if (est.type=="percent") {
-    w.factor=100
+  if (est=="percent") {
+    fac=100
     p=""
     s="%"
-    w.label=scales::label_percent()
+    lab=scales::label_percent()
     annot = 0.01
     
-  } else if (est.type=="currency") {
-    w.factor=1
+  } else if (est=="currency") {
+    fac=1
     p="$"
     s=""
-    w.label=scales::label_dollar()
+    lab=scales::label_dollar()
     annot = 1
     
   } else {
-    w.factor=1
+    fac=1
     p=""
     s=""
-    w.label=scales::label_comma()
+    lab=scales::label_comma()
     annot = 1
   }
   
-  if (w.interactive == 'yes') {
-    
-    c <- ggplot2::ggplot(data=t,
-                         ggplot2::aes(y=get(eval(w.y)),
-                                      x=get(eval(w.x)),
-                                      fill = get(eval(f)),
-                                      tooltip=paste0(get(eval(f)), ": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
-                                      data_id=get(eval(w.y)))) +
-      ggiraph::geom_bar_interactive(position=w.pos, stat="identity")+
-      ggplot2::scale_y_continuous(labels = w.label) +
-      scale_fill_discrete_psrc(w.color)  +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-      psrc_style()
-    
-    if (!(is.null(w.moe))) {
-      
-      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
-      
-    }
-    
-    if (!(is.null(h.ref))) {
-      
-      c <- c + 
-        ggplot2::geom_hline(yintercept = h.ref, color=h.ref.cl, linetype='solid', size=2, show.legend = FALSE) +
-        ggplot2::annotate("text", x = 1, y = h.ref+annot, label = h.ref.nm)
-      
-    } else {
-      c <- c
-    }
-    
-    c <- ggiraph::girafe(ggobj = c)
-    
-  } else {
-    
-    c <- ggplot2::ggplot(data=t,
-                         ggplot2::aes(y=get(eval(w.y)),
-                                      x=get(eval(w.x)),
-                                      fill = get(eval(f)))) +
-      ggplot2::geom_bar(position=w.pos, stat="identity") +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-      scale_fill_discrete_psrc(w.color)  +
-      psrc_style()
-    
-    if (!(is.null(w.moe))) {
-      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
-    }
-    
-    if (!(is.null(h.ref))) {
-      
-      c <- c + 
-        ggplot2::geom_hline(yintercept = h.ref, color=h.ref.cl, linetype='solid', size=2, show.legend = FALSE) +
-        ggplot2::annotate("text", x = 1, y = h.ref+annot, label = h.ref.nm)
-      
-    } else {
-      c <- c
-    }
-    
+  # First Create the Static Chart
+  c <- ggplot2::ggplot(data=t,
+                       ggplot2::aes(x=get(eval(x)),
+                                    y=get(eval(y)),
+                                    text=paste0(get(eval(f)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
+                                    fill = get(eval(f)))) +
+    ggplot2::geom_bar(position=pos, stat="identity") +
+    ggplot2::scale_fill_manual(values=cols)  +
+    ggplot2::scale_y_continuous(labels = lab) +
+    ggplot2::labs(title=title, subtitle = subtitle, caption = source) +
+    psrcplot::psrc_style()
+  
+  # If there is a MOE value then error bars are added to the plot
+  if (!(is.null(moe))) {
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(y))-get(eval(moe)), ymax=get(eval(y))+get(eval(moe))),width=0.2, position = ggplot2::position_dodge(0.9))
   }
   
+  # Add reference lines if they are included 
+  if (!(is.null(href))) {
+    c <- c + 
+      ggplot2::geom_hline(yintercept = href, color=hrefcl, linetype='solid', size=2, show.legend = FALSE) +
+      ggplot2::annotate("text", x = 1, y = href+annot, label = hrefnm)
+  }
+  
+  # Convert to Interactive if desired
+  if (interactive=='yes') {
+    c <- plotly::ggplotly(c, tooltip = c("text"))
+    c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.25, title = ""))
+    c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.25, text = source, 
+                                              showarrow = F, xref='paper', yref='paper', 
+                                              xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                              font=list(family="Poppins",size=10, color="#4C4C4C")))
+  }
   
   return(c)
 }
@@ -297,20 +239,21 @@ create_column_chart <- function(t, w.x, w.y, f,
 #'
 #' This function allows you to create bar charts (horizontal bars).
 #' @param t A tibble in long form for plotting
-#' @param w.x The name of the variable you want plotted on the X-Axis
-#' @param w.y The name of the variable you want plotted on the Y-Axis
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
 #' @param f The name of the variable you want the fill color of the bars to be based on
-#' @param h.ref A list of values to be used for any horizontal reference lines - default is "NULL"
-#' @param h.ref.nm A list of names to be used for any horizontal reference lines - default is "NULL"
-#' @param h.ref.cl A list of colors to be used for any horizontal reference lines - default is "NULL"
-#' @param w.moe The name of the variable to be used for error bars, if desired - default is "NULL"
-#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
-#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param w.pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
-#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
-#' @param w.dec Number of decimal points in labels - defaults to 0
-#' @param w.color Name of color palette to use - defaults to "psrc_dark"
-#' @param w.interactive Enable hover text and other interactive features - defaults to "no"
+#' @param pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param moe The name of the variable to be used for error bars, if desired - default is "NULL"
+#' @param href A list of values to be used for any horizontal reference lines - default is "NULL"
+#' @param hrefnm A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
+#' @param hrefcl A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param source Source reference to be used for chart, if desired - defaults to "NULL"
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param color Name of color palette to use - defaults to "psrc_dark"
+#' @param interactive Enable hover text and other interactive features - defaults to "no"
 #' @return bar (horizontal bar) chart that is either static or interactive depending on choice
 #' 
 #' @importFrom magrittr %<>% %>%
@@ -324,38 +267,55 @@ create_column_chart <- function(t, w.x, w.y, f,
 #' 
 #' install_psrc_fonts()
 #' 
-#' ev_registration <- get_ev_registration()
+#' ev_registration <- get_ev_registration_ytd()
 #' 
 #' tbl <- ev_registration %>% 
-#'        filter(county=="PSRC Region" & VEH_TYPE!="Total")
+#'        filter(county=="PSRC Region")
 #'
-#' ev.share.chart <- create_bar_chart(t=tbl, 
-#'                                    w.x="date", w.y="share", f="VEH_TYPE",
-#'                                    w.title= "Monthly EV Share of Vehicle Registrations", 
-#'                                    w.sub.title="Source: Washington State Open Data Portal",
-#'                                    est.type = "percent",
-#'                                    w.pos = "stack")
+#' static_chart <- create_bar_chart(t=tbl, 
+#'                                  x="date", y="share", f="variable",
+#'                                  title="Year to Date Share of Vehicle Registrations", 
+#'                                  source="Source: Washington State Open Data Portal",
+#'                                  pos = "stack")
+#'                                    
+#' interactive_chart <- create_bar_chart(t=tbl, 
+#'                                       x="date", y="share", f="variable",
+#'                                       title="Year to Date Share of Vehicle Registrations", 
+#'                                       source="Source: Washington State Open Data Portal",
+#'                                       pos = "stack", interactive='yes')                                    
 #'                                   
 #' 
 #' @export
 #'
 
-create_bar_chart <- function(t, w.x, w.y, f, 
-                             h.ref=NULL, h.ref.nm=NULL, h.ref.cl=NULL,
-                             w.moe=NULL, w.title=NULL, w.sub.title=NULL, 
-                             w.pos="dodge", est.type="percent", 
-                             w.dec = 0, w.color="psrc_dark", w.interactive='no') {
+create_bar_chart <- function(t, x, y, f, 
+                             href=NULL, hrefnm=NULL, hrefcl=NULL,
+                             moe=NULL, pos="dodge", est="percent",
+                             title=NULL, subtitle=NULL, source=NULL,
+                             dec = 0, color="psrc_dark", interactive='no') {
   
-  c <- psrcplot::create_column_chart(t, w.x, w.y, f, 
-                                     h.ref, h.ref.nm, h.ref.cl,
-                                     w.moe, w.title, w.sub.title, 
-                                     w.pos, est.type, 
-                                     w.dec, w.color, w.interactive)
+  # First create a static column chart using the column chart function
+  c <- psrcplot::create_column_chart(t, x, y, f, 
+                                     pos, est, moe,
+                                     href, hrefnm, hrefcl,
+                                     title, subtitle, source, 
+                                     dec, color, interactive='no')
   
+  # Flip the coordinates to make into a bar chart
   c <- c + ggplot2::coord_flip() +
     ggplot2::theme(panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"),
                    panel.grid.major.y = ggplot2::element_blank(),
                    axis.line.x = ggplot2::element_line(color="#cbcbcb"))
+  
+  # Convert to Interactive if desired
+  if (interactive=='yes') {
+    c <- plotly::ggplotly(c, tooltip = c("text"))
+    c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.25, title = ""))
+    c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.25, text = source, 
+                                              showarrow = F, xref='paper', yref='paper', 
+                                              xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                              font=list(family="Poppins",size=10, color="#4C4C4C")))
+  }
   
   return(c)
 }

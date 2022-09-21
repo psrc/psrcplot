@@ -6,52 +6,55 @@
 \usage{
 create_bar_chart(
   t,
-  w.x,
-  w.y,
+  x,
+  y,
   f,
-  h.ref = NULL,
-  h.ref.nm = NULL,
-  h.ref.cl = NULL,
-  w.moe = NULL,
-  w.title = NULL,
-  w.sub.title = NULL,
-  w.pos = "dodge",
-  est.type = "percent",
-  w.dec = 0,
-  w.color = "psrc_dark",
-  w.interactive = "no"
+  href = NULL,
+  hrefnm = NULL,
+  hrefcl = NULL,
+  moe = NULL,
+  pos = "dodge",
+  est = "percent",
+  title = NULL,
+  subtitle = NULL,
+  source = NULL,
+  dec = 0,
+  color = "psrc_dark",
+  interactive = "no"
 )
 }
 \arguments{
 \item{t}{A tibble in long form for plotting}
 
-\item{w.x}{The name of the variable you want plotted on the X-Axis}
+\item{x}{The name of the variable you want plotted on the X-Axis}
 
-\item{w.y}{The name of the variable you want plotted on the Y-Axis}
+\item{y}{The name of the variable you want plotted on the Y-Axis}
 
 \item{f}{The name of the variable you want the fill color of the bars to be based on}
 
-\item{h.ref}{A list of values to be used for any horizontal reference lines - default is "NULL"}
+\item{href}{A list of values to be used for any horizontal reference lines - default is "NULL"}
 
-\item{h.ref.nm}{A list of names to be used for any horizontal reference lines - default is "NULL"}
+\item{hrefnm}{A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"}
 
-\item{h.ref.cl}{A list of colors to be used for any horizontal reference lines - default is "NULL"}
+\item{hrefcl}{A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"}
 
-\item{w.moe}{The name of the variable to be used for error bars, if desired - default is "NULL"}
+\item{moe}{The name of the variable to be used for error bars, if desired - default is "NULL"}
 
-\item{w.title}{Title to be used for chart, if desired - defaults to "NULL"}
+\item{pos}{Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"}
 
-\item{w.sub.title}{Sub-title to be used for chart, if desired - defaults to "NULL"}
+\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
 
-\item{w.pos}{Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"}
+\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
-\item{est.type}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
+\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.dec}{Number of decimal points in labels - defaults to 0}
+\item{source}{Source reference to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.color}{Name of color palette to use - defaults to "psrc_dark"}
+\item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{w.interactive}{Enable hover text and other interactive features - defaults to "no"}
+\item{color}{Name of color palette to use - defaults to "psrc_dark"}
+
+\item{interactive}{Enable hover text and other interactive features - defaults to "no"}
 }
 \value{
 bar (horizontal bar) chart that is either static or interactive depending on choice
@@ -67,17 +70,22 @@ library(dplyr)
 
 install_psrc_fonts()
 
-ev_registration <- get_ev_registration()
+ev_registration <- get_ev_registration_ytd()
 
 tbl <- ev_registration \%>\% 
-       filter(county=="PSRC Region" & VEH_TYPE!="Total")
+       filter(county=="PSRC Region")
 
-ev.share.chart <- create_bar_chart(t=tbl, 
-                                   w.x="date", w.y="share", f="VEH_TYPE",
-                                   w.title= "Monthly EV Share of Vehicle Registrations", 
-                                   w.sub.title="Source: Washington State Open Data Portal",
-                                   est.type = "percent",
-                                   w.pos = "stack")
+static_chart <- create_bar_chart(t=tbl, 
+                                 x="date", y="share", f="variable",
+                                 title="Year to Date Share of Vehicle Registrations", 
+                                 source="Source: Washington State Open Data Portal",
+                                 pos = "stack")
+                                   
+interactive_chart <- create_bar_chart(t=tbl, 
+                                      x="date", y="share", f="variable",
+                                      title="Year to Date Share of Vehicle Registrations", 
+                                      source="Source: Washington State Open Data Portal",
+                                      pos = "stack", interactive='yes')                                    
                                   
 
 }

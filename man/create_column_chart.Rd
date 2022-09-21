@@ -6,52 +6,55 @@
 \usage{
 create_column_chart(
   t,
-  w.x,
-  w.y,
+  x,
+  y,
   f,
-  h.ref = NULL,
-  h.ref.nm = NULL,
-  h.ref.cl = NULL,
-  w.moe = NULL,
-  w.title = NULL,
-  w.sub.title = NULL,
-  w.pos = "dodge",
-  est.type = "percent",
-  w.dec = 0,
-  w.color = "psrc_dark",
-  w.interactive = "no"
+  pos = "dodge",
+  est = "percent",
+  moe = NULL,
+  href = NULL,
+  hrefnm = NULL,
+  hrefcl = NULL,
+  title = NULL,
+  subtitle = NULL,
+  source = NULL,
+  dec = 0,
+  color = "psrc_dark",
+  interactive = "no"
 )
 }
 \arguments{
 \item{t}{A tibble in long form for plotting}
 
-\item{w.x}{The name of the variable you want plotted on the X-Axis}
+\item{x}{The name of the variable you want plotted on the X-Axis}
 
-\item{w.y}{The name of the variable you want plotted on the Y-Axis}
+\item{y}{The name of the variable you want plotted on the Y-Axis}
 
 \item{f}{The name of the variable you want the fill color of the bars to be based on}
 
-\item{h.ref}{A list of values to be used for any horizontal reference lines - default is "NULL"}
+\item{pos}{Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"}
 
-\item{h.ref.nm}{A list of names to be used for any horizontal reference lines - default is "NULL"}
+\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
 
-\item{h.ref.cl}{A list of colors to be used for any horizontal reference lines - default is "NULL"}
+\item{moe}{The name of the variable to be used for error bars, if desired - default is "NULL"}
 
-\item{w.moe}{The name of the variable to be used for error bars, if desired - default is "NULL"}
+\item{href}{A list of values to be used for any horizontal reference lines - default is "NULL"}
 
-\item{w.title}{Title to be used for chart, if desired - defaults to "NULL"}
+\item{hrefnm}{A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"}
 
-\item{w.sub.title}{Sub-title to be used for chart, if desired - defaults to "NULL"}
+\item{hrefcl}{A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"}
 
-\item{w.pos}{Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"}
+\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
-\item{est.type}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
+\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.dec}{Number of decimal points in labels - defaults to 0}
+\item{source}{Source reference to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.color}{Name of color palette to use - defaults to "psrc_dark"}
+\item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{w.interactive}{Enable hover text and other interactive features - defaults to "no"}
+\item{color}{Name of color palette to use - defaults to "psrc_dark"}
+
+\item{interactive}{Enable hover text and other interactive features - defaults to "no"}
 }
 \value{
 column (vertical bar) chart that is either static or interactive depending on choice
@@ -62,60 +65,21 @@ This function allows you to create column charts (vertical bars).
 \examples{
 
 library(dplyr)
-library(psrccensus)
+modes_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
+ filter(Category=="Mode to Work by Race") \%>\%
+ filter(Geography=="Region" & Race=="Total") \%>\%
+ mutate(Year = as.character(Year))
 
-# Modes
-total.work.trips <- c("B08006_001")
-da.work.trips <- c("B08006_003")
-cp.work.trips <- c("B08006_004")
-trn.work.trips <- c("B08006_008")
-bke.work.trips <- c("B08006_014")
-wlk.work.trips <- c("B08006_015")
-oth.work.trips <- c("B08006_016")
-wfh.work.trips <- c("B08006_017")
+# Static Chart with Error Bars         
+static_chart <- create_column_chart(t=modes_shares, x="Mode",y="share", f="Year",
+                                    title="Mode Share to Work",
+                                    source="Source: ACS 5yr Data Table B3002",
+                                    moe="share_moe", color="psrc_light")
 
-all.trips <- c(total.work.trips, da.work.trips, 
-               cp.work.trips, trn.work.trips, 
-               bke.work.trips, wlk.work.trips, 
-               oth.work.trips, wfh.work.trips)
-               
-non.da.trips <- c(cp.work.trips, trn.work.trips,
-                  bke.work.trips, wlk.work.trips,
-                  wfh.work.trips)
-
-rtp <- 0.49
-fed <- 0.333
-
-work.mode <- get_acs_recs(geography = 'county',
-                          table.names = c('B08006'), 
-                          years=c(2010,2015,2020), 
-                          acs.type = 'acs5') \%>\% 
-             filter(variable \%in\% all.trips)
-             
-mode.totals <- work.mode \%>\% 
-               filter(variable \%in\% total.work.trips) \%>\% 
-               select(name, year, estimate) \%>\% 
-               rename(total=estimate)
-               
-work.mode <- left_join(work.mode, mode.totals, by=c("name","year")) \%>\% 
-             mutate(share=estimate/total)
-             
-tbl <- work.mode \%>\%
-       filter(variable \%in\% non.da.trips) \%>\%
-       filter(name=="Region") \%>\%
-       select(name, year, share) \%>\%
-       group_by(name, year) \%>\%
-       summarise(share=sum(share)) \%>\%
-       as_tibble() \%>\%
-       mutate(year=as.character(year))
-
-
-# Chart with Reference Lines        
-ms.chart <- create_column_chart(t=tbl, w.x="year", w.y="share", f="name",
-                             h.ref = c(rtp,fed), 
-                             h.ref.nm = c("2050 RTP Forecast","Federal Performance Target"),
-                             h.ref.cl = psrc_colors$PrGn,
-                             w.title= "Non-SOV Mode Share to Work", 
-                             w.sub.title="ACS 5yr Data Table B08006")
-
+# Interactive Chart without Error Bars         
+interactive_chart <- create_column_chart(t=modes_shares, x="Mode",y="share", f="Year",
+                                         title="Mode Share to Work",
+                                         source="Source: ACS 5yr Data Table B3002",
+                                         color="psrc_light", interactive='yes')
+                                         
 }
