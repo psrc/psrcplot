@@ -5,7 +5,7 @@
 \alias{psrc_colors}
 \title{PSRC Color Palettes}
 \format{
-An object of class \code{list} of length 26.
+An object of class \code{list} of length 31.
 }
 \usage{
 psrc_colors
