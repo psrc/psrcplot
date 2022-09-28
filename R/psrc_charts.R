@@ -225,7 +225,7 @@ create_column_chart <- function(t, x, y, f,
 
   # Convert to Interactive if desired
   if (interactive=='yes') {
-    c <- plotly::ggplotly(c, tooltip = c("text"), autosize = F, width = 900, height = 575)
+    c <- plotly::ggplotly(c, tooltip = c("text"))
     c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.10, title = ""))
     c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.20, text = source,
                                               xref='paper', yref='paper', showarrow = F, 
@@ -235,6 +235,8 @@ create_column_chart <- function(t, x, y, f,
                                               showarrow = F, xref='paper', yref='paper', 
                                               xanchor='left', yanchor='auto', xshift=0, yshift=0,
                                               font=list(family="Poppins",size=14, color="#4C4C4C")))
+    
+    c <- plotly::style(c, hoverlabel = list(bgcolor = "black", font=list(family="Poppins",size=14, color="white")))
     
     
   }
