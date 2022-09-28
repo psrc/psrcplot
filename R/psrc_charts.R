@@ -165,7 +165,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 create_column_chart <- function(t, x, y, f, 
                                 pos="dodge", est="percent", moe=NULL,
                                 href=NULL, hrefnm=NULL, hrefcl=NULL,
-                                title=NULL, subtitle=NULL, source=NULL, 
+                                title="", subtitle="", source="", 
                                 dec = 0, color="psrc_dark", interactive='no') {
   
   # Create a color palette from PSRC palette
@@ -222,14 +222,21 @@ create_column_chart <- function(t, x, y, f,
       ggplot2::annotate("text", x = 1, y = href+annot, label = hrefnm)
   }
   
+
   # Convert to Interactive if desired
   if (interactive=='yes') {
-    c <- plotly::ggplotly(c, tooltip = c("text"))
-    c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.25, title = ""))
-    c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.25, text = source, 
+    c <- plotly::ggplotly(c, tooltip = c("text"), autosize = F, width = 900, height = 575)
+    c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.10, title = ""))
+    c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.20, text = source,
+                                              xref='paper', yref='paper', showarrow = F, 
+                                              xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                              font = list(family="Poppins",size=13, color="#4C4C4C")))
+    c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = subtitle, 
                                               showarrow = F, xref='paper', yref='paper', 
                                               xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                              font=list(family="Poppins",size=10, color="#4C4C4C")))
+                                              font=list(family="Poppins",size=14, color="#4C4C4C")))
+    
+    
   }
   
   return(c)

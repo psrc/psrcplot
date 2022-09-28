@@ -15,9 +15,9 @@ create_column_chart(
   href = NULL,
   hrefnm = NULL,
   hrefcl = NULL,
-  title = NULL,
-  subtitle = NULL,
-  source = NULL,
+  title = "",
+  subtitle = "",
+  source = "",
   dec = 0,
   color = "psrc_dark",
   interactive = "no"
