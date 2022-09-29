@@ -15,9 +15,9 @@ create_bar_chart(
   moe = NULL,
   pos = "dodge",
   est = "percent",
-  title = NULL,
-  subtitle = NULL,
-  source = NULL,
+  title = "",
+  subtitle = "",
+  source = "",
   dec = 0,
   color = "psrc_dark",
   interactive = "no"

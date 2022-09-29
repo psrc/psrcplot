@@ -65,19 +65,19 @@ This function allows you to create column charts (vertical bars).
 \examples{
 
 library(dplyr)
-modes_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
+mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
  filter(Category=="Mode to Work by Race") \%>\%
  filter(Geography=="Region" & Race=="Total") \%>\%
  mutate(Year = as.character(Year))
 
 # Static Chart with Error Bars         
-static_chart <- create_column_chart(t=modes_shares, x="Mode",y="share", f="Year",
+static_chart <- create_column_chart(t=mode_shares, x="Mode",y="share", f="Year",
                                     title="Mode Share to Work",
                                     source="Source: ACS 5yr Data Table B3002",
                                     moe="share_moe", color="psrc_light")
 
 # Interactive Chart without Error Bars         
-interactive_chart <- create_column_chart(t=modes_shares, x="Mode",y="share", f="Year",
+interactive_chart <- create_column_chart(t=mode_shares, x="Mode",y="share", f="Year",
                                          title="Mode Share to Work",
                                          source="Source: ACS 5yr Data Table B3002",
                                          color="psrc_light", interactive='yes')

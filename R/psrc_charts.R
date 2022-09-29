@@ -142,19 +142,19 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' @examples
 #' 
 #' library(dplyr)
-#' modes_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+#' mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
 #'  filter(Category=="Mode to Work by Race") %>%
 #'  filter(Geography=="Region" & Race=="Total") %>%
 #'  mutate(Year = as.character(Year))
 #'
 #' # Static Chart with Error Bars         
-#' static_chart <- create_column_chart(t=modes_shares, x="Mode",y="share", f="Year",
+#' static_chart <- create_column_chart(t=mode_shares, x="Mode",y="share", f="Year",
 #'                                     title="Mode Share to Work",
 #'                                     source="Source: ACS 5yr Data Table B3002",
 #'                                     moe="share_moe", color="psrc_light")
 #' 
 #' # Interactive Chart without Error Bars         
-#' interactive_chart <- create_column_chart(t=modes_shares, x="Mode",y="share", f="Year",
+#' interactive_chart <- create_column_chart(t=mode_shares, x="Mode",y="share", f="Year",
 #'                                          title="Mode Share to Work",
 #'                                          source="Source: ACS 5yr Data Table B3002",
 #'                                          color="psrc_light", interactive='yes')
@@ -222,22 +222,48 @@ create_column_chart <- function(t, x, y, f,
       ggplot2::annotate("text", x = 1, y = href+annot, label = hrefnm)
   }
   
-
+  if (num.grps == 1) {
+    
+    c <- c + ggplot2::theme(legend.position = "none")
+    
+  }
+  
   # Convert to Interactive if desired
   if (interactive=='yes') {
-    c <- plotly::ggplotly(c, tooltip = c("text"))
-    c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.10, title = ""))
-    c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.20, text = source,
-                                              xref='paper', yref='paper', showarrow = F, 
-                                              xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                              font = list(family="Poppins",size=13, color="#4C4C4C")))
-    c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = subtitle, 
-                                              showarrow = F, xref='paper', yref='paper', 
-                                              xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                              font=list(family="Poppins",size=14, color="#4C4C4C")))
     
-    c <- plotly::style(c, hoverlabel = list(bgcolor = "black", font=list(family="Poppins",size=14, color="white")))
-    
+    if (num.grps > 1) {
+      
+      c <- plotly::ggplotly(c, tooltip = c("text"))
+      c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.10, title = ""))
+      c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.20, text = source,
+                                                xref='paper', yref='paper', showarrow = F, 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font = list(family="Poppins",size=10, color="#4C4C4C")))
+      c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = subtitle, 
+                                                showarrow = F, xref='paper', yref='paper', 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font=list(family="Poppins",size=14, color="#4C4C4C")))
+      
+      c <- plotly::style(c, hoverlabel = list(bgcolor = "black", font=list(family="Poppins",size=12, color="white")))
+      
+      
+    } else {
+      
+      c <- plotly::ggplotly(c, tooltip = c("text"))
+
+      c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.10, text = source,
+                                                xref='paper', yref='paper', showarrow = F, 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font = list(family="Poppins",size=10, color="#4C4C4C")))
+      c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = subtitle, 
+                                                showarrow = F, xref='paper', yref='paper', 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font=list(family="Poppins",size=14, color="#4C4C4C")))
+      
+      c <- plotly::style(c, hoverlabel = list(bgcolor = "black", font=list(family="Poppins",size=12, color="white")))
+      
+      
+    }
     
   }
   
@@ -300,15 +326,19 @@ create_column_chart <- function(t, x, y, f,
 create_bar_chart <- function(t, x, y, f, 
                              href=NULL, hrefnm=NULL, hrefcl=NULL,
                              moe=NULL, pos="dodge", est="percent",
-                             title=NULL, subtitle=NULL, source=NULL,
+                             title="", subtitle="", source="",
                              dec = 0, color="psrc_dark", interactive='no') {
-  
+
   # First create a static column chart using the column chart function
   c <- psrcplot::create_column_chart(t, x, y, f, 
                                      pos, est, moe,
                                      href, hrefnm, hrefcl,
                                      title, subtitle, source, 
                                      dec, color, interactive='no')
+  
+  # Figure out the number of items in the legend to determine if it is on or off
+  grps <- t %>% dplyr::select(.data[[f]]) %>% unique() %>% dplyr::pull()
+  num.grps <- length(grps)
   
   # Flip the coordinates to make into a bar chart
   c <- c + ggplot2::coord_flip() +
@@ -318,12 +348,41 @@ create_bar_chart <- function(t, x, y, f,
   
   # Convert to Interactive if desired
   if (interactive=='yes') {
-    c <- plotly::ggplotly(c, tooltip = c("text"))
-    c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.25, title = ""))
-    c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.25, text = source, 
-                                              showarrow = F, xref='paper', yref='paper', 
-                                              xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                              font=list(family="Poppins",size=10, color="#4C4C4C")))
+    
+    if (num.grps > 1) {
+      
+      c <- plotly::ggplotly(c, tooltip = c("text"))
+      c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.10, title = ""))
+      c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.20, text = source,
+                                                xref='paper', yref='paper', showarrow = F, 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font = list(family="Poppins",size=10, color="#4C4C4C")))
+      c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = subtitle, 
+                                                showarrow = F, xref='paper', yref='paper', 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font=list(family="Poppins",size=14, color="#4C4C4C")))
+      
+      c <- plotly::style(c, hoverlabel = list(bgcolor = "black", font=list(family="Poppins",size=12, color="white")))
+      
+      
+    } else {
+      
+      c <- plotly::ggplotly(c, tooltip = c("text"))
+      
+      c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.10, text = source,
+                                                xref='paper', yref='paper', showarrow = F, 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font = list(family="Poppins",size=10, color="#4C4C4C")))
+      c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = subtitle, 
+                                                showarrow = F, xref='paper', yref='paper', 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font=list(family="Poppins",size=14, color="#4C4C4C")))
+      
+      c <- plotly::style(c, hoverlabel = list(bgcolor = "black", font=list(family="Poppins",size=12, color="white")))
+      
+      
+    }
+    
   }
   
   return(c)
