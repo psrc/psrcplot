@@ -18,40 +18,25 @@ psrc_colors = list(
   greens_dec = c("#3f6618", "#588527", "#8CC63E", "#A9D46E", "#C0E095", "#E2F1CF"),
   blues_dec = c("#005753", "#00716c", "#00A7A0", "#40BDB8", "#73CFCB", "#BFE9E7"),
   grays_dec = c("#2f3030", "#3E4040", "#4C4C4C", "#76787A", "#999999", "#BCBEC0"),
+  # Primary PSRC 5 Color Palettes
+  pognbgy_5 = c("#91268F", "#F05A28", "#8CC63E", "#00A7A0","#4C4C4C"),
+  pgnobgy_5 = c("#91268F", "#8CC63E", "#F05A28",  "#00A7A0","#4C4C4C"),
+  gnbopgy_5 = c("#8CC63E", "#00A7A0", "#F05A28", "#91268F","#4C4C4C"),
+  obgnpgy_5 = c("#F05A28", "#00A7A0", "#8CC63E", "#91268F","#4C4C4C"),
+  # Primary PSRC 10 Color Palettes
+  pognbgy_10 = c("#91268F", "#F05A28", "#8CC63E", "#00A7A0", "#4C4C4C", "#630460", "#9f3913", "#588527", "#00716c", "#3e4040"),
+  pgnobgy_10 = c("#91268F", "#8CC63E", "#F05A28", "#00A7A0", "#4C4C4C", "#630460", "#588527", "#9f3913", "#00716c", "#3e4040"),
+  gnbopgy_10 = c("#8CC63E", "#00A7A0", "#F05A28", "#91268F", "#4C4C4C", "#588527", "#00716c", "#9f3913", "#630460", "#3e4040"),
+  obgnpgy_10 = c("#F05A28", "#00A7A0", "#8CC63E", "#91268F", "#4C4C4C", "#9f3913", "#00716c", "#588527", "#630460", "#4C4C4C"),
   # Dark and Light Colors
   psrc_dark = c("#630460", "#9f3913", "#588527", "#00716c","#3e4040", "#C388C2", "#F7A489", "#C0E095", "#73CFCB", "#999999"),
   psrc_light = c("#A9D46E", "#73CFCB", "#F4835E", "#C388C2","#76787A","#588527","#00716c","#9f3913","#630460","#3e4040"),
-  psrc_pairs = c("#91268F","#C388C2","#8CC63E","#C0E095","#F05A28","#F7A489","#00A7A0","#73CFCB","#4C4C4C","#999999"),
-  # Light and Dark Pairs
-  DkGnLtGn = c("#005753","#A9D46E"),
-  LtGnDkGn = c("#A9D46E","#005753"),
-  DkPrLtPr = c("#4A0048","#E3C9E3"),
-  LtPrDkPr = c("#E3C9E3","#4A0048"),
-  DkOrLtOr = c("#EC9B21", "#FBD6C9"),
-  LtOrDkOr = c("#FBD6C9", "#EC9B21"),
-  # Green Pairs 
-  GnPr = c("#005753","#4A0048"),
-  PrGn = c("#4A0048","#005753"),
-  GnOr = c("#005753","#EC9B21"),
-  OrGn = c("#EC9B21", "#005753"),
-  GnBk = c("#005753","#2F3030"),
-  BkGn = c("#2F3030", "#005753"),
-  # Purple Pairs with Orange & Black
-  PrOr = c("#4A0048","#EC9B21"),
-  OrPr = c("#EC9B21", "#4A0048"),
-  PrBk = c("#4A0048","#2F3030"),
-  BkPr = c("#2F3030","#4A0048"),
-  # Orange Pairs with Black
-  OrBk = c("#EC9B21", "#2F3030"),
-  BkOr = c("#2F3030", "#EC9B21"))
+  psrc_pairs = c("#91268F","#C388C2","#8CC63E","#C0E095","#F05A28","#F7A489","#00A7A0","#73CFCB","#4C4C4C","#999999"))
 
 psrc_palettes = function(name, n, all_palettes = psrc_colors, type = c("continuous","continuous","continuous","continuous","continuous",
                                                                        "continuous","continuous","continuous","continuous","continuous",
-                                                                       "discrete","discrete","discrete",
-                                                                       "discrete","discrete","discrete","discrete","discrete","discrete",
-                                                                       "discrete","discrete","discrete","discrete","discrete","discrete",
                                                                        "discrete","discrete","discrete","discrete",
-                                                                       "discrete","discrete")) {
+                                                                       "discrete","discrete","discrete")) {
   palette = all_palettes[[name]]
   if (missing(n)) {
     n = length(palette)
