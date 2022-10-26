@@ -8,7 +8,7 @@ Installs Google Fonts used in PSRC Visualizations}
 install_psrc_fonts()
 }
 \description{
-This function will install fonts from Google for use in PSRC visualizations. Run it at the start of each R session.
+This function will install fonts from Google for use in PSRC visualizations.
 }
 \examples{
 
