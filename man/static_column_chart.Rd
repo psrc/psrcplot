@@ -19,6 +19,8 @@ static_column_chart(
   subtitle = NULL,
   source = "",
   alt = NULL,
+  xlabel = NULL,
+  ylabel = NULL,
   dec = 0,
   color = "psrc_dark"
 )
@@ -52,6 +54,10 @@ static_column_chart(
 
 \item{alt}{Text to be used for alt-text, if desired - defaults to "NULL"}
 
+\item{xlabel}{X-axis title to be used for chart, if desired - defaults to "NULL"}
+
+\item{ylabel}{Y-axis title to be used for chart, if desired - defaults to "NULL"}
+
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
 \item{color}{Name of color palette to use - defaults to "psrc_dark"}
@@ -74,7 +80,7 @@ mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrc
 modes_chart <- static_column_chart(t=mode_shares, x="Mode",y="share", fill="Year",
                                     title="Mode Share to Work",
                                     alt="Chart of Work Mode Shares",
-                                    source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
+                                    source=paste("Source: ACS 5-Year Estimates, table B3002",
                                                  "for King, Kitsap, Pierce and Snohomish counties.",
                                                  sep = "\n"),
                                     color="pgnobgy_5")

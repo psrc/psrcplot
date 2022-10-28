@@ -132,6 +132,8 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 #' @param source Source reference to be used for chart, if desired - defaults to blank
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
+#' @param xlabel X-axis title to be used for chart, if desired - defaults to "NULL"
+#' @param ylabel Y-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param dec Number of decimal points in labels - defaults to 0
 #' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return static column (vertical bar) chart
@@ -151,7 +153,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' modes_chart <- static_column_chart(t=mode_shares, x="Mode",y="share", fill="Year",
 #'                                     title="Mode Share to Work",
 #'                                     alt="Chart of Work Mode Shares",
-#'                                     source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
+#'                                     source=paste("Source: ACS 5-Year Estimates, table B3002",
 #'                                                  "for King, Kitsap, Pierce and Snohomish counties.",
 #'                                                  sep = "\n"),
 #'                                     color="pgnobgy_5")
@@ -162,7 +164,8 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 static_column_chart <- function(t, x, y, fill,
                                 pos="dodge", est="percent", moe=NULL,
                                 href=NULL, hrefnm=NULL, hrefcl=NULL,
-                                title=NULL, subtitle=NULL, source="", alt=NULL, 
+                                title=NULL, subtitle=NULL, source="", alt=NULL,
+                                xlabel=NULL, ylabel=NULL,
                                 dec = 0, color="psrc_dark") {
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
@@ -210,7 +213,7 @@ static_column_chart <- function(t, x, y, fill,
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
-    ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt) +
+    ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = xlabel, y = ylabel) +
     psrcplot::psrc_style()
   
   # If there is a MOE value then error bars are added to the plot

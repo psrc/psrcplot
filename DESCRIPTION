@@ -29,4 +29,4 @@ Imports:
     sysfonts,
     showtext,
     plotly
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
