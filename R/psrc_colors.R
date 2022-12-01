@@ -2,8 +2,8 @@
 #'
 #' Functions to create PSRC Color Palettes
 #' 
-#' Available Options: "purples_inc", "orgnges_inc", "greens_inc", "blues_inc", "grays_inc",
-#'    "purples_dec", "organges_dec", "greens_dec", "blues_dec", "grays_dec",
+#' Available Options: "purples_inc", "oranges_inc", "greens_inc", "blues_inc", "grays_inc",
+#'    "purples_dec", "oranges_dec", "greens_dec", "blues_dec", "grays_dec",
 #'    "pognbgy_5", "pgnobgy_5", "gnbopgy_5", "obgnpgy_5",
 #'    "pognbgy_10", "pgnobgy_10", "gnbopgy_10", "obgnpgy_10",
 #'    "psrc_light", "psrc_dark", "psrc_pairs"
