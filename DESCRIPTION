@@ -16,6 +16,7 @@ Encoding: UTF-8
 LazyData: true
 Suggests:
     dplyr,
+    stringr,
     tidyverse,
     psrctrends,
     psrccensus

@@ -342,7 +342,7 @@ interactive_column_chart <- function(t, x, y, fill,
   if (!(is.null(href))) {
     c <- c + 
       ggplot2::geom_hline(yintercept = href, color=hrefcl, linetype='solid', linewidth=1, show.legend = FALSE) +
-      ggplot2::annotate("text", x = href_label_location, y = href+annot, label = hrefnm, color=hrefcl, size=9/.pt)
+      ggplot2::annotate("text", x = href_label_location, y = href+annot, label = hrefnm, color=hrefcl)
   }
   
   if (num.grps == 1) {
@@ -554,6 +554,186 @@ static_bar_chart <- function(t, x, y, fill,
   }
   
   return(c)
+}
+
+#' Create an Interactive Bar Chart
+#'
+#' This function allows you to create bar charts (horizontal bars).
+#' @param t A tibble in long form for plotting
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param fill The name of the variable you want the fill color of the bars to be based on
+#' @param pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param moe The name of the variable to be used for error bars, if desired - default is "NULL"
+#' @param href A list of values to be used for any horizontal reference lines - default is "NULL"
+#' @param hrefnm A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
+#' @param hrefcl A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param source Source reference to be used for chart, if desired - defaults to blank
+#' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
+#' @param xlabel X-axis title to be used for chart, if desired - defaults to "NULL"
+#' @param ylabel Y-axis title to be used for chart, if desired - defaults to "NULL"
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param color Name of color palette to use - defaults to "pgnobgy_5"
+#' @return static bar (horizontal bar) chart
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+#' 
+#' @examples
+#' 
+#' library(dplyr)
+#' library(stringr)
+#' mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+#'   filter(Category=="Mode to Work by Race") %>%
+#'   filter(Geography=="Region" & Race=="Total") %>%
+#'   mutate(Year = as.character(Year)) %>%
+#'   mutate(axis_labels = str_wrap(Mode, width = 10))
+#'
+#' modes_bar_chart <- interactive_bar_chart(t=mode_shares, x="share", y="axis_labels", fill="Year",
+#'                                          est = "percent",
+#'                                          title="Mode Share to Work",
+#'                                          alt="Chart of Work Mode Shares",
+#'                                          color="gnbopgy_5", dec = 0)
+#' @export
+#'
+interactive_bar_chart <- function(t, x, y, fill,
+                                  pos="dodge", est="percent", moe=NULL,
+                                  href=NULL, hrefnm=NULL, hrefcl=NULL,
+                                  title=NULL, subtitle=NULL, source="", alt=NULL,
+                                  xlabel=NULL, ylabel=NULL,
+                                  dec = 0, color="pgnobgy_5") {
+  
+  # First Create Chart using Static Version
+  
+  # Create a color palette from PSRC palette
+  grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
+  num.grps <- length(grps)
+  l.colors <- unlist(psrcplot::psrc_colors[color])
+  l.colors <- l.colors[1:num.grps]
+  cols <- stats::setNames(l.colors, grps)
+  
+  # Estimate type determines the labels for the axis and the format of the number bar labels
+  if (est=="percent") {
+    fac=100
+    p=""
+    s="%"
+    lab=scales::label_percent()
+    annot = 0.01
+    
+  } else if (est=="currency") {
+    fac=1
+    p="$"
+    s=""
+    lab=scales::label_dollar()
+    annot = 1
+    
+  } else {
+    fac=1
+    p=""
+    s=""
+    lab=scales::label_comma()
+    annot = 1
+  }
+  
+  # Create the Basic Static Chart
+  c <- ggplot2::ggplot(data=t,
+                       ggplot2::aes(x=get(eval(y)),
+                                    y=get(eval(x)),
+                                    text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(x))*fac, dec), big.mark = ","),s),
+                                    fill = get(eval(fill)))) +
+    ggplot2::geom_bar(position=pos, stat="identity") +
+    ggplot2::scale_fill_manual(values=cols)  +
+    ggplot2::scale_y_continuous(labels = lab, expand = c(0, 0)) +
+    ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = ylabel, y = xlabel) +
+    psrcplot::psrc_style()
+  
+  # Add reference lines if they are included 
+  if (!(is.null(href))) {
+    c <- c + 
+      ggplot2::geom_hline(yintercept = href, color=hrefcl, linetype='solid', size=2, show.legend = FALSE) +
+      ggplot2::annotate("text", x = 1, y = href+annot, label = hrefnm)
+  }
+  
+  if (num.grps == 1) {
+    
+    c <- c + ggplot2::theme(legend.position = "none")
+    
+  }
+  
+  c <- c + ggplot2::coord_flip()
+  
+  # If there is a MOE value then error bars are added to the plot
+  if (!(is.null(moe))) {
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(x))-get(eval(moe)), ymax=get(eval(x))+get(eval(moe))),width=0.2, position = ggplot2::position_dodge(0.9)) +
+      ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
+                     panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"),
+                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))
+  }
+  
+  # Remove Bar labels and axis titles
+  c <- c + ggplot2::theme(axis.title = ggplot2::element_blank())
+  
+  # Make Interactive
+  m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
+  c <- plotly::ggplotly(c, tooltip = c("text"), autosize = T, margin = m)
+  
+  # Set Font for Hover-Text
+  c <- plotly::style(c, hoverlabel = list(font=list(family="Poppins",size=11, color="white")))
+  
+  # Format X-Axis
+  c <- plotly::layout(c, xaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
+  
+  # Format Y-Axis
+  c <- plotly::layout(c, yaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
+  
+  # Turn on Legend
+  c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.10, 
+                                       title = "", 
+                                       font = list(family="Poppins", size=11, color="#2f3030"),
+                                       pad = list(b=50, t=50)))
+  
+  # Remove Plotly Title
+  c <- plotly::layout(c, title= list(text = ""))
+  
+  # Chart Title if there is also a Subtitle
+  if(!(is.null(title)) & !(is.null(subtitle))) {
+    
+    # Remove Plotly Title
+    c <- plotly::layout(c, title= list(text = ""))
+    
+    # Add the title and put it high enough for room for subtitle
+    c <- plotly::layout(c, annotations = list(x = 0, y = 1.10, text = title,
+                                              xref='paper', yref='paper', showarrow = F, 
+                                              font = list(family="Poppins Black",size=14, color="#4C4C4C")))
+    # Add the subtitle 
+    c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = subtitle, 
+                                              showarrow = F, xref='paper', yref='paper', 
+                                              font=list(family="Poppins",size=12, color="#4C4C4C")))
+  }
+  
+  # Chart Title if there is no Subtitle
+  if(!(is.null(title)) & is.null(subtitle)) {
+    
+    # Add the title
+    c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = title,
+                                              xref='paper', yref='paper', showarrow = F,
+                                              font = list(family="Poppins Black",size=14, color="#4C4C4C")))
+  }
+  
+  # Turn on Source if Provided
+  if (!(is.null(source))) {
+    
+    c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.2, text = source,
+                                              xref='paper', yref='paper', showarrow = F, 
+                                              xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                              font = list(family="Poppins",size=10, color="#4C4C4C")))
+  }
+  
+  return(c)
+  
 }
 
 #' Create PSRC TreeMap Chart
