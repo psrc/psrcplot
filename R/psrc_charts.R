@@ -663,14 +663,16 @@ interactive_bar_chart <- function(t, x, y, fill,
     
   }
   
-  c <- c + ggplot2::coord_flip()
+  # Flip to be a bar chart
+  c <- c + 
+    ggplot2::coord_flip() +
+    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
+                   panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"),
+                   axis.line.y = ggplot2::element_line(color="#cbcbcb"))
   
   # If there is a MOE value then error bars are added to the plot
   if (!(is.null(moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(x))-get(eval(moe)), ymax=get(eval(x))+get(eval(moe))),width=0.2, position = ggplot2::position_dodge(0.9)) +
-      ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
-                     panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"),
-                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(x))-get(eval(moe)), ymax=get(eval(x))+get(eval(moe))),width=0.2, position = ggplot2::position_dodge(0.9))
   }
   
   # Remove Bar labels and axis titles
@@ -695,43 +697,9 @@ interactive_bar_chart <- function(t, x, y, fill,
                                        font = list(family="Poppins", size=11, color="#2f3030"),
                                        pad = list(b=50, t=50)))
   
-  # Remove Plotly Title
-  c <- plotly::layout(c, title= list(text = ""))
-  
-  # Chart Title if there is also a Subtitle
-  if(!(is.null(title)) & !(is.null(subtitle))) {
-    
-    # Remove Plotly Title
-    c <- plotly::layout(c, title= list(text = ""))
-    
-    # Add the title and put it high enough for room for subtitle
-    c <- plotly::layout(c, annotations = list(x = 0, y = 1.10, text = title,
-                                              xref='paper', yref='paper', showarrow = F, 
-                                              font = list(family="Poppins Black",size=14, color="#4C4C4C")))
-    # Add the subtitle 
-    c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = subtitle, 
-                                              showarrow = F, xref='paper', yref='paper', 
-                                              font=list(family="Poppins",size=12, color="#4C4C4C")))
-  }
-  
-  # Chart Title if there is no Subtitle
-  if(!(is.null(title)) & is.null(subtitle)) {
-    
-    # Add the title
-    c <- plotly::layout(c, annotations = list(x = 0, y = 1.05, text = title,
-                                              xref='paper', yref='paper', showarrow = F,
-                                              font = list(family="Poppins Black",size=14, color="#4C4C4C")))
-  }
-  
-  # Turn on Source if Provided
-  if (!(is.null(source))) {
-    
-    c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.2, text = source,
-                                              xref='paper', yref='paper', showarrow = F, 
-                                              xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                              font = list(family="Poppins",size=10, color="#4C4C4C")))
-  }
-  
+  # Update Plotly Title
+  c <- plotly::layout(c, title= list(text = title, font = list(family="Poppins Black",size=14, color="#4C4C4C")))
+
   return(c)
   
 }
