@@ -38,20 +38,3 @@ bubble chart
 \description{
 This function allows you to create a bubble charts.
 }
-\examples{
-
-library(dplyr)
-library(psrctrends)
-library(psrcplot)
-
-# Pull NTD Transit Data by Urbanized Area
-uza.data <- process_ntd_uza_data(yr="2022", census.yr="2020")
-
-# Create Bubble chart for Transit Boardings per Capita
-uza.chart <- create_bubble_chart(t=uza.data \%>\% dplyr::filter(variable == "Boardings per Capita"),
-                                 w.x="population", w.y="estimate", f <- "plot_id", 
-                                 s <- "population", w.color <- "psrc_light",
-                                 w.title = "Boardings per Capita", 
-                                 w.sub.title = "Urbanized Areas with at least 1 million people")
-
-}

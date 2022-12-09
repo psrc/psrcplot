@@ -56,29 +56,3 @@ line chart
 \description{
 This function allows you to create a line chart.
 }
-\examples{
-
-library(dplyr)
-library(psrctrends)
-library(psrcplot)
-
-airport.operations <- process_sea_operations_data(c.yr=2022, c.mo=4, f.yr = 2019)
-sea.chart.2022 <- create.line.chart(t=airport.operations \%>\% 
-                                    dplyr::filter(variable == "PASSENGER GRAND TOTAL"),
-                                    w.x="equiv_day", w.y="estimate", w.g="year", 
-                                    d.form="\%B", w.lwidth=2,
-                                    w.title = "Monthly Passenger Enplanements: 2019 to 2022", 
-                                    w.sub.title = "Seattle-Tacoma International Airport")
-
-jobs.data <- process_qcew_monthly_msa(c.yr=2022, c.mo=5)
-
-tbl <- jobs.data \%>\% filter(variable=="Total Nonfarm"
-                           & year>="2018"
-                           & !(geography \%in\% c("Washington State", "Region")))
-                           
-jobs.chart <- create.line.chart(t=tbl, w.x="data_day", w.y="estimate", 
-                                w.g="geography", w.lwidth=2, d.form ="\%Y", 
-                                w.interactive="yes",
-                                w.title = "Monthly Wage & Salary Jobs: 2018 to 2022")                            
-
-}
