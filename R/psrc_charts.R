@@ -960,3 +960,124 @@ create.line.chart <- function(t, w.x, w.y, w.g, w.title=NULL, w.sub.title=NULL, 
   return(g)
 }
 
+#' Interactive Line Chart
+#'
+#' This function allows you to create a line chart.
+#' @param t A tibble or dataframe in long form for plotting
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param fill The name of the variable you want the fill color of the lines to be based on
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "number"
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param xtype Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"
+#' @param dform Format for Date values 
+#' @param breaks Break points to use if using a continuous scale, defaults to NULL
+#' @param lwidth Width of lines, defaults to 1
+#' @param color Name of color palette to use - defaults to "psrc_light"
+#' 
+#' @return line chart
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+#' 
+#' @export
+#'
+interactive_line_chart <- function(t, x, y, fill, 
+                                   title="", 
+                                   est="number", dec=0, 
+                                   xtype="Date", dform="%b-%Y", 
+                                   breaks=NULL, lwidth=1, color="psrc_light") {
+  
+  # Create a color palette from PSRC palette
+  grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
+  num.grps <- length(grps)
+  l.colors <- unlist(psrcplot::psrc_colors[color])
+  l.colors <- l.colors[1:num.grps]
+  cols <- stats::setNames(l.colors, grps)
+  
+  # Estimate type determines the labels for the axis and the format of the number for the hover-text
+  if (est=="percent") {
+    fac=100
+    p=""
+    s="%"
+    lab=scales::label_percent()
+    annot = 0.01
+    
+  } else if (est=="currency") {
+    fac=1
+    p="$"
+    s=""
+    lab=scales::label_dollar()
+    annot = 1
+    
+  } else {
+    fac=1
+    p=""
+    s=""
+    lab=scales::label_comma()
+    annot = 1
+  }
+  
+  if (xtype=="Continuous") {
+    c <- ggplot2::ggplot(data=t, 
+                         ggplot2::aes(x=get(eval(x)),
+                                      y=get(eval(y)),
+                                      text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
+                                      group=get(eval(fill))))  + 
+      ggplot2::geom_line(ggplot2::aes(color=get(eval(fill))), size=lwidth, linejoin = "round") +
+      ggplot2::geom_point(ggplot2::aes(color=get(eval(fill))))+
+      ggplot2::scale_x_discrete(breaks=breaks) +
+      ggplot2::scale_y_continuous(labels = lab) +
+      ggplot2::scale_color_manual(values=cols)  +
+      ggplot2::labs(title=title) +
+      psrc_style()
+    
+  } else {
+    
+    c <- ggplot2::ggplot(data=t, 
+                         ggplot2::aes(x=get(eval(x)),
+                                      y=get(eval(y)), 
+                                      text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
+                                      group=get(eval(fill))))  + 
+      ggplot2::geom_line(ggplot2::aes(color=get(eval(fill))), size = lwidth, linejoin = "round") +
+      ggplot2::scale_x_date(labels = scales::date_format(dform)) +
+      ggplot2::scale_y_continuous(labels = lab) +
+      ggplot2::scale_color_manual(values=cols)  +
+      ggplot2::labs(title=title) +
+      psrc_style()
+    
+  }
+  
+  # Remove Bar labels and axis titles
+  c <- c + ggplot2::theme(axis.title = ggplot2::element_blank())
+  
+  # Make Interactive
+  m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
+  c <- plotly::ggplotly(c, tooltip = c("text"), autosize = T, margin = m)
+  
+  # Set Font for Hover-Text
+  c <- plotly::style(c, hovermode = "x", hoverlabel = list(font=list(family="Poppins",size=11, color="white")))
+  
+  # Format X-Axis
+  c <- plotly::layout(c, xaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
+  
+  # Format Y-Axis
+  c <- plotly::layout(c, yaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
+  
+  # Turn on Legend
+  c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", xref="container", x = 0.5, y = -0.10, 
+                                       title = "", 
+                                       font = list(family="Poppins", size=11, color="#2f3030"),
+                                       pad = list(b=50, t=50)))
+  
+  # Update Plotly Title
+  c <- plotly::layout(c, title= list(text = title, 
+                                     font = list(family="Poppins Black",size=12, color="#4C4C4C"),
+                                     x=0.02,
+                                     xref="container"))
+  
+  
+  
+  return(c)
+}
