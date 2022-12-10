@@ -16,11 +16,6 @@ interactive_bar_chart(
   hrefnm = NULL,
   hrefcl = NULL,
   title = NULL,
-  subtitle = NULL,
-  source = "",
-  alt = NULL,
-  xlabel = NULL,
-  ylabel = NULL,
   dec = 0,
   color = "pgnobgy_5"
 )
@@ -48,22 +43,12 @@ interactive_bar_chart(
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
-\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
-
-\item{source}{Source reference to be used for chart, if desired - defaults to blank}
-
-\item{alt}{Text to be used for alt-text, if desired - defaults to "NULL"}
-
-\item{xlabel}{X-axis title to be used for chart, if desired - defaults to "NULL"}
-
-\item{ylabel}{Y-axis title to be used for chart, if desired - defaults to "NULL"}
-
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
 \item{color}{Name of color palette to use - defaults to "pgnobgy_5"}
 }
 \value{
-static bar (horizontal bar) chart
+interactive bar (horizontal bar) chart
 }
 \description{
 This function allows you to create bar charts (horizontal bars).
@@ -81,6 +66,5 @@ mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrc
 modes_bar_chart <- interactive_bar_chart(t=mode_shares, x="share", y="axis_labels", fill="Year",
                                          est = "percent",
                                          title="Mode Share to Work",
-                                         alt="Chart of Work Mode Shares",
                                          color="gnbopgy_5", dec = 0)
 }

@@ -570,14 +570,9 @@ static_bar_chart <- function(t, x, y, fill,
 #' @param hrefnm A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
 #' @param hrefcl A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
-#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param source Source reference to be used for chart, if desired - defaults to blank
-#' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
-#' @param xlabel X-axis title to be used for chart, if desired - defaults to "NULL"
-#' @param ylabel Y-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param dec Number of decimal points in labels - defaults to 0
 #' @param color Name of color palette to use - defaults to "pgnobgy_5"
-#' @return static bar (horizontal bar) chart
+#' @return interactive bar (horizontal bar) chart
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
@@ -595,15 +590,13 @@ static_bar_chart <- function(t, x, y, fill,
 #' modes_bar_chart <- interactive_bar_chart(t=mode_shares, x="share", y="axis_labels", fill="Year",
 #'                                          est = "percent",
 #'                                          title="Mode Share to Work",
-#'                                          alt="Chart of Work Mode Shares",
 #'                                          color="gnbopgy_5", dec = 0)
 #' @export
 #'
 interactive_bar_chart <- function(t, x, y, fill,
                                   pos="dodge", est="percent", moe=NULL,
                                   href=NULL, hrefnm=NULL, hrefcl=NULL,
-                                  title=NULL, subtitle=NULL, source="", alt=NULL,
-                                  xlabel=NULL, ylabel=NULL,
+                                  title=NULL,
                                   dec = 0, color="pgnobgy_5") {
   
   # First Create Chart using Static Version
@@ -647,7 +640,7 @@ interactive_bar_chart <- function(t, x, y, fill,
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, expand = c(0, 0)) +
-    ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = ylabel, y = xlabel) +
+    ggplot2::labs(title=title) +
     psrcplot::psrc_style()
   
   # Add reference lines if they are included 
@@ -698,7 +691,10 @@ interactive_bar_chart <- function(t, x, y, fill,
                                        pad = list(b=50, t=50)))
   
   # Update Plotly Title
-  c <- plotly::layout(c, title= list(text = title, font = list(family="Poppins Black",size=14, color="#4C4C4C")))
+  c <- plotly::layout(c, title= list(text = title, 
+                                     font = list(family="Poppins Black",size=12, color="#4C4C4C"),
+                                     x=0.02,
+                                     xref="container"))
 
   return(c)
   
