@@ -650,12 +650,6 @@ interactive_bar_chart <- function(t, x, y, fill,
       ggplot2::annotate("text", x = 1, y = href+annot, label = hrefnm)
   }
   
-  if (num.grps == 1) {
-    
-    c <- c + ggplot2::theme(legend.position = "none")
-    
-  }
-  
   # Flip to be a bar chart
   c <- c + 
     ggplot2::coord_flip() +
@@ -685,7 +679,7 @@ interactive_bar_chart <- function(t, x, y, fill,
   c <- plotly::layout(c, yaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
   
   # Turn on Legend
-  c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.10, 
+  c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", xref="container", x = 0.5, y = -0.10, 
                                        title = "", 
                                        font = list(family="Poppins", size=11, color="#2f3030"),
                                        pad = list(b=50, t=50)))
