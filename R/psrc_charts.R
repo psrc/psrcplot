@@ -1057,7 +1057,7 @@ interactive_line_chart <- function(t, x, y, fill,
   c <- plotly::ggplotly(c, tooltip = c("text"), autosize = T, margin = m)
   
   # Set Font for Hover-Text
-  c <- plotly::style(c, hovermode = "x", hoverlabel = list(font=list(family="Poppins",size=11, color="white")))
+  c <- plotly::style(c, hoverlabel = list(font=list(family="Poppins",size=11, color="white")))
   
   # Format X-Axis
   c <- plotly::layout(c, xaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
@@ -1069,7 +1069,8 @@ interactive_line_chart <- function(t, x, y, fill,
   c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", xref="container", x = 0.5, y = -0.10, 
                                        title = "", 
                                        font = list(family="Poppins", size=11, color="#2f3030"),
-                                       pad = list(b=50, t=50)))
+                                       pad = list(b=50, t=50)), 
+                      hovermode = "x")
   
   # Update Plotly Title
   c <- plotly::layout(c, title= list(text = title, 
