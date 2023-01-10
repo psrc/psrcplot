@@ -29,11 +29,11 @@ install_psrc_fonts()
 
 The function names in PSRC plot have a naming convention that first identifies whether the plot is static or interactive, then what type of chart. For example, static_bar_chart() makes a static chart that has horizontal bars.
 
-## Make a static bar plot of Census data
+## Mak an interactive column chart of travel survey data
 
-If you want to create a bar plot, you call the function static_bar_chart specifying t as the underlying table. Note that in a static_bar_chart the x variable is expected to be numeric, and the y variable is categorical- since the numeric values are represented on the x axis and the y values are the categories.
+If you want to create an interactive column plot, you call the function interactive_column_chart specifying t as the underlying table. Note that in a column chart the x variable is expected to be categories, and the y variable is canumeric- since x values are the categories and the numeric values are represented on the y axis.
 
-In the example below, we have read in an example data table that shows mode share by race for the region:
+In the example below, we have read in an example data table that shows transit access modes from the travel survey:
 
 ```{r mode_data, message=FALSE}
 transit_acc_df<- read.csv(system.file('extdata', 'transit_access.csv', package='psrcplot')) 
@@ -43,23 +43,21 @@ transit_acc_df
 
 This data table is sent into a interactive column chart with PSRC colors in the following function:
 ```{r transit_chart, message=FALSE}
-# Static Chart         
-transit_access_chart<-interactive_column_chart(t=transit_access_df, 
+# Interactive chart        
+transit_access_chart<-interactive_column_chart(t=transit_acc_df, 
                                                x='mode_acc_walk', y='share', fill='year', 
                                                moe='share_moe', est='percent',
                                                color="psrc_light", title='Transit Access Mode')
 transit_access_chart
 ```
-You can find out more about any of the functions by running ?function_name in the package. For example, ?static_bar_chart()
+You can find out more about any of the functions by running ?function_name in the package. For example, ?interactive_column_chart()
 
 ## Exporting an interactive html chart
 
 
-You have a few options for saving an interactive chart. First you can right click on a plot you have open in R-Studio and save it to a file.
 
-To export the static chart programmatically, you can use the htmlwidget package.
 
-Here is how you can save the interactive bar chart you created above programmatically.
+Here is how you can save the interactive bar chart you created above programmatically using the htmlwidgets library. Once you have an html version of the file it can be embedded in any webpage.
 ```{r}
 library(htmlwidgets)
 saveWidget(transit_access_chart, 
