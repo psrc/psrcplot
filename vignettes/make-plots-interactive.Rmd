@@ -28,7 +28,7 @@ install_psrc_fonts()
 
 The function names in PSRC plot have a naming convention that first identifies whether the plot is static or interactive, then what type of chart. For example, static_bar_chart() makes a static chart that has horizontal bars.
 
-## Mak an interactive column chart of travel survey data
+## Make an interactive column chart of travel survey data
 
 If you want to create an interactive column plot, you call the function interactive_column_chart specifying t as the underlying table. Note that in a column chart the x variable is expected to be categories, and the y variable is canumeric- since x values are the categories and the numeric values are represented on the y axis.
 
@@ -52,9 +52,6 @@ transit_access_chart
 You can find out more about any of the functions by running ?function_name in the package. For example, ?interactive_column_chart()
 
 ## Exporting an interactive html chart
-
-
-
 
 Here is how you can save the interactive bar chart you created above programmatically using the htmlwidgets library. Once you have an html version of the file it can be embedded in any webpage.
 ```{r}
