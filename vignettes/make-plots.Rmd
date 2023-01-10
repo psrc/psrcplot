@@ -1,7 +1,7 @@
 ---
-title: "Get Started Making Plots"
+title: "Get Started Making a Static Plot"
 description: >
-  Learn how to get started with the primary functions of psrcplot.
+  Learn how to get started with the primary functions of psrcplot to create a static plot.
 output: html_vignette
 vignette: >
   %\VignetteIndexEntry{Get Started Making Plots}
@@ -13,12 +13,23 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(psrcplot)
-library(psrccensus)
 library(dplyr)
 ```
-The function names in PSRC plot have a naming convention that first identifies whether the plot is static or interactive, then what type of chart. For example, static_bar_chart() makes a static chart that has horizontal bars.
 
-## Make a bar plot of Census data
+## Install PSRC Fonts
+
+The PSRC Poppins font needs to be installed when you first start creating charts because it is not built into R.
+
+The following function will install PSRC fonts.
+
+```{r}
+install_psrc_fonts()
+```
+
+
+The function names in PSRC plot have a naming convention that first identifies whether the plot is static or interactive, then what type of chart. For example, interactive_column_chart makes an interactive chart that can be displayed on the web that has vertical bars.
+
+## Make a static bar plot of Census data
 
 If you want to create a bar plot, you call the function static_bar_chart specifying t as the underlying table. Note that in a static_bar_chart the x variable is expected to be numeric, and the y variable is categorical- since the numeric values are represented on the x axis and the y values are the categories.
 
@@ -53,7 +64,7 @@ You have a few options for saving a static chart. First you can right click on a
 
 To export the static chart programmatically, you can use a ggplot2 function called ggsave: https://ggplot2.tidyverse.org/reference/ggsave.html
 
-Here is how you can save the static bar chart you created above.
+Here is how you can save the static bar chart you created above programmatically.
 ```{r}
 ggsave(filename='modes_bar_chart.png', plot=modes_chart, device='png')
 
