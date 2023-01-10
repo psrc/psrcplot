@@ -4,7 +4,7 @@ description: >
   Learn how to get started with the primary functions of psrcplot to create a static plot.
 output: html_vignette
 vignette: >
-  %\VignetteIndexEntry{Get Started Making Plots}
+  %\VignetteIndexEntry{Get Started Making a Static Plot}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

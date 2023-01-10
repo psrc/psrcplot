@@ -1,10 +1,9 @@
 ---
 title: "Interactive plotting"
-description: >
-  Learn how to make an interactive plot with psrpllot.
+description:  Learn how to make an interactive plot with psrpllot.
 output: html_vignette
 vignette: >
-  %\VignetteIndexEntry{interactive plotting}
+  %\VignetteIndexEntry{Interactive plotting}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
