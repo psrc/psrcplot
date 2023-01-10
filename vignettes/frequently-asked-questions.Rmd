@@ -1,0 +1,78 @@
+---
+title: "psrcplot Frequently Asked Questions"
+description:  FAQs for doing tricky tasks
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{psrcplot Frequently Asked Questions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(psrcplot)
+library(dplyr)
+library(psrccensus)
+library(forcats)
+```
+
+### Why am I getting a warning about not having fonts installed?
+
+The PSRC Poppins font needs to be installed when you first start creating charts because it is not built into R.
+
+The following function will install PSRC fonts.
+
+```{r}
+install_psrc_fonts()
+```
+
+
+The function names in PSRC plot have a naming convention that first identifies whether the plot is static or interactive, then what type of chart. For example, static_bar_chart() makes a static chart that has horizontal bars.
+
+### How can I change the order of categories on a chart?
+
+The psrcplot package will default to an ordering of categories that may not be the best for the story you are trying to tell.
+
+For example, the following code displays a chart that has Household race by household income but in an undesirable order.
+
+```{r category_order_change, message=FALSE}
+z_2019<- get_psrc_pums(span=5,
+                       dyear=2019,
+                       level='h',
+                       vars = c("HRACE", "HINCP"))
+
+dt2019_2<- psrc_pums_median(z_2019, stat_var= "HINCP",
+                            group_vars="HRACE")
+
+var19_allrace_total<- dt2019_2%>%
+  mutate(date=as.character(2019))%>%
+  filter(HRACE !="Total")
+
+income.chart <-interactive_bar_chart(t=var19_allrace_total, 
+                                     x = "HINCP_median", y="HRACE",
+                                     f="date",
+                                     moe='HINCP_median_moe',
+                                     color= 'psrc_light',
+                                     est='currency',
+                                     title= "Regional Household Median Income by Race, weird order")
+
+income.chart
+```
+
+If you want to reverse the order of the 
+```{r transit_chart, message=FALSE}
+# Interactive chart
+var19_allrace_total_rev<-var19_allrace_total%>%mutate(HRACE_REV=factor(fct_rev(HRACE)))
+
+
+income.chart.rev <-interactive_bar_chart(t=var19_allrace_total_rev, 
+                                     x = "HINCP_median", y="HRACE_REV",
+                                     f="date",
+                                     moe='HINCP_median_moe',
+                                     color= 'psrc_dark',
+                                     est='currency',
+                                     title= "Regional Household Median Income by Race, better order")
+
+income.chart.rev
+```
