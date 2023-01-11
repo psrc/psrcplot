@@ -60,10 +60,12 @@ income.chart <-interactive_bar_chart(t=var19_allrace_total,
 income.chart
 ```
 
-If you want to reverse the order of the 
+If you want to reverse the order of the categorical variables, for example, HRACE- you can use the function fct_rev from the forcats package.  To use fct_rev, you need to make sure your variable is a factor first.
+
+
 ```{r transit_chart, message=FALSE}
 # Interactive chart
-var19_allrace_total_rev<-var19_allrace_total%>%mutate(HRACE_REV=factor(fct_rev(HRACE)))
+var19_allrace_total_rev<-var19_allrace_total%>%mutate(HRACE_REV=fct_rev(as.factor(HRACE)))
 
 
 income.chart.rev <-interactive_bar_chart(t=var19_allrace_total_rev, 
@@ -75,4 +77,22 @@ income.chart.rev <-interactive_bar_chart(t=var19_allrace_total_rev,
                                      title= "Regional Household Median Income by Race, better order")
 
 income.chart.rev
+```
+
+
+Sometimes you may wish to order the bars by lowest to highest or highest to lowest.
+```{r}
+var19_low_high<-var19_allrace_total%>%mutate(HRACE_low_high=fct_reorder(HRACE, -HINCP_median))
+
+
+income.chart.rev <-interactive_bar_chart(t=var19_low_high, 
+                                     x = "HINCP_median", y="HRACE_low_high",
+                                     f="date",
+                                     moe='HINCP_median_moe',
+                                     color= 'psrc_dark',
+                                     est='currency',
+                                     title= "Regional Household Median Income by Race, better order")
+
+income.chart.rev
+
 ```
