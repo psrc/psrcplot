@@ -70,7 +70,8 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
     c <- ggplot2::ggplot(data=t,
                          ggplot2::aes(y=get(eval(w.y)),
                                       x=get(eval(w.x)),
-                                      fill = get(eval(f)),
+                                      fill=get(eval(f)),
+                                      group=get(eval(f)),
                                       tooltip=paste0(get(eval(w.x)), " ", get(eval(f)),": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
                                       data_id=get(eval(w.y)))) +
       ggiraph::geom_bar_interactive(position=w.pos, stat="identity") +
@@ -209,7 +210,8 @@ static_column_chart <- function(t, x, y, fill,
                        ggplot2::aes(x=get(eval(x)),
                                     y=get(eval(y)),
                                     text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)))) +
+                                    fill = get(eval(fill)) +
+                                    group=get(eval(fill)))) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
@@ -326,7 +328,8 @@ interactive_column_chart <- function(t, x, y, fill,
                        ggplot2::aes(x=get(eval(x)),
                                     y=get(eval(y)),
                                     text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)))) +
+                                    fill = get(eval(fill)) +
+                                    group=get(eval(fill)))) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab) +
@@ -508,7 +511,8 @@ static_bar_chart <- function(t, x, y, fill,
                        ggplot2::aes(x=get(eval(y)),
                                     y=get(eval(x)),
                                     text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(x))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)))) +
+                                    fill = get(eval(fill)) +
+                                    group=get(eval(fill)))) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
@@ -636,7 +640,8 @@ interactive_bar_chart <- function(t, x, y, fill,
                        ggplot2::aes(x=get(eval(y)),
                                     y=get(eval(x)),
                                     text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(x))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)))) +
+                                    fill = get(eval(fill)) +
+                                    group=get(eval(fill)))) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, expand = c(0, 0)) +
