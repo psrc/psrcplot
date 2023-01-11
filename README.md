@@ -7,5 +7,4 @@ Get started by creating a static chart at https://psrc.github.io/psrcplot/articl
 
 Learn more about how to create an interactive chart at https://psrc.github.io/psrcplot/articles/make-plots-interactive.html.
 
-The frequently asked questions page can help you with some of the tricky syntax aspects of using psrcplot.
-
+The frequently asked questions page can help you with some of the tricky syntax aspects of using psrcplot: https://psrc.github.io/psrcplot/articles/frequently-asked-questions.html.
