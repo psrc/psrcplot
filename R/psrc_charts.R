@@ -210,7 +210,7 @@ static_column_chart <- function(t, x, y, fill,
                        ggplot2::aes(x=get(eval(x)),
                                     y=get(eval(y)),
                                     text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)) +
+                                    fill = get(eval(fill)),
                                     group=get(eval(fill)))) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
@@ -328,7 +328,7 @@ interactive_column_chart <- function(t, x, y, fill,
                        ggplot2::aes(x=get(eval(x)),
                                     y=get(eval(y)),
                                     text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)) +
+                                    fill = get(eval(fill)),
                                     group=get(eval(fill)))) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
@@ -511,7 +511,7 @@ static_bar_chart <- function(t, x, y, fill,
                        ggplot2::aes(x=get(eval(y)),
                                     y=get(eval(x)),
                                     text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(x))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)) +
+                                    fill = get(eval(fill)),
                                     group=get(eval(fill)))) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
@@ -640,7 +640,7 @@ interactive_bar_chart <- function(t, x, y, fill,
                        ggplot2::aes(x=get(eval(y)),
                                     y=get(eval(x)),
                                     text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(x))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)) +
+                                    fill = get(eval(fill)),
                                     group=get(eval(fill)))) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
