@@ -1,22 +1,21 @@
-#' Create PSRC Facet Bar Charts
+#' Create Static Facet Column Charts
 #'
-#' This function allows you to create facet bar charts.
+#' This function allows you to create facet column charts.
 #' @param t A tibble or dataframe in long form for plotting
-#' @param w.x The name of the variable you want plotted on the X-Axis
-#' @param w.y The name of the variable you want plotted on the Y-Axis
-#' @param f The name of the variable you want the fill color of the bars to be based on
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param fill The name of the variable you want the fill color of the bars to be based on
 #' @param g The name of the variable to be the facets
 #' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
-#' @param w.scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
-#' @param w.facet Value for the number of columns in your facet - defaults to 3
+#' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
+#' @param facet Value for the number of columns in your facet - defaults to 3
 #' @param l.pos Position for the bar labels of "above" or "within" - defaults to "above"
-#' @param w.dec Number of decimal points in labels - defaults to 0
-#' @param w.color Name of color palette to use - defaults to "psrc_dark"
-#' @param w.moe The name of the variable to be used for error bars, if desired - default to "NULL"
-#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
-#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param w.interactive Enable hover text and other interactive features - defaults to "no"
-#' @return facet bar chart that is either static or interactive depending on choice
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param color Name of color palette to use - defaults to "psrc_dark"
+#' @param moe The name of the variable to be used for error bars, if desired - default to "NULL"
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @return static facet column chart
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
@@ -29,89 +28,105 @@
 #'       filter(Category=="Population by Race" & Year==2020) %>%
 #'       filter(Geography!="Region" & Race!="Total")
 #' 
-#' # Create a facet chart for population by race using counties as the facet
-#' my.chart <- create_facet_bar_chart(t=df, w.x="Race", w.y="share", 
-#'                                    f="Race", g="Geography", 
-#'                                    w.facet=2, w.scales="fixed")
+#' my_facet <- static_facet_column_chart(t = df, 
+#'                                       x = "Geography", 
+#'                                       y = "share", 
+#'                                       fill = "Geography", 
+#'                                       g = "Race",
+#'                                       moe = 'share_moe',
+#'                                       facet = 4,
+#'                                       scales = "fixed",
+#'                                       color = "pgnobgy_5",
+#'                                       title = "Something",
+#'                                       sub.title = "Something something")
 #' 
 #' @export
 #'
-create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="percent", w.scales="free", w.facet=3, w.dec = 0, l.pos="above", w.color="psrc_dark", w.title=NULL, w.sub.title=NULL, w.interactive="no") {
+static_facet_column_chart <- function(t,
+                                      x, 
+                                      y, 
+                                      fill, 
+                                      g, 
+                                      moe = NULL,
+                                      est.type = "percent",
+                                      facet = 3,
+                                      scales = "free", 
+                                      dec = 0, 
+                                      l.pos = "above", 
+                                      color = "psrc_dark", 
+                                      title = NULL, 
+                                      sub.title = NULL) {
   
-  l.clr ="#4C4C4C"
-  l.sz=4
-  w.pos="dodge"
+  l.clr <- "#4C4C4C"
+  
+  # Create a color palette from PSRC palette
+  grps <- t %>% 
+    dplyr::select(dplyr::all_of(fill)) %>% 
+    unique() %>% 
+    dplyr::pull()
+  num.grps <- length(grps)
+  l.colors <- unlist(psrcplot::psrc_colors[color])
+  l.colors <- l.colors[1:num.grps]
+  cols <- stats::setNames(l.colors, grps)
   
   if (l.pos == "above") {
-    l = -0.5
-  } else {l = 0.5}
-  
-  if (est.type=="percent") {
-    w.factor=100
-    p=""
-    s="%"
-    w.label=scales::label_percent()
-    
-  } else if (est.type=="currency") {
-    w.factor=1
-    p="$"
-    s=""
-    w.label=scales::label_dollar()
-    
+    l <- -0.5
   } else {
-    w.factor=1
-    p=""
-    s=""
-    w.label=scales::label_comma()
+    l <-  0.5
   }
   
-  if (w.interactive == 'yes') {
+  if (est.type == "percent") {
+    factor <- 100
+    p <- ""
+    s <- "%"
+    label <- scales::label_percent()
     
-    c <- ggplot2::ggplot(data=t,
-                         ggplot2::aes(y=get(eval(w.y)),
-                                      x=get(eval(w.x)),
-                                      fill=get(eval(f)),
-                                      group=get(eval(f)),
-                                      tooltip=paste0(get(eval(w.x)), " ", get(eval(f)),": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
-                                      data_id=get(eval(w.y)))) +
-      ggiraph::geom_bar_interactive(position=w.pos, stat="identity") +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      scale_fill_discrete_psrc(w.color)
-    
-    if (!(is.null(w.moe))) {
-      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
-    }
-    
-    c <- c + 
-      ggplot2::facet_wrap(ggplot2::vars(get(eval(g))), scales=w.scales, ncol=w.facet) +
-      psrc_style() +
-      ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                     axis.text.y = ggplot2::element_text(size=12,color="#4C4C4C"))
-    
-    c <- ggiraph::girafe(ggobj = c)
+  } else if (est.type == "currency") {
+    factor <- 1
+    p <- "$"
+    s <- ""
+    label <- scales::label_dollar()
     
   } else {
-    
-    c <- ggplot2::ggplot(data=t,
-                         ggplot2::aes(y=get(eval(w.y)),
-                                      x=get(eval(w.x)),
-                                      fill = get(eval(f)))) +
-      ggplot2::geom_bar(position=w.pos, stat="identity") +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      scale_fill_discrete_psrc(w.color)
-    
-    if (!(is.null(w.moe))) {
-      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
-    }
-    
-    c <- c + 
-      ggplot2::facet_wrap(ggplot2::vars(get(eval(g))), scales=w.scales, ncol=w.facet) +
-      psrc_style() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(size=10,color="#4C4C4C"),
-                     axis.text.y = ggplot2::element_text(size=12,color="#4C4C4C"))
+    factor <- 1
+    p <- ""
+    s <- ""
+    label <- scales::label_comma()
   }
+  
+  c <- ggplot2::ggplot(data = t,
+                       ggplot2::aes(x = .data[[x]],
+                                    y = .data[[y]],
+                                    fill = .data[[fill]],
+                                    group = .data[[fill]])
+  ) +
+    ggplot2::geom_col() +
+    ggplot2::labs(title = title, 
+                  subtitle = sub.title,
+                  x = NULL,
+                  y = NULL) +
+    ggplot2::scale_y_continuous(labels = label) +
+    scale_fill_discrete_psrc(color)
+  
+  if(!(is.null(moe))) {
+    c <- c + 
+      ggplot2::geom_errorbar(ggplot2::aes(ymin = .data[[y]] - .data[[moe]], 
+                                          ymax = .data[[y]] + .data[[moe]]),
+                             width = 0.2,
+                             position = ggplot2::position_dodge(0.9))
+  }
+  
+  c <- c +
+    ggplot2::facet_wrap(ggplot2::vars(.data[[g]]), 
+                        labeller = ggplot2::label_wrap_gen(),
+                        scales = scales, 
+                        ncol = facet) +
+    psrc_style() +
+    ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
+                   strip.text = ggplot2::element_text(size = 10),
+                   panel.grid.major.y = ggplot2::element_blank()
+    ) 
   
   return(c)
 }
