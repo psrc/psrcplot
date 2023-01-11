@@ -7,6 +7,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+In general, it is best for you to do all your variable formatting before sending anything into a psrc plotting function because it can be hard to change the charts after the fact. For example, you can order factors or wrap strings before you run psrcplot functions.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -14,7 +15,7 @@ library(ggplot2)
 library(psrcplot)
 library(dplyr)
 library(psrccensus)
-library(forcats)
+
 ```
 
 ### Why am I getting a warning about not having fonts installed?
@@ -60,11 +61,14 @@ income.chart <-interactive_bar_chart(t=var19_allrace_total,
 income.chart
 ```
 
+### Reverse the alphabetical order
 If you want to reverse the order of the categorical variables, for example, HRACE- you can use the function fct_rev from the forcats package.  To use fct_rev, you need to make sure your variable is a factor first.
 
 
 ```{r transit_chart, message=FALSE}
 # Interactive chart
+library(forcats)
+
 var19_allrace_total_rev<-var19_allrace_total%>%mutate(HRACE_REV=fct_rev(as.factor(HRACE)))
 
 
@@ -79,6 +83,7 @@ income.chart.rev <-interactive_bar_chart(t=var19_allrace_total_rev,
 income.chart.rev
 ```
 
+### Sort by value
 
 Sometimes you may wish to order the bars by lowest to highest or highest to lowest.
 ```{r}
@@ -91,12 +96,78 @@ income.chart.rev <-interactive_bar_chart(t=var19_low_high,
                                      moe='HINCP_median_moe',
                                      color= 'psrc_dark',
                                      est='currency',
-                                     title= "Regional Household Median Income by Race, better order")
+                                     title= "Regional Household Median Income by Race, lowest to highest order")
 
 income.chart.rev
+
+```
+## Put in some other used specified order
+
+Some you need your categorical variable in a specific order that doesn't have anything to do with alphabetical or numeric values. Unfortunately, in this case, you'll just have type out the order you want like below. Be careful that you type the exact factor names (ugh).
+
+```{r}
+var19_specific_order<-var19_allrace_total%>%
+mutate(HRACE_specific_order = factor(HRACE, levels = c("Two or More Races", "Multiple Races" , "Some Other Race alone"  ,
+                                                       "Black or African American alone", "Asian alone",
+                                                       "American Indian or Alaskan Native Alone" ,"White alone",
+                                                       "Hispanic or Latino",
+                                                       "Native Hawaiian and Other Pacific Islander alone" 
+                                                                                             )))
+
+
+income.chart.rev <-interactive_bar_chart(t=var19_specific_order, 
+                                     x = "HINCP_median", y="HRACE_specific_order",
+                                     f="date",
+                                     moe='HINCP_median_moe',
+                                     color= 'psrc_dark',
+                                     est='currency',
+                                     title= "Regional Household Median Income by Race, some other order")
+
+income.chart.rev
+```
+
+
+
+
+## How can I wrap the text on a column chart x axis- it's looking messy!
+
+It does look messy when you don't wrap the text on the x-axis often on a column chart - like this:
+
+```{r}
+var19_low_high<-var19_allrace_total%>%mutate(HRACE_low_high=fct_reorder(HRACE, HINCP_median))
+
+
+income.column <-interactive_column_chart(t=var19_low_high, 
+                                     x = "HRACE_low_high", y="HINCP_median",
+                                     f="date",
+                                     moe='HINCP_median_moe',
+                                     color= 'psrc_light',
+                                     est='currency',
+                                     title= "Regional Household Median Income by Race, lookin messy")
+
+income.column
+
+```
+
+We can fix these ugly labels by string-wrapping the text prior to using the function.You might need to play around with the str_wrap parameter to get the breaks looking nice.
+```{r}
+library(stringr)
+
+var19_low_high<-var19_low_high%>%mutate(HRACE_wrap= str_wrap(HRACE_low_high, 12))
+
+
+
+income.column <-interactive_column_chart(t=var19_low_high, 
+                                     x = "HRACE_wrap", y="HINCP_median",
+                                     f="date",
+                                     moe='HINCP_median_moe',
+                                     color= 'psrc_light',
+                                     est='currency',
+                                     title= "Regional Household Median Income by Race, wrapped x- axis label")
+
+income.column
 
 ```
 ## When I'm making a horizontal bar chart, what should I set as my x-variable and what should I set as my y-variable? It's kind of confusing because it's unclear whther you should think of this as a column chart rotated, or see the axes as is.
 
 The x-variable should be your numeric variable, and your y-variable should be categorical in the example above. Think of them as the actual location of the variable, not the rotated location of a column chart.
-
