@@ -7,7 +7,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-In general, it is best for you to do all your variable formatting before sending anything into a psrc plotting function because it can be hard to change the charts after the fact. For example, you can order factors or wrap strings before you run psrcplot functions.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -29,9 +28,11 @@ install_psrc_fonts()
 ```
 
 
-The function names in PSRC plot have a naming convention that first identifies whether the plot is static or interactive, then what type of chart. For example, static_bar_chart() makes a static chart that has horizontal bars.
 
 ### How can I change the order of categories on a chart?
+
+In general, it is best for you to do all your variable formatting before sending anything into a psrc plotting function because it can be hard to change the charts after the fact. For example, you can order factors or wrap strings before you run psrcplot functions.
+
 
 The psrcplot package will default to an ordering of categories that may not be the best for the story you are trying to tell.
 
