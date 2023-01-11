@@ -96,3 +96,7 @@ income.chart.rev <-interactive_bar_chart(t=var19_low_high,
 income.chart.rev
 
 ```
+## When I'm making a horizontal bar chart, what should I set as my x-variable and what should I set as my y-variable? It's kind of confusing because it's unclear whther you should think of this as a column chart rotated, or see the axes as is.
+
+The x-variable should be your numeric variable, and your y-variable should be categorical in the example above. Think of them as the actual location of the variable, not the rotated location of a column chart.
+
