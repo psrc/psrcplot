@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-### Category display order
+## Category display order
 
 This is best done prior to invoking the **psrcplot** function by converting the variable to a Factor datatype with  levels specified in the sequence you'd like them displayed. 
 
@@ -68,7 +68,7 @@ income.chart.reverse
 
 ```
 
-## Sort by value
+### Sort by value
 
 You may wish to order the categories by the data variable instead. This uses another **forcats** function, `fct_reorder()` (more complex multi-variable ordering expressions are also possible using this function).
 
@@ -89,7 +89,7 @@ income.chart.low_high
 
 ```
 
-## Sort by a user-specified order
+### Sort by a user-specified order
 
 Sometimes there is an logic that can't be captured by alphabetical or numeric rank--for example, setting remainder or combination categories last. To do that, you'll need to order the factor levels manually. Be careful that you type the exact factor names, or they will be omitted (ugh).
 
@@ -121,7 +121,7 @@ income.chart.custom
 ```
 
 
-### How can I wrap the text on a column chart x axis- it's looking messy!
+## How can I wrap the text on a column chart x axis- it's looking messy!
 
 It does look messy when you don't wrap the text on the x-axis often on a column chart - like this:
 

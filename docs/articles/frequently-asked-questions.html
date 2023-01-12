@@ -72,9 +72,9 @@
 
     
     
-<div class="section level3">
-<h3 id="category-display-order">Category display order<a class="anchor" aria-label="anchor" href="#category-display-order"></a>
-</h3>
+<div class="section level2">
+<h2 id="category-display-order">Category display order<a class="anchor" aria-label="anchor" href="#category-display-order"></a>
+</h2>
 <p>This is best done prior to invoking the <strong>psrcplot</strong>
 function by converting the variable to a Factor datatype with levels
 specified in the sequence you’d like them displayed.</p>
@@ -125,10 +125,9 @@ function from the <strong>forcats</strong> package.</p>
 <span></span>
 <span><span class="va">income.chart.reverse</span></span></code></pre></div>
 <p><img src="frequently-asked-questions_files/figure-html/reverse_ordering-1.png" width="700"></p>
-</div>
-<div class="section level2">
-<h2 id="sort-by-value">Sort by value<a class="anchor" aria-label="anchor" href="#sort-by-value"></a>
-</h2>
+<div class="section level3">
+<h3 id="sort-by-value">Sort by value<a class="anchor" aria-label="anchor" href="#sort-by-value"></a>
+</h3>
 <p>You may wish to order the categories by the data variable instead.
 This uses another <strong>forcats</strong> function,
 <code>fct_reorder()</code> (more complex multi-variable ordering
@@ -149,9 +148,9 @@ expressions are also possible using this function).</p>
 <span><span class="va">income.chart.low_high</span></span></code></pre></div>
 <p><img src="frequently-asked-questions_files/figure-html/data_ordering-1.png" width="700"></p>
 </div>
-<div class="section level2">
-<h2 id="sort-by-a-user-specified-order">Sort by a user-specified order<a class="anchor" aria-label="anchor" href="#sort-by-a-user-specified-order"></a>
-</h2>
+<div class="section level3">
+<h3 id="sort-by-a-user-specified-order">Sort by a user-specified order<a class="anchor" aria-label="anchor" href="#sort-by-a-user-specified-order"></a>
+</h3>
 <p>Sometimes there is an logic that can’t be captured by alphabetical or
 numeric rank–for example, setting remainder or combination categories
 last. To do that, you’ll need to order the factor levels manually. Be
@@ -182,10 +181,12 @@ careful that you type the exact factor names, or they will be omitted
 <span></span>
 <span><span class="va">income.chart.custom</span></span></code></pre></div>
 <p><img src="frequently-asked-questions_files/figure-html/custom_ordering-1.png" width="700"></p>
-<div class="section level3">
-<h3 id="how-can-i-wrap-the-text-on-a-column-chart-x-axis--its-looking-messy">How can I wrap the text on a column chart x axis- it’s looking
+</div>
+</div>
+<div class="section level2">
+<h2 id="how-can-i-wrap-the-text-on-a-column-chart-x-axis--its-looking-messy">How can I wrap the text on a column chart x axis- it’s looking
 messy!<a class="anchor" aria-label="anchor" href="#how-can-i-wrap-the-text-on-a-column-chart-x-axis--its-looking-messy"></a>
-</h3>
+</h2>
 <p>It does look messy when you don’t wrap the text on the x-axis often
 on a column chart - like this:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -220,7 +221,6 @@ character and lose factor level ordering, etc).</p>
 <span></span>
 <span><span class="va">income.column.wrapped</span></span></code></pre></div>
 <p><img src="frequently-asked-questions_files/figure-html/wrapped_labels-1.png" width="700"></p>
-</div>
 </div>
 <div class="section level2">
 <h2 id="x-y-axes-for-bar-charts-vs--column-charts">X &amp; Y axes for bar charts vs. column charts<a class="anchor" aria-label="anchor" href="#x-y-axes-for-bar-charts-vs--column-charts"></a>
