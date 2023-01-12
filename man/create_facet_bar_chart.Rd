@@ -6,52 +6,52 @@
 \usage{
 create_facet_bar_chart(
   t,
-  w.x,
-  w.y,
-  f,
+  x,
+  y,
+  fill,
   g,
-  w.moe = NULL,
-  est.type = "percent",
-  w.scales = "free",
-  w.facet = 3,
-  w.dec = 0,
-  l.pos = "above",
-  w.color = "psrc_dark",
-  w.title = NULL,
-  w.sub.title = NULL,
-  w.interactive = "no"
+  moe = NULL,
+  est = "percent",
+  scales = "free",
+  facet = 3,
+  dec = 0,
+  lpos = "above",
+  color = "psrc_dark",
+  title = NULL,
+  subtitle = NULL,
+  interactive = "no"
 )
 }
 \arguments{
 \item{t}{A tibble or dataframe in long form for plotting}
 
-\item{w.x}{The name of the variable you want plotted on the X-Axis}
+\item{x}{The name of the variable you want plotted on the X-Axis}
 
-\item{w.y}{The name of the variable you want plotted on the Y-Axis}
+\item{y}{The name of the variable you want plotted on the Y-Axis}
 
-\item{f}{The name of the variable you want the fill color of the bars to be based on}
+\item{fill}{The name of the variable you want the fill color of the bars to be based on}
 
 \item{g}{The name of the variable to be the facets}
 
-\item{w.moe}{The name of the variable to be used for error bars, if desired - default to "NULL"}
+\item{moe}{The name of the variable to be used for error bars, if desired - default to "NULL"}
 
-\item{est.type}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
+\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
 
-\item{w.scales}{Value for axis in facets, either "fixed" or "free" - defaults to "free"}
+\item{scales}{Value for axis in facets, either "fixed" or "free" - defaults to "free"}
 
-\item{w.facet}{Value for the number of columns in your facet - defaults to 3}
+\item{facet}{Value for the number of columns in your facet - defaults to 3}
 
-\item{w.dec}{Number of decimal points in labels - defaults to 0}
+\item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{l.pos}{Position for the bar labels of "above" or "within" - defaults to "above"}
+\item{lpos}{Position for the bar labels of "above" or "within" - defaults to "above"}
 
-\item{w.color}{Name of color palette to use - defaults to "psrc_dark"}
+\item{color}{Name of color palette to use - defaults to "psrc_dark"}
 
-\item{w.title}{Title to be used for chart, if desired - defaults to "NULL"}
+\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.sub.title}{Sub-title to be used for chart, if desired - defaults to "NULL"}
+\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.interactive}{Enable hover text and other interactive features - defaults to "no"}
+\item{interactive}{Enable hover text and other interactive features - defaults to "no"}
 }
 \value{
 facet bar chart that is either static or interactive depending on choice
@@ -68,8 +68,8 @@ df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \
       filter(Geography!="Region" & Race!="Total")
 
 # Create a facet chart for population by race using counties as the facet
-my.chart <- create_facet_bar_chart(t=df, w.x="Race", w.y="share", 
-                                   f="Race", g="Geography", 
-                                   w.facet=2, w.scales="fixed")
+my.chart <- create_facet_bar_chart(t=df, x="Race", y="share", 
+                                   fill="Race", g="Geography", 
+                                   facet=2, scales="fixed")
 
 }

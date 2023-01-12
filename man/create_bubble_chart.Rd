@@ -6,31 +6,31 @@
 \usage{
 create_bubble_chart(
   t,
-  w.x,
-  w.y,
-  f,
+  x,
+  y,
+  fill,
   s,
-  w.color = "psrc_light",
-  w.title = NULL,
-  w.sub.title = NULL
+  color = "psrc_light",
+  title = NULL,
+  subtitle = NULL
 )
 }
 \arguments{
 \item{t}{A tibble or dataframe in long form for plotting}
 
-\item{w.x}{The name of the variable you want plotted on the X-Axis}
+\item{x}{The name of the variable you want plotted on the X-Axis}
 
-\item{w.y}{The name of the variable you want plotted on the Y-Axis}
+\item{y}{The name of the variable you want plotted on the Y-Axis}
 
-\item{f}{The name of the variable you want the fill color of the bubbles to be based on}
+\item{fill}{The name of the variable you want the fill color of the bubbles to be based on}
 
 \item{s}{The name of the variable used to size the bubbles}
 
-\item{w.color}{Name of color palette to use - defaults to "psrc_light"}
+\item{color}{Name of color palette to use - defaults to "psrc_light"}
 
-\item{w.title}{Title to be used for chart, if desired - defaults to "NULL"}
+\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.sub.title}{Sub-title to be used for chart, if desired - defaults to "NULL"}
+\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 }
 \value{
 bubble chart

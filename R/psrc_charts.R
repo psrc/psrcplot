@@ -1,3 +1,15 @@
+#' @importFrom magrittr %<>% %>%
+
+NULL
+
+`%not_in%` <- Negate(`%in%`)
+
+confirm_fonts <- function(){
+  if("Poppins" %not_in% extrafont::fonts()){
+    psrcplot::install_psrc_fonts()
+  }
+}
+
 #' Create PSRC Facet Bar Charts
 #'
 #' This function allows you to create facet bar charts.
@@ -37,6 +49,8 @@
 #' @export
 #'
 create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent", scales="free", facet=3, dec = 0, lpos="above", color="psrc_dark", title=NULL, subtitle=NULL, interactive="no") {
+  
+  confirm_fonts() 
   
   l.clr ="#4C4C4C"
   l.sz=4
@@ -169,6 +183,8 @@ static_column_chart <- function(t, x, y, fill,
                                 xlabel=NULL, ylabel=NULL,
                                 dec = 0, color="psrc_dark") {
   
+  confirm_fonts() 
+  
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- t %>% dplyr::select(.data[[y]]) %>% dplyr::pull() %>% max()
   
@@ -286,6 +302,8 @@ interactive_column_chart <- function(t, x, y, fill,
                                      href=NULL, hrefnm=NULL, hrefcl=NULL,
                                      title=NULL, subtitle=NULL, source="", alt=NULL,
                                      dec = 0, color="psrc_dark") {
+  
+  confirm_fonts() 
   
   # First Create Chart using Static Version
   
@@ -469,7 +487,9 @@ static_bar_chart <- function(t, x, y, fill,
                                 title=NULL, subtitle=NULL, source="", alt=NULL,
                                 xlabel=NULL, ylabel=NULL,
                                 dec = 0, color="psrc_dark") {
-  
+
+  confirm_fonts() 
+    
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- t %>% dplyr::select(.data[[x]]) %>% dplyr::pull() %>% max()
   
@@ -603,6 +623,8 @@ interactive_bar_chart <- function(t, x, y, fill,
                                   title=NULL,
                                   dec = 0, color="psrc_dark") {
   
+  confirm_fonts() 
+  
   # First Create Chart using Static Version
   
   # Create a color palette from PSRC palette
@@ -734,6 +756,8 @@ interactive_bar_chart <- function(t, x, y, fill,
 
 create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="percent", dec=0, color="psrc_light") {
   
+  confirm_fonts() 
+  
   tot <- t %>% dplyr::select(.data[[s]]) %>% dplyr::pull() %>% sum()
   t <- t %>% dplyr::mutate(total_share = .data[[s]]/tot)
   
@@ -813,6 +837,8 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="per
 #'
 create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL, subtitle=NULL) {
   
+  confirm_fonts() 
+  
   # Create a color palette from PSRC palette
   grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
@@ -860,6 +886,8 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
 #' @export
 #'
 create.line.chart <- function(t, x, y, fill, title=NULL, subtitle=NULL, est="number", dec=0, xtype="Date", dform="%b-%Y", breaks=NULL, lwidth=1, color="psrc_light") {
+  
+  confirm_fonts() 
   
   grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
@@ -946,6 +974,8 @@ interactive_line_chart <- function(t, x, y, fill,
                                    est="number", dec=0, 
                                    xtype="Date", dform="%b-%Y", 
                                    breaks=NULL, lwidth=1, color="psrc_light") {
+  
+  confirm_fonts() 
   
   # Create a color palette from PSRC palette
   grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()

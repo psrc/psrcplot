@@ -31,7 +31,7 @@ Imports:
     sysfonts,
     showtext,
     plotly
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://psrc.github.io/psrcplot/

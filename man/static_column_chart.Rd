@@ -83,6 +83,6 @@ modes_chart <- static_column_chart(t=mode_shares, x="Mode",y="share", fill="Year
                                     source=paste("Source: ACS 5-Year Estimates, table B3002",
                                                  "for King, Kitsap, Pierce and Snohomish counties.",
                                                  sep = "\n"),
-                                    color="pgnobgy_5")
+                                    color="psrc_dark")
 
 }
