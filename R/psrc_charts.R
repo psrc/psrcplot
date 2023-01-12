@@ -1,14 +1,6 @@
 #' @importFrom magrittr %<>% %>%
-
+#' @importFrom rlang .data
 NULL
-
-`%not_in%` <- Negate(`%in%`)
-
-confirm_fonts <- function(){
-  if("Poppins" %not_in% extrafont::fonts()){
-    psrcplot::install_psrc_fonts()
-  }
-}
 
 #' Create PSRC Facet Bar Charts
 #'
@@ -29,9 +21,6 @@ confirm_fonts <- function(){
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 #' @param interactive Enable hover text and other interactive features - defaults to "no"
 #' @return facet bar chart that is either static or interactive depending on choice
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @examples
 #' 
@@ -152,9 +141,6 @@ create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent", sc
 #' @param dec Number of decimal points in labels - defaults to 0
 #' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return static column (vertical bar) chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @examples
 #' 
@@ -290,10 +276,6 @@ static_column_chart <- function(t, x, y, fill,
 #' @param dec Number of decimal points in labels - defaults to 0
 #' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return interactive column (vertical bar) chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
-#'
 #' 
 #' @export
 
@@ -458,9 +440,6 @@ interactive_column_chart <- function(t, x, y, fill,
 #' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return static bar (horizontal bar) chart
 #' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
-#' 
 #' @examples
 #' 
 #' library(dplyr)
@@ -598,9 +577,6 @@ static_bar_chart <- function(t, x, y, fill,
 #' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return interactive bar (horizontal bar) chart
 #' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
-#' 
 #' @examples
 #' 
 #' library(dplyr)
@@ -734,9 +710,6 @@ interactive_bar_chart <- function(t, x, y, fill,
 #' @param color Name of color palette to use - defaults to "psrc_light"
 #' @return static treemap chart
 #' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
-#' 
 #' @examples
 #' 
 #' library(dplyr)
@@ -827,11 +800,7 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="per
 #' @param color Name of color palette to use - defaults to "psrc_light"
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
-#' 
 #' @return bubble chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @export
 #'
@@ -877,11 +846,7 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
 #' @param dform Format for Date values 
 #' @param breaks Break points to use if using a continuous scale, defaults to NULL
 #' @param lwidth Width of lines, defaults to 1
-#' 
 #' @return line chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @export
 #'
@@ -961,11 +926,7 @@ create.line.chart <- function(t, x, y, fill, title=NULL, subtitle=NULL, est="num
 #' @param breaks Break points to use if using a continuous scale, defaults to NULL
 #' @param lwidth Width of lines, defaults to 1
 #' @param color Name of color palette to use - defaults to "psrc_light"
-#' 
 #' @return line chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @export
 #'
@@ -1065,8 +1026,5 @@ interactive_line_chart <- function(t, x, y, fill,
                                      font = list(family="Poppins Black",size=12, color="#4C4C4C"),
                                      x=0.02,
                                      xref="container"))
-  
-  
-  
   return(c)
 }
