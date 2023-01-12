@@ -127,8 +127,8 @@ It does look messy when you don't wrap the text on the x-axis often on a column 
 
 ```{r messy_labels, message=FALSE}
 
-income.column.messy <- interactive_column_chart(
-      t=hhinc19_x_race, 
+income.column.messy <- static_column_chart(
+      t=hhinc19_custom, 
       x="HRACE", 
       y="HINCP_median",
       fill="DATE",
@@ -140,19 +140,20 @@ income.column.messy
 
 ```
 
-We can fix these ugly labels by string-wrapping the text prior to using the function.You might need to play around with the `str_wrap()` parameter to get the breaks looking nice.
+We can fix these ugly labels by string-wrapping the text to use in the `xlabel` parameter. We recommend creating a separate variable for this, as the string wrapping loses any unique factor level ordering as described above. Prior to using the function.You might need to play around with the `str_wrap()` parameter to get the breaks looking nice.
 
 ```{r wrapped_labels, message=FALSE}
 
-hhinc19_wrap <- hhinc19_x_race %>% 
-  mutate(HRACE_wrap=stringr::str_wrap(HRACE, 12))
+hhinc19_wrap <- hhinc19_custom %>% 
+  mutate(HRACE_wrap=factor(stringr::str_wrap(HRACE, 10)))
 
-income.column.wrapped <-interactive_column_chart(
+income.column.wrapped <-static_column_chart(
       t=hhinc19_wrap, 
-      x="HRACE_wrap", y="HINCP_median",
+      x="HRACE_custom", y="HINCP_median",
       f="DATE",
       moe='HINCP_median_moe',
       est='currency',
+      xlabel="HRACE_wrap",
       title= "Regional Household Median Income by Race, wrapped x- axis label")
 
 income.column.wrapped

@@ -225,6 +225,12 @@ static_column_chart <- function(t, x, y, fill,
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[y]]-.data[[moe]], ymax=.data[[y]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9))
   }
   
+  # Add separate labels if included
+  if(!is.null(xlabel)){
+    xlabs <- t %>% dplyr::select(.data[[xlabel]]) %>% dplyr::pull() %>% levels()
+    c <- c + ggplot2::scale_x_discrete(labels = xlabs)
+  }
+  
   # Add Bar Labels if there is no Error Bar and remove y-axis since we have the labels
   if (is.null(moe)) {
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[x]],
@@ -514,9 +520,16 @@ static_bar_chart <- function(t, x, y, fill,
                                     group=.data[[y]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
+
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = ylabel, y = xlabel) +
     psrcplot::psrc_style()
+  
+  # Add separate labels if included
+  if(!is.null(ylabel)){
+    xlabs <- t %>% dplyr::select(.data[[ylabel]]) %>% dplyr::pull() %>% levels()
+  c <- c + ggplot2::scale_x_discrete(labels = xlabs)
+  }
   
   # Add reference lines if they are included 
   if (!(is.null(href))) {
