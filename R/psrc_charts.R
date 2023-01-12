@@ -74,7 +74,7 @@ create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent", sc
                          ggplot2::aes(y=.data[[y]],
                                       x=.data[[x]],
                                       fill=.data[[fill]],
-                                      group=.data[[fill]],
+                                      group=.data[[y]],
                                       tooltip=paste0(.data[[x]], " ", .data[[fill]],": ", p, prettyNum(round(.data[[y]]*fac,dec), big.mark = ","),s),
                                       data_id=.data[[y]])) +
       ggiraph::geom_bar_interactive(position=pos, stat="identity") +
@@ -213,7 +213,7 @@ static_column_chart <- function(t, x, y, fill,
                                     y=.data[[y]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
                                     fill = .data[[fill]],
-                                    group=.data[[fill]])) +
+                                    group=.data[[x]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
@@ -329,7 +329,7 @@ interactive_column_chart <- function(t, x, y, fill,
                                     y=.data[[y]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
                                     fill = .data[[fill]],
-                                    group=.data[[fill]])) +
+                                    group=.data[[x]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab) +
@@ -507,11 +507,11 @@ static_bar_chart <- function(t, x, y, fill,
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
-                       ggplot2::aes(x=.data[[y]],
+                       ggplot2::aes(x=forcats::fct_rev(.data[[y]]),
                                     y=.data[[x]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[x]]*fac, dec), big.mark = ","),s),
-                                    fill = .data[[fill]],
-                                    group=.data[[fill]])) +
+                                    fill=.data[[fill]],
+                                    group=.data[[y]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
@@ -544,7 +544,7 @@ static_bar_chart <- function(t, x, y, fill,
   # Add Bar Labels if there is no Error Bar
   if (is.null(moe)) {
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[y]], 
-                                    y=.data[[x]], 
+                                    y=.data[[x]],
                                     label=paste0(p,prettyNum(round(.data[[x]]*fac,dec), big.mark = ","),s)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.9),
@@ -635,11 +635,11 @@ interactive_bar_chart <- function(t, x, y, fill,
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
-                       ggplot2::aes(x=.data[[y]],
+                       ggplot2::aes(x=forcats::fct_rev(.data[[y]]),
                                     y=.data[[x]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[x]]*fac, dec), big.mark = ","),s),
-                                    fill = .data[[fill]],
-                                    group=.data[[fill]])) +
+                                    fill=.data[[fill]],
+                                    group=.data[[y]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, expand = c(0, 0)) +
@@ -988,7 +988,7 @@ interactive_line_chart <- function(t, x, y, fill,
                          ggplot2::aes(x=.data[[x]],
                                       y=.data[[y]], 
                                       text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
-                                      group=.data[[fill]]))  + 
+                                      group=.data[[fill]]))  +
       ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size = lwidth, linejoin = "round") +
       ggplot2::scale_x_date(labels = scales::date_format(dform)) +
       ggplot2::scale_y_continuous(labels = lab) +

@@ -52,20 +52,20 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_facet_bar_chart</span><span class="op">(</span></span>
 <span>  <span class="va">t</span>,</span>
-<span>  <span class="va">w.x</span>,</span>
-<span>  <span class="va">w.y</span>,</span>
-<span>  <span class="va">f</span>,</span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  <span class="va">fill</span>,</span>
 <span>  <span class="va">g</span>,</span>
-<span>  w.moe <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  est.type <span class="op">=</span> <span class="st">"percent"</span>,</span>
-<span>  w.scales <span class="op">=</span> <span class="st">"free"</span>,</span>
-<span>  w.facet <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  w.dec <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  l.pos <span class="op">=</span> <span class="st">"above"</span>,</span>
-<span>  w.color <span class="op">=</span> <span class="st">"psrc_dark"</span>,</span>
-<span>  w.title <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  w.sub.title <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  w.interactive <span class="op">=</span> <span class="st">"no"</span></span>
+<span>  moe <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  est <span class="op">=</span> <span class="st">"percent"</span>,</span>
+<span>  scales <span class="op">=</span> <span class="st">"free"</span>,</span>
+<span>  facet <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  dec <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  lpos <span class="op">=</span> <span class="st">"above"</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"psrc_dark"</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  subtitle <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="st">"no"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -75,15 +75,15 @@
 <dd><p>A tibble or dataframe in long form for plotting</p></dd>
 
 
-<dt>w.x</dt>
+<dt>x</dt>
 <dd><p>The name of the variable you want plotted on the X-Axis</p></dd>
 
 
-<dt>w.y</dt>
+<dt>y</dt>
 <dd><p>The name of the variable you want plotted on the Y-Axis</p></dd>
 
 
-<dt>f</dt>
+<dt>fill</dt>
 <dd><p>The name of the variable you want the fill color of the bars to be based on</p></dd>
 
 
@@ -91,43 +91,43 @@
 <dd><p>The name of the variable to be the facets</p></dd>
 
 
-<dt>w.moe</dt>
+<dt>moe</dt>
 <dd><p>The name of the variable to be used for error bars, if desired - default to "NULL"</p></dd>
 
 
-<dt>est.type</dt>
+<dt>est</dt>
 <dd><p>Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"</p></dd>
 
 
-<dt>w.scales</dt>
+<dt>scales</dt>
 <dd><p>Value for axis in facets, either "fixed" or "free" - defaults to "free"</p></dd>
 
 
-<dt>w.facet</dt>
+<dt>facet</dt>
 <dd><p>Value for the number of columns in your facet - defaults to 3</p></dd>
 
 
-<dt>w.dec</dt>
+<dt>dec</dt>
 <dd><p>Number of decimal points in labels - defaults to 0</p></dd>
 
 
-<dt>l.pos</dt>
+<dt>lpos</dt>
 <dd><p>Position for the bar labels of "above" or "within" - defaults to "above"</p></dd>
 
 
-<dt>w.color</dt>
+<dt>color</dt>
 <dd><p>Name of color palette to use - defaults to "psrc_dark"</p></dd>
 
 
-<dt>w.title</dt>
+<dt>title</dt>
 <dd><p>Title to be used for chart, if desired - defaults to "NULL"</p></dd>
 
 
-<dt>w.sub.title</dt>
+<dt>subtitle</dt>
 <dd><p>Sub-title to be used for chart, if desired - defaults to "NULL"</p></dd>
 
 
-<dt>w.interactive</dt>
+<dt>interactive</dt>
 <dd><p>Enable hover text and other interactive features - defaults to "no"</p></dd>
 
 </dl></div>
@@ -148,9 +148,9 @@
 <span class="r-in"><span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Geography</span><span class="op">!=</span><span class="st">"Region"</span> <span class="op">&amp;</span> <span class="va">Race</span><span class="op">!=</span><span class="st">"Total"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a facet chart for population by race using counties as the facet</span></span></span>
-<span class="r-in"><span><span class="va">my.chart</span> <span class="op">&lt;-</span> <span class="fu">create_facet_bar_chart</span><span class="op">(</span>t<span class="op">=</span><span class="va">df</span>, w.x<span class="op">=</span><span class="st">"Race"</span>, w.y<span class="op">=</span><span class="st">"share"</span>, </span></span>
-<span class="r-in"><span>                                   f<span class="op">=</span><span class="st">"Race"</span>, g<span class="op">=</span><span class="st">"Geography"</span>, </span></span>
-<span class="r-in"><span>                                   w.facet<span class="op">=</span><span class="fl">2</span>, w.scales<span class="op">=</span><span class="st">"fixed"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">my.chart</span> <span class="op">&lt;-</span> <span class="fu">create_facet_bar_chart</span><span class="op">(</span>t<span class="op">=</span><span class="va">df</span>, x<span class="op">=</span><span class="st">"Race"</span>, y<span class="op">=</span><span class="st">"share"</span>, </span></span>
+<span class="r-in"><span>                                   fill<span class="op">=</span><span class="st">"Race"</span>, g<span class="op">=</span><span class="st">"Geography"</span>, </span></span>
+<span class="r-in"><span>                                   facet<span class="op">=</span><span class="fl">2</span>, scales<span class="op">=</span><span class="st">"fixed"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -159,7 +159,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Craig Helmann, Christy Lam, Megan Gryzbowski, Suzanne Childress.</p>
+  <p></p><p>Developed by Craig Helmann, Christy Lam, Megan Gryzbowski, Suzanne Childress, Michael Jensen.</p>
 </div>
 
 <div class="pkgdown-footer-right">
