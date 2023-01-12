@@ -89,7 +89,7 @@ income.chart.low_high
 
 ```
 
-## Put in some other used specified order
+## Sort by a user-specified order
 
 Sometimes there is an logic that can't be captured by alphabetical or numeric rank--for example, setting remainder or combination categories last. To do that, you'll need to order the factor levels manually. Be careful that you type the exact factor names, or they will be omitted (ugh).
 
@@ -140,21 +140,20 @@ income.column.messy
 
 ```
 
-We can fix these ugly labels by string-wrapping the text to use in the `xlabel` parameter. We recommend creating a separate variable for this, as the string wrapping loses any unique factor level ordering as described above. Prior to using the function.You might need to play around with the `str_wrap()` parameter to get the breaks looking nice.
+We can fix these ugly labels using a **ggplot2** command and text wrapping via the **stringr** package. You might need to play around with the `str_wrap()` parameter to get the breaks looking nice. This leaves the category variable in the data alone (since `str_wrap` would otherwise convert the type to character and lose factor level ordering, etc).
 
 ```{r wrapped_labels, message=FALSE}
 
-hhinc19_wrap <- hhinc19_custom %>% 
-  mutate(HRACE_wrap=factor(stringr::str_wrap(HRACE, 10)))
+xlabs <- levels(hhinc19_custom$HRACE_custom) %>% stringr::str_wrap(12)
 
-income.column.wrapped <-static_column_chart(
-      t=hhinc19_wrap, 
+income.column.wrapped <- static_column_chart(
+      t=hhinc19_custom, 
       x="HRACE_custom", y="HINCP_median",
       f="DATE",
       moe='HINCP_median_moe',
       est='currency',
-      xlabel="HRACE_wrap",
-      title= "Regional Household Median Income by Race, wrapped x- axis label")
+      title= "Regional Household Median Income by Race, wrapped x- axis label") +
+  ggplot2::scale_x_discrete(labels=xlabs)
 
 income.column.wrapped
 

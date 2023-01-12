@@ -150,7 +150,7 @@ expressions are also possible using this function).</p>
 <p><img src="frequently-asked-questions_files/figure-html/data_ordering-1.png" width="700"></p>
 </div>
 <div class="section level2">
-<h2 id="put-in-some-other-used-specified-order">Put in some other used specified order<a class="anchor" aria-label="anchor" href="#put-in-some-other-used-specified-order"></a>
+<h2 id="sort-by-a-user-specified-order">Sort by a user-specified order<a class="anchor" aria-label="anchor" href="#sort-by-a-user-specified-order"></a>
 </h2>
 <p>Sometimes there is an logic that can’t be captured by alphabetical or
 numeric rank–for example, setting remainder or combination categories
@@ -200,24 +200,23 @@ on a column chart - like this:</p>
 <span></span>
 <span><span class="va">income.column.messy</span></span></code></pre></div>
 <p><img src="frequently-asked-questions_files/figure-html/messy_labels-1.png" width="700"></p>
-<p>We can fix these ugly labels by string-wrapping the text to use in
-the <code>xlabel</code> parameter. We recommend creating a separate
-variable for this, as the string wrapping loses any unique factor level
-ordering as described above. Prior to using the function.You might need
-to play around with the <code><a href="https://stringr.tidyverse.org/reference/str_wrap.html" class="external-link">str_wrap()</a></code> parameter to get the
-breaks looking nice.</p>
+<p>We can fix these ugly labels using a <strong>ggplot2</strong> command
+and text wrapping via the <strong>stringr</strong> package. You might
+need to play around with the <code><a href="https://stringr.tidyverse.org/reference/str_wrap.html" class="external-link">str_wrap()</a></code> parameter to get
+the breaks looking nice. This leaves the category variable in the data
+alone (since <code>str_wrap</code> would otherwise convert the type to
+character and lose factor level ordering, etc).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hhinc19_wrap</span> <span class="op">&lt;-</span> <span class="va">hhinc19_custom</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_wrap<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html" class="external-link">str_wrap</a></span><span class="op">(</span><span class="va">HRACE</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">xlabs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">hhinc19_custom</span><span class="op">$</span><span class="va">HRACE_custom</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html" class="external-link">str_wrap</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">income.column.wrapped</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/static_column_chart.html">static_column_chart</a></span><span class="op">(</span></span>
-<span>      t<span class="op">=</span><span class="va">hhinc19_wrap</span>, </span>
+<span><span class="va">income.column.wrapped</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/static_column_chart.html">static_column_chart</a></span><span class="op">(</span></span>
+<span>      t<span class="op">=</span><span class="va">hhinc19_custom</span>, </span>
 <span>      x<span class="op">=</span><span class="st">"HRACE_custom"</span>, y<span class="op">=</span><span class="st">"HINCP_median"</span>,</span>
 <span>      f<span class="op">=</span><span class="st">"DATE"</span>,</span>
 <span>      moe<span class="op">=</span><span class="st">'HINCP_median_moe'</span>,</span>
 <span>      est<span class="op">=</span><span class="st">'currency'</span>,</span>
-<span>      xlabel<span class="op">=</span><span class="st">"HRACE_wrap"</span>,</span>
-<span>      title<span class="op">=</span> <span class="st">"Regional Household Median Income by Race, wrapped x- axis label"</span><span class="op">)</span></span>
+<span>      title<span class="op">=</span> <span class="st">"Regional Household Median Income by Race, wrapped x- axis label"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="va">xlabs</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.wrapped</span></span></code></pre></div>
 <p><img src="frequently-asked-questions_files/figure-html/wrapped_labels-1.png" width="700"></p>
