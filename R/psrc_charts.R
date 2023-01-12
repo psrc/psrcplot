@@ -1,21 +1,21 @@
 #' Create Static Facet Column Charts
 #'
-#' This function allows you to create facet column charts.
+#' This function allows you to create facet column charts based on ggplot2's facet_wrap().
 #' @param t A tibble or dataframe in long form for plotting
 #' @param x The name of the variable you want plotted on the X-Axis
 #' @param y The name of the variable you want plotted on the Y-Axis
 #' @param fill The name of the variable you want the fill color of the bars to be based on
-#' @param g The name of the variable to be the facets
-#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param facet The name of the variable to be the facets (facet_wrap)
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
 #' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
-#' @param facet Value for the number of columns in your facet - defaults to 3
-#' @param l.pos Position for the bar labels of "above" or "within" - defaults to "above"
+#' @param ncol Value for the number of columns in your facet - defaults to 3
 #' @param dec Number of decimal points in labels - defaults to 0
 #' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @param moe The name of the variable to be used for error bars, if desired - default to "NULL"
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
-#' @param sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @return static facet column chart
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param source Source reference to be used for chart, if desired - defaults to blank
+#' @return A static facet column (vertical bar) chart; based on facet_wrap()
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
@@ -32,13 +32,16 @@
 #'                                       x = "Geography", 
 #'                                       y = "share", 
 #'                                       fill = "Geography", 
-#'                                       g = "Race",
+#'                                       facet = "Race",
 #'                                       moe = 'share_moe',
-#'                                       facet = 4,
+#'                                       ncol = 4,
 #'                                       scales = "fixed",
 #'                                       color = "pgnobgy_5",
 #'                                       title = "Something",
-#'                                       sub.title = "Something something")
+#'                                       subtitle = "Something something",
+#'                                       source = paste("Source: ACS 5-Year Estimates, table B3002",
+#'                                                  "for King, Kitsap, Pierce and Snohomish counties.",
+#'                                                  sep = "\n"))
 #' 
 #' @export
 #'
@@ -46,16 +49,16 @@ static_facet_column_chart <- function(t,
                                       x, 
                                       y, 
                                       fill, 
-                                      g, 
+                                      facet, 
                                       moe = NULL,
-                                      est.type = "percent",
-                                      facet = 3,
+                                      est = "percent",
+                                      ncol = 3,
                                       scales = "free", 
                                       dec = 0, 
-                                      l.pos = "above", 
                                       color = "psrc_dark", 
                                       title = NULL, 
-                                      sub.title = NULL) {
+                                      subtitle = NULL,
+                                      source = "") {
   
   l.clr <- "#4C4C4C"
   
@@ -69,19 +72,13 @@ static_facet_column_chart <- function(t,
   l.colors <- l.colors[1:num.grps]
   cols <- stats::setNames(l.colors, grps)
   
-  if (l.pos == "above") {
-    l <- -0.5
-  } else {
-    l <-  0.5
-  }
-  
-  if (est.type == "percent") {
+  if (est == "percent") {
     factor <- 100
     p <- ""
     s <- "%"
     label <- scales::label_percent()
     
-  } else if (est.type == "currency") {
+  } else if (est == "currency") {
     factor <- 1
     p <- "$"
     s <- ""
@@ -98,11 +95,11 @@ static_facet_column_chart <- function(t,
                        ggplot2::aes(x = .data[[x]],
                                     y = .data[[y]],
                                     fill = .data[[fill]],
-                                    group = .data[[fill]])
-  ) +
+                                    group = .data[[fill]])) +
     ggplot2::geom_col() +
     ggplot2::labs(title = title, 
-                  subtitle = sub.title,
+                  subtitle = subtitle,
+                  caption = source,
                   x = NULL,
                   y = NULL) +
     ggplot2::scale_y_continuous(labels = label) +
@@ -117,10 +114,10 @@ static_facet_column_chart <- function(t,
   }
   
   c <- c +
-    ggplot2::facet_wrap(ggplot2::vars(.data[[g]]), 
+    ggplot2::facet_wrap(ggplot2::vars(.data[[facet]]), 
                         labeller = ggplot2::label_wrap_gen(),
                         scales = scales, 
-                        ncol = facet) +
+                        ncol = ncol) +
     psrc_style() +
     ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
