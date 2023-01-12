@@ -6,31 +6,31 @@
 \usage{
 create_treemap_chart(
   t,
-  w.area,
-  w.fill,
-  w.title = NULL,
-  w.sub.title = NULL,
-  est.type = "percent",
-  w.dec = 0,
-  w.color = "psrc_light"
+  s,
+  fill,
+  title = NULL,
+  subtitle = NULL,
+  est = "percent",
+  dec = 0,
+  color = "psrc_light"
 )
 }
 \arguments{
 \item{t}{A tibble or dataframe in long form for plotting}
 
-\item{w.area}{The name of the variable with thee value you want to use to size the bars}
+\item{s}{The name of the variable with the value you want to use to size the bars}
 
-\item{w.fill}{The name of the variable you want to fill the bars}
+\item{fill}{The name of the variable you want to fill the bars}
 
-\item{w.title}{Title to be used for chart, if desired - defaults to "NULL"}
+\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.sub.title}{Sub-title to be used for chart, if desired - defaults to "NULL"}
+\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{est.type}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
+\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
 
-\item{w.dec}{Number of decimal points in labels - defaults to 0}
+\item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{w.color}{Name of color palette to use - defaults to "psrc_light"}
+\item{color}{Name of color palette to use - defaults to "psrc_light"}
 }
 \value{
 static treemap chart
@@ -49,7 +49,7 @@ df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \
       mutate(Year = as.character(Year)) \%>\%
       filter(Year=="2020")
 
-my.chart <- create_treemap_chart(t=df, w.area="share", w.fill="Mode", w.title="Mode Share to Work")
+my.chart <- create_treemap_chart(t=df, s="share", fill="Mode", title="Mode Share to Work")
 
 
 }

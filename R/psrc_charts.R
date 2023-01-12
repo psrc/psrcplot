@@ -1,25 +1,26 @@
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+NULL
+
 #' Create PSRC Facet Bar Charts
 #'
 #' This function allows you to create facet bar charts.
 #' @param t A tibble or dataframe in long form for plotting
-#' @param w.x The name of the variable you want plotted on the X-Axis
-#' @param w.y The name of the variable you want plotted on the Y-Axis
-#' @param f The name of the variable you want the fill color of the bars to be based on
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param fill The name of the variable you want the fill color of the bars to be based on
 #' @param g The name of the variable to be the facets
-#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
-#' @param w.scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
-#' @param w.facet Value for the number of columns in your facet - defaults to 3
-#' @param l.pos Position for the bar labels of "above" or "within" - defaults to "above"
-#' @param w.dec Number of decimal points in labels - defaults to 0
-#' @param w.color Name of color palette to use - defaults to "psrc_dark"
-#' @param w.moe The name of the variable to be used for error bars, if desired - default to "NULL"
-#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
-#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param w.interactive Enable hover text and other interactive features - defaults to "no"
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
+#' @param facet Value for the number of columns in your facet - defaults to 3
+#' @param lpos Position for the bar labels of "above" or "within" - defaults to "above"
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param color Name of color palette to use - defaults to "psrc_dark"
+#' @param moe The name of the variable to be used for error bars, if desired - default to "NULL"
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param interactive Enable hover text and other interactive features - defaults to "no"
 #' @return facet bar chart that is either static or interactive depending on choice
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @examples
 #' 
@@ -30,61 +31,63 @@
 #'       filter(Geography!="Region" & Race!="Total")
 #' 
 #' # Create a facet chart for population by race using counties as the facet
-#' my.chart <- create_facet_bar_chart(t=df, w.x="Race", w.y="share", 
-#'                                    f="Race", g="Geography", 
-#'                                    w.facet=2, w.scales="fixed")
+#' my.chart <- create_facet_bar_chart(t=df, x="Race", y="share", 
+#'                                    fill="Race", g="Geography", 
+#'                                    facet=2, scales="fixed")
 #' 
 #' @export
 #'
-create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="percent", w.scales="free", w.facet=3, w.dec = 0, l.pos="above", w.color="psrc_dark", w.title=NULL, w.sub.title=NULL, w.interactive="no") {
+create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent", scales="free", facet=3, dec = 0, lpos="above", color="psrc_dark", title=NULL, subtitle=NULL, interactive="no") {
+  
+  confirm_fonts() 
   
   l.clr ="#4C4C4C"
   l.sz=4
-  w.pos="dodge"
+  pos="dodge"
   
-  if (l.pos == "above") {
+  if (lpos == "above") {
     l = -0.5
   } else {l = 0.5}
   
-  if (est.type=="percent") {
-    w.factor=100
+  if (est=="percent") {
+    fac=100
     p=""
     s="%"
-    w.label=scales::label_percent()
+    lab=scales::label_percent()
     
-  } else if (est.type=="currency") {
-    w.factor=1
+  } else if (est=="currency") {
+    fac=1
     p="$"
     s=""
-    w.label=scales::label_dollar()
+    lab=scales::label_dollar()
     
   } else {
-    w.factor=1
+    fac=1
     p=""
     s=""
-    w.label=scales::label_comma()
+    lab=scales::label_comma()
   }
   
-  if (w.interactive == 'yes') {
+  if (interactive == 'yes') {
     
     c <- ggplot2::ggplot(data=t,
-                         ggplot2::aes(y=get(eval(w.y)),
-                                      x=get(eval(w.x)),
-                                      fill=get(eval(f)),
-                                      group=get(eval(f)),
-                                      tooltip=paste0(get(eval(w.x)), " ", get(eval(f)),": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
-                                      data_id=get(eval(w.y)))) +
-      ggiraph::geom_bar_interactive(position=w.pos, stat="identity") +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      scale_fill_discrete_psrc(w.color)
+                         ggplot2::aes(y=.data[[y]],
+                                      x=.data[[x]],
+                                      fill=.data[[fill]],
+                                      group=.data[[fill]],
+                                      tooltip=paste0(.data[[x]], " ", .data[[fill]],": ", p, prettyNum(round(.data[[y]]*fac,dec), big.mark = ","),s),
+                                      data_id=.data[[y]])) +
+      ggiraph::geom_bar_interactive(position=pos, stat="identity") +
+      ggplot2::ggtitle(title, subtitle = subtitle) +
+      ggplot2::scale_y_continuous(labels = lab) +
+      scale_fill_discrete_psrc(color)
     
-    if (!(is.null(w.moe))) {
-      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
+    if (!(is.null(moe))) {
+      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[y]]-.data[[moe]], ymax=.data[[y]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9))
     }
     
     c <- c + 
-      ggplot2::facet_wrap(ggplot2::vars(get(eval(g))), scales=w.scales, ncol=w.facet) +
+      ggplot2::facet_wrap(ggplot2::vars(get(eval(g))), scales=scales, ncol=facet) +
       psrc_style() +
       ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                      axis.text.y = ggplot2::element_text(size=12,color="#4C4C4C"))
@@ -94,20 +97,20 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
   } else {
     
     c <- ggplot2::ggplot(data=t,
-                         ggplot2::aes(y=get(eval(w.y)),
-                                      x=get(eval(w.x)),
-                                      fill = get(eval(f)))) +
-      ggplot2::geom_bar(position=w.pos, stat="identity") +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-      ggplot2::scale_y_continuous(labels = w.label) +
-      scale_fill_discrete_psrc(w.color)
+                         ggplot2::aes(y=.data[[y]],
+                                      x=.data[[x]],
+                                      fill = .data[[fill]])) +
+      ggplot2::geom_bar(position=pos, stat="identity") +
+      ggplot2::ggtitle(title, subtitle = subtitle) +
+      ggplot2::scale_y_continuous(labels = lab) +
+      scale_fill_discrete_psrc(color)
     
-    if (!(is.null(w.moe))) {
-      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(w.y))-get(eval(w.moe)), ymax=get(eval(w.y))+get(eval(w.moe))),width=0.2, position = ggplot2::position_dodge(0.9))
+    if (!(is.null(moe))) {
+      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[y]]-.data[[moe]], ymax=.data[[y]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9))
     }
     
     c <- c + 
-      ggplot2::facet_wrap(ggplot2::vars(get(eval(g))), scales=w.scales, ncol=w.facet) +
+      ggplot2::facet_wrap(ggplot2::vars(get(eval(g))), scales=scales, ncol=facet) +
       psrc_style() +
       ggplot2::theme(axis.text.x = ggplot2::element_text(size=10,color="#4C4C4C"),
                      axis.text.y = ggplot2::element_text(size=12,color="#4C4C4C"))
@@ -139,9 +142,6 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return static column (vertical bar) chart
 #' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
-#' 
 #' @examples
 #' 
 #' library(dplyr)
@@ -157,7 +157,7 @@ create_facet_bar_chart <- function(t, w.x, w.y, f, g, w.moe=NULL, est.type="perc
 #'                                     source=paste("Source: ACS 5-Year Estimates, table B3002",
 #'                                                  "for King, Kitsap, Pierce and Snohomish counties.",
 #'                                                  sep = "\n"),
-#'                                     color="pgnobgy_5")
+#'                                     color="psrc_dark")
 #' 
 #' @export
 #'
@@ -168,6 +168,8 @@ static_column_chart <- function(t, x, y, fill,
                                 title=NULL, subtitle=NULL, source="", alt=NULL,
                                 xlabel=NULL, ylabel=NULL,
                                 dec = 0, color="psrc_dark") {
+  
+  confirm_fonts() 
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- t %>% dplyr::select(.data[[y]]) %>% dplyr::pull() %>% max()
@@ -207,11 +209,11 @@ static_column_chart <- function(t, x, y, fill,
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
-                       ggplot2::aes(x=get(eval(x)),
-                                    y=get(eval(y)),
-                                    text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)),
-                                    group=get(eval(fill)))) +
+                       ggplot2::aes(x=.data[[x]],
+                                    y=.data[[y]],
+                                    text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
+                                    fill = .data[[fill]],
+                                    group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
@@ -220,14 +222,14 @@ static_column_chart <- function(t, x, y, fill,
   
   # If there is a MOE value then error bars are added to the plot
   if (!(is.null(moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(y))-get(eval(moe)), ymax=get(eval(y))+get(eval(moe))),width=0.2, position = ggplot2::position_dodge(0.9))
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[y]]-.data[[moe]], ymax=.data[[y]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9))
   }
   
   # Add Bar Labels if there is no Error Bar and remove y-axis since we have the labels
   if (is.null(moe)) {
-    c <- c + ggplot2::geom_text(ggplot2::aes(x=get(eval(x)),
-                                             y=get(eval(y)), 
-                                             label=paste0(p,prettyNum(round(get(eval(y))*fac,dec), big.mark = ","),s)),
+    c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[x]],
+                                             y=.data[[y]], 
+                                             label=paste0(p,prettyNum(round(.data[[y]]*fac,dec), big.mark = ","),s)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.9),
                                 vjust = -0.25,
@@ -272,12 +274,8 @@ static_column_chart <- function(t, x, y, fill,
 #' @param source Source reference to be used for chart, if desired - defaults to blank
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
 #' @param dec Number of decimal points in labels - defaults to 0
-#' @param color Name of color palette to use - defaults to "pgnobgy_5"
+#' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return interactive column (vertical bar) chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
-#'
 #' 
 #' @export
 
@@ -285,7 +283,9 @@ interactive_column_chart <- function(t, x, y, fill,
                                      pos="dodge", est="percent", moe=NULL,
                                      href=NULL, hrefnm=NULL, hrefcl=NULL,
                                      title=NULL, subtitle=NULL, source="", alt=NULL,
-                                     dec = 0, color="pgnobgy_5") {
+                                     dec = 0, color="psrc_dark") {
+  
+  confirm_fonts() 
   
   # First Create Chart using Static Version
   
@@ -325,11 +325,11 @@ interactive_column_chart <- function(t, x, y, fill,
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
-                       ggplot2::aes(x=get(eval(x)),
-                                    y=get(eval(y)),
-                                    text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)),
-                                    group=get(eval(fill)))) +
+                       ggplot2::aes(x=.data[[x]],
+                                    y=.data[[y]],
+                                    text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
+                                    fill = .data[[fill]],
+                                    group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab) +
@@ -338,7 +338,7 @@ interactive_column_chart <- function(t, x, y, fill,
   
   # If there is a MOE value then error bars are added to the plot
   if (!(is.null(moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(y))-get(eval(moe)), ymax=get(eval(y))+get(eval(moe))),width=0.2, position = ggplot2::position_dodge(0.9))
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[y]]-.data[[moe]], ymax=.data[[y]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9))
   }
   
   # Add reference lines if they are included 
@@ -440,9 +440,6 @@ interactive_column_chart <- function(t, x, y, fill,
 #' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return static bar (horizontal bar) chart
 #' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
-#' 
 #' @examples
 #' 
 #' library(dplyr)
@@ -458,7 +455,7 @@ interactive_column_chart <- function(t, x, y, fill,
 #'                                     source=paste("Source: ACS 5-Year Estimates, table B3002",
 #'                                                  "for King, Kitsap, Pierce and Snohomish counties.",
 #'                                                  sep = "\n"),
-#'                                     color="pgnobgy_5")
+#'                                     color="psrc_dark")
 #' 
 #' @export
 #'
@@ -469,7 +466,9 @@ static_bar_chart <- function(t, x, y, fill,
                                 title=NULL, subtitle=NULL, source="", alt=NULL,
                                 xlabel=NULL, ylabel=NULL,
                                 dec = 0, color="psrc_dark") {
-  
+
+  confirm_fonts() 
+    
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- t %>% dplyr::select(.data[[x]]) %>% dplyr::pull() %>% max()
   
@@ -508,11 +507,11 @@ static_bar_chart <- function(t, x, y, fill,
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
-                       ggplot2::aes(x=get(eval(y)),
-                                    y=get(eval(x)),
-                                    text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(x))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)),
-                                    group=get(eval(fill)))) +
+                       ggplot2::aes(x=.data[[y]],
+                                    y=.data[[x]],
+                                    text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[x]]*fac, dec), big.mark = ","),s),
+                                    fill = .data[[fill]],
+                                    group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
@@ -536,7 +535,7 @@ static_bar_chart <- function(t, x, y, fill,
   
   # If there is a MOE value then error bars are added to the plot
   if (!(is.null(moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(x))-get(eval(moe)), ymax=get(eval(x))+get(eval(moe))),width=0.2, position = ggplot2::position_dodge(0.9)) +
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[x]]-.data[[moe]], ymax=.data[[x]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9)) +
       ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
                      panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"),
                      axis.line.y = ggplot2::element_line(color="#cbcbcb"))
@@ -544,9 +543,9 @@ static_bar_chart <- function(t, x, y, fill,
   
   # Add Bar Labels if there is no Error Bar
   if (is.null(moe)) {
-    c <- c + ggplot2::geom_text(ggplot2::aes(x=get(eval(y)), 
-                                    y=get(eval(x)), 
-                                    label=paste0(p,prettyNum(round(get(eval(x))*fac,dec), big.mark = ","),s)),
+    c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[y]], 
+                                    y=.data[[x]], 
+                                    label=paste0(p,prettyNum(round(.data[[x]]*fac,dec), big.mark = ","),s)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.9),
                                 hjust = -0.1,
@@ -575,11 +574,8 @@ static_bar_chart <- function(t, x, y, fill,
 #' @param hrefcl A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param dec Number of decimal points in labels - defaults to 0
-#' @param color Name of color palette to use - defaults to "pgnobgy_5"
+#' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @return interactive bar (horizontal bar) chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @examples
 #' 
@@ -601,7 +597,9 @@ interactive_bar_chart <- function(t, x, y, fill,
                                   pos="dodge", est="percent", moe=NULL,
                                   href=NULL, hrefnm=NULL, hrefcl=NULL,
                                   title=NULL,
-                                  dec = 0, color="pgnobgy_5") {
+                                  dec = 0, color="psrc_dark") {
+  
+  confirm_fonts() 
   
   # First Create Chart using Static Version
   
@@ -637,11 +635,11 @@ interactive_bar_chart <- function(t, x, y, fill,
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
-                       ggplot2::aes(x=get(eval(y)),
-                                    y=get(eval(x)),
-                                    text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(x))*fac, dec), big.mark = ","),s),
-                                    fill = get(eval(fill)),
-                                    group=get(eval(fill)))) +
+                       ggplot2::aes(x=.data[[y]],
+                                    y=.data[[x]],
+                                    text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[x]]*fac, dec), big.mark = ","),s),
+                                    fill = .data[[fill]],
+                                    group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, expand = c(0, 0)) +
@@ -664,7 +662,7 @@ interactive_bar_chart <- function(t, x, y, fill,
   
   # If there is a MOE value then error bars are added to the plot
   if (!(is.null(moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=get(eval(x))-get(eval(moe)), ymax=get(eval(x))+get(eval(moe))),width=0.2, position = ggplot2::position_dodge(0.9))
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[x]]-.data[[moe]], ymax=.data[[x]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9))
   }
   
   # Remove Bar labels and axis titles
@@ -703,17 +701,14 @@ interactive_bar_chart <- function(t, x, y, fill,
 #'
 #' This function allows you to create treemap charts.
 #' @param t A tibble or dataframe in long form for plotting
-#' @param w.area The name of the variable with thee value you want to use to size the bars
-#' @param w.fill The name of the variable you want to fill the bars
-#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
-#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
-#' @param w.dec Number of decimal points in labels - defaults to 0
-#' @param w.color Name of color palette to use - defaults to "psrc_light"
+#' @param s The name of the variable with the value you want to use to size the bars
+#' @param fill The name of the variable you want to fill the bars
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param color Name of color palette to use - defaults to "psrc_light"
 #' @return static treemap chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @examples
 #' 
@@ -726,40 +721,42 @@ interactive_bar_chart <- function(t, x, y, fill,
 #'       mutate(Year = as.character(Year)) %>%
 #'       filter(Year=="2020")
 #' 
-#' my.chart <- create_treemap_chart(t=df, w.area="share", w.fill="Mode", w.title="Mode Share to Work")
+#' my.chart <- create_treemap_chart(t=df, s="share", fill="Mode", title="Mode Share to Work")
 #' 
 #' 
 #' @export
 #'
 
-create_treemap_chart <- function(t, w.area, w.fill, w.title=NULL, w.sub.title=NULL, est.type="percent", w.dec=0, w.color="psrc_light") {
+create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="percent", dec=0, color="psrc_light") {
   
-  tot <- t %>% dplyr::select(.data[[w.area]]) %>% dplyr::pull() %>% sum()
-  t <- t %>% dplyr::mutate(total_share = .data[[w.area]]/tot)
+  confirm_fonts() 
+  
+  tot <- t %>% dplyr::select(.data[[s]]) %>% dplyr::pull() %>% sum()
+  t <- t %>% dplyr::mutate(total_share = .data[[s]]/tot)
   
   # Estimate type determines the labels
-  if (est.type=="percent") {
-    w.factor=100
+  if (est=="percent") {
+    fac=100
     p=""
     s="%"
     
-  } else if (est.type=="currency") {
-    w.factor=1
+  } else if (est=="currency") {
+    fac=1
     p="$"
     s=""
     
   } else {
-    w.factor=1
+    fac=1
     p=""
     s=""
   }
   
-  if (est.type=="percent") {
+  if (est=="percent") {
     c <- ggplot2::ggplot(t,
-                         ggplot2::aes(area = get(eval(w.area)),
-                                      fill = get(eval(w.fill)), 
-                                      label = paste(get(eval(w.fill)), 
-                                                    paste0(p, prettyNum(round(get(eval(w.area))*w.factor,w.dec), big.mark = ","), s),
+                         ggplot2::aes(area = .data[[s]],
+                                      fill = .data[[fill]], 
+                                      label = paste(.data[[fill]], 
+                                                    paste0(p, prettyNum(round(.data[[s]]*fac,dec), big.mark = ","), s),
                                                     sep = "\n"))) +
       treemapify::geom_treemap() +
       treemapify::geom_treemap_text(colour = "white",
@@ -767,16 +764,16 @@ create_treemap_chart <- function(t, w.area, w.fill, w.title=NULL, w.sub.title=NU
                                     size = 28) +
       psrc_style() +
       ggplot2::theme(legend.position = "none") +
-      scale_fill_discrete_psrc(w.color) +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+      scale_fill_discrete_psrc(color) +
+      ggplot2::ggtitle(title, subtitle = subtitle)
     
   } else {
     
     c <- ggplot2::ggplot(t,
-                         ggplot2::aes(area = get(eval(w.area)),
-                                      fill = get(eval(w.fill)), 
-                                      label = paste(get(eval(w.fill)), 
-                                                    paste0(p, prettyNum(round(get(eval(w.area))*w.factor,w.dec), big.mark = ","), s),
+                         ggplot2::aes(area = .data[[s]],
+                                      fill = .data[[fill]], 
+                                      label = paste(.data[[fill]], 
+                                                    paste0(p, prettyNum(round(.data[[s]]*fac,dec), big.mark = ","), s),
                                                     paste0(prettyNum(round(.data$total_share*100,0), big.mark = ","), "%"), 
                                                     sep = "\n"))) +
       treemapify::geom_treemap() +
@@ -785,8 +782,8 @@ create_treemap_chart <- function(t, w.area, w.fill, w.title=NULL, w.sub.title=NU
                                     size = 28) +
       psrc_style() +
       ggplot2::theme(legend.position = "none") +
-      scale_fill_discrete_psrc(w.color) +
-      ggplot2::ggtitle(w.title, subtitle = w.sub.title)
+      scale_fill_discrete_psrc(color) +
+      ggplot2::ggtitle(title, subtitle = subtitle)
   }
   
   return(c)
@@ -796,35 +793,33 @@ create_treemap_chart <- function(t, w.area, w.fill, w.title=NULL, w.sub.title=NU
 #'
 #' This function allows you to create a bubble charts.
 #' @param t A tibble or dataframe in long form for plotting
-#' @param w.x The name of the variable you want plotted on the X-Axis
-#' @param w.y The name of the variable you want plotted on the Y-Axis
-#' @param f The name of the variable you want the fill color of the bubbles to be based on
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param fill The name of the variable you want the fill color of the bubbles to be based on
 #' @param s The name of the variable used to size the bubbles
-#' @param w.color Name of color palette to use - defaults to "psrc_light"
-#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
-#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' 
+#' @param color Name of color palette to use - defaults to "psrc_light"
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 #' @return bubble chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @export
 #'
-create_bubble_chart <- function(t, w.x, w.y, f, s, w.color="psrc_light", w.title=NULL, w.sub.title=NULL) {
+create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL, subtitle=NULL) {
+  
+  confirm_fonts() 
   
   # Create a color palette from PSRC palette
-  grps <- t %>% dplyr::select(.data[[f]]) %>% unique() %>% dplyr::pull()
+  grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
-  l.colors <- unlist(psrc_colors[w.color])
+  l.colors <- unlist(psrc_colors[color])
   l.colors <- l.colors[1:num.grps]
   cols <- stats::setNames(l.colors, grps)
   
-  p <- ggplot2::ggplot(data=t, ggplot2::aes(x = get(eval(w.x)), y = get(eval(w.y)))) + 
-    ggplot2::geom_point(ggplot2::aes(color = get(eval(f)), size = get(eval(s))), alpha = 1.0) +
+  p <- ggplot2::ggplot(data=t, ggplot2::aes(x = .data[[x]], y = .data[[y]])) + 
+    ggplot2::geom_point(ggplot2::aes(color = .data[[fill]], size = .data[[s]]), alpha = 1.0) +
     ggplot2::scale_size(range = c(0.5, 12)) +
     ggplot2::scale_color_manual(values=cols) +
-    ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
+    ggplot2::ggtitle(title, subtitle = subtitle) +
     psrc_style() +
     ggplot2::guides(size = "none") +
     ggplot2::theme(legend.position = "bottom",
@@ -835,131 +830,82 @@ create_bubble_chart <- function(t, w.x, w.y, f, s, w.color="psrc_light", w.title
 }
 
 
-#' Create PSRC Line Chart
+#' Static Line Chart
 #'
 #' This function allows you to create a line chart.
 #' @param t A tibble or dataframe in long form for plotting
-#' @param w.x The name of the variable you want plotted on the X-Axis
-#' @param w.y The name of the variable you want plotted on the Y-Axis
-#' @param w.g The name of the variable you want the fill color of the lines to be based on
-#' @param w.color Name of color palette to use - defaults to "psrc_light"
-#' @param w.title Title to be used for chart, if desired - defaults to "NULL"
-#' @param w.sub.title Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param est.type Type for the Y values - enter "percent", "currency" or "number", defaults to "number"
-#' @param w.dec Number of decimal points in labels - defaults to 0
-#' @param x.type Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"
-#' @param d.form Format for Date values 
-#' @param w.breaks Break points to use if using a continuous scale, defaults to NULL
-#' @param w.lwidth Width of lines, defaults to 1
-#' @param w.interactive Enable hover text and other interactive features - defaults to "no"
-#' 
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param fill The name of the variable you want the fill color of the lines to be based on
+#' @param color Name of color palette to use - defaults to "psrc_light"
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "number"
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param xtype Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"
+#' @param dform Format for Date values 
+#' @param breaks Break points to use if using a continuous scale, defaults to NULL
+#' @param lwidth Width of lines, defaults to 1
 #' @return line chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @export
 #'
-create.line.chart <- function(t, w.x, w.y, w.g, w.title=NULL, w.sub.title=NULL, est.type="number", w.dec=0, x.type="Date", d.form="%b-%Y", w.breaks=NULL, w.lwidth=1, w.color="psrc_light", w.interactive='no') {
+create.line.chart <- function(t, x, y, fill, title=NULL, subtitle=NULL, est="number", dec=0, xtype="Date", dform="%b-%Y", breaks=NULL, lwidth=1, color="psrc_light") {
   
-  grps <- t %>% dplyr::select(.data[[w.g]]) %>% unique() %>% dplyr::pull()
+  confirm_fonts() 
+  
+  grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
-  l.colors <- unlist(psrc_colors[w.color])
+  l.colors <- unlist(psrc_colors[color])
   l.colors <- l.colors[1:num.grps]
   cols <- stats::setNames(l.colors, grps)
   
   # Estimate type determines the labels for the axis and the format of the number for the hover-text
-  if (est.type=="percent") {
-    w.factor=100
+  if (est=="percent") {
+    fac=100
     p=""
     s="%"
-    w.label=scales::label_percent()
+    lab=scales::label_percent()
     
-  } else if (est.type=="currency") {
-    w.factor=1
+  } else if (est=="currency") {
+    fac=1
     p="$"
     s=""
-    w.label=scales::label_dollar()
+    lab=scales::label_dollar()
     
   } else {
-    w.factor=1
+    fac=1
     p=""
     s=""
-    w.label=scales::label_comma()
+    lab=scales::label_comma()
   }
-  
-  if (w.interactive == 'yes') {
     
-    if (x.type!="Continuous") {
-      
-      g <- ggplot2::ggplot(data=t, 
-                           ggplot2::aes(x=get(eval(w.x)),
-                                        y=get(eval(w.y)), 
-                                        group=get(eval(w.g))))  + 
-        ggiraph::geom_line_interactive(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round")+
-        ggiraph::geom_point_interactive(ggplot2::aes(x=get(eval(w.x)),
-                                                     y=get(eval(w.y)),
-                                                     color=get(eval(w.g)),
-                                                     tooltip = paste0(get(eval(w.g)), ": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
-                                                     data_id = get(eval(w.y))), size = w.lwidth/2) +
-        ggplot2::scale_x_date(labels = scales::date_format(d.form)) +
-        ggplot2::scale_y_continuous(labels = w.label) +
-        ggplot2::scale_color_manual(values=cols)  +
-        ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-        psrc_style()
-      
-      g <- ggiraph::girafe(ggobj = g)
-      
-    } else {
-      
-      g <- ggplot2::ggplot(data=t, 
-                           ggplot2::aes(x=get(eval(w.x)),
-                                        y=get(eval(w.y)), 
-                                        group=get(eval(w.g))))  + 
-        ggiraph::geom_line_interactive(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round")+
-        ggiraph::geom_point_interactive(ggplot2::aes(x=get(eval(w.x)),
-                                                     y=get(eval(w.y)),
-                                                     color=get(eval(w.g)),
-                                                     tooltip = paste0(get(eval(w.g)), ": ", p, prettyNum(round(get(eval(w.y))*w.factor,w.dec), big.mark = ","),s),
-                                                     data_id = get(eval(w.y))), size = w.lwidth/2) +
-        ggplot2::scale_x_discrete(breaks=w.breaks) +
-        ggplot2::scale_y_continuous(labels = w.label) +
-        ggplot2::scale_color_manual(values=cols)  +
-        ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-        psrc_style()
-      
-      g <- ggiraph::girafe(ggobj = g)
-      
-    }
+  if (xtype=="Continuous") {
+    g <- ggplot2::ggplot(data=t, 
+                         ggplot2::aes(x=.data[[x]],
+                                      y=.data[[y]], 
+                                      group=.data[[fill]]))  + 
+      ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size=lwidth, linejoin = "round") +
+      ggplot2::geom_point(ggplot2::aes(color=.data[[fill]]))+
+      ggplot2::scale_x_discrete(breaks=breaks) +
+      ggplot2::scale_y_continuous(labels = lab) +
+      ggplot2::scale_color_manual(values=cols)  +
+      ggplot2::ggtitle(title, subtitle = subtitle) +
+      psrc_style()
+    
   } else {
     
-    if (x.type=="Continuous") {
-      g <- ggplot2::ggplot(data=t, 
-                           ggplot2::aes(x=get(eval(w.x)),
-                                        y=get(eval(w.y)), 
-                                        group=get(eval(w.g))))  + 
-        ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size=w.lwidth, linejoin = "round") +
-        ggplot2::geom_point(ggplot2::aes(color=get(eval(w.g))))+
-        ggplot2::scale_x_discrete(breaks=w.breaks) +
-        ggplot2::scale_y_continuous(labels = w.label) +
-        ggplot2::scale_color_manual(values=cols)  +
-        ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-        psrc_style()
-      
-    } else {
-      
-      g <- ggplot2::ggplot(data=t, 
-                           ggplot2::aes(x=get(eval(w.x)),
-                                        y=get(eval(w.y)), 
-                                        group=get(eval(w.g))))  + 
-        ggplot2::geom_line(ggplot2::aes(color=get(eval(w.g))), size = w.lwidth, linejoin = "round") +
-        ggplot2::scale_x_date(labels = scales::date_format(d.form)) +
-        ggplot2::scale_y_continuous(labels = w.label) +
-        ggplot2::scale_color_manual(values=cols)  +
-        ggplot2::ggtitle(w.title, subtitle = w.sub.title) +
-        psrc_style()
-      
-    }
+    g <- ggplot2::ggplot(data=t, 
+                         ggplot2::aes(x=.data[[x]],
+                                      y=.data[[y]], 
+                                      group=.data[[fill]]))  + 
+      ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size = lwidth, linejoin = "round") +
+      ggplot2::scale_x_date(labels = scales::date_format(dform)) +
+      ggplot2::scale_y_continuous(labels = lab) +
+      ggplot2::scale_color_manual(values=cols)  +
+      ggplot2::ggtitle(title, subtitle = subtitle) +
+      psrc_style()
+    
   }
   
   return(g)
@@ -980,11 +926,7 @@ create.line.chart <- function(t, w.x, w.y, w.g, w.title=NULL, w.sub.title=NULL, 
 #' @param breaks Break points to use if using a continuous scale, defaults to NULL
 #' @param lwidth Width of lines, defaults to 1
 #' @param color Name of color palette to use - defaults to "psrc_light"
-#' 
 #' @return line chart
-#' 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
 #' 
 #' @export
 #'
@@ -993,6 +935,8 @@ interactive_line_chart <- function(t, x, y, fill,
                                    est="number", dec=0, 
                                    xtype="Date", dform="%b-%Y", 
                                    breaks=NULL, lwidth=1, color="psrc_light") {
+  
+  confirm_fonts() 
   
   # Create a color palette from PSRC palette
   grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
@@ -1026,12 +970,12 @@ interactive_line_chart <- function(t, x, y, fill,
   
   if (xtype=="Continuous") {
     c <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=get(eval(x)),
-                                      y=get(eval(y)),
-                                      text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
-                                      group=get(eval(fill))))  + 
-      ggplot2::geom_line(ggplot2::aes(color=get(eval(fill))), size=lwidth, linejoin = "round") +
-      ggplot2::geom_point(ggplot2::aes(color=get(eval(fill))))+
+                         ggplot2::aes(x=.data[[x]],
+                                      y=.data[[y]],
+                                      text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
+                                      group=.data[[fill]]))  + 
+      ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size=lwidth, linejoin = "round") +
+      ggplot2::geom_point(ggplot2::aes(color=.data[[fill]]))+
       ggplot2::scale_x_discrete(breaks=breaks) +
       ggplot2::scale_y_continuous(labels = lab) +
       ggplot2::scale_color_manual(values=cols)  +
@@ -1041,11 +985,11 @@ interactive_line_chart <- function(t, x, y, fill,
   } else {
     
     c <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=get(eval(x)),
-                                      y=get(eval(y)), 
-                                      text=paste0(get(eval(fill)), ": ", p, prettyNum(round(get(eval(y))*fac, dec), big.mark = ","),s),
-                                      group=get(eval(fill))))  + 
-      ggplot2::geom_line(ggplot2::aes(color=get(eval(fill))), size = lwidth, linejoin = "round") +
+                         ggplot2::aes(x=.data[[x]],
+                                      y=.data[[y]], 
+                                      text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
+                                      group=.data[[fill]]))  + 
+      ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size = lwidth, linejoin = "round") +
       ggplot2::scale_x_date(labels = scales::date_format(dform)) +
       ggplot2::scale_y_continuous(labels = lab) +
       ggplot2::scale_color_manual(values=cols)  +
@@ -1082,8 +1026,5 @@ interactive_line_chart <- function(t, x, y, fill,
                                      font = list(family="Poppins Black",size=12, color="#4C4C4C"),
                                      x=0.02,
                                      xref="container"))
-  
-  
-  
   return(c)
 }

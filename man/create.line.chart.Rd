@@ -2,53 +2,50 @@
 % Please edit documentation in R/psrc_charts.R
 \name{create.line.chart}
 \alias{create.line.chart}
-\title{Create PSRC Line Chart}
+\title{Static Line Chart}
 \usage{
 create.line.chart(
   t,
-  w.x,
-  w.y,
-  w.g,
-  w.title = NULL,
-  w.sub.title = NULL,
-  est.type = "number",
-  w.dec = 0,
-  x.type = "Date",
-  d.form = "\%b-\%Y",
-  w.breaks = NULL,
-  w.lwidth = 1,
-  w.color = "psrc_light",
-  w.interactive = "no"
+  x,
+  y,
+  fill,
+  title = NULL,
+  subtitle = NULL,
+  est = "number",
+  dec = 0,
+  xtype = "Date",
+  dform = "\%b-\%Y",
+  breaks = NULL,
+  lwidth = 1,
+  color = "psrc_light"
 )
 }
 \arguments{
 \item{t}{A tibble or dataframe in long form for plotting}
 
-\item{w.x}{The name of the variable you want plotted on the X-Axis}
+\item{x}{The name of the variable you want plotted on the X-Axis}
 
-\item{w.y}{The name of the variable you want plotted on the Y-Axis}
+\item{y}{The name of the variable you want plotted on the Y-Axis}
 
-\item{w.g}{The name of the variable you want the fill color of the lines to be based on}
+\item{fill}{The name of the variable you want the fill color of the lines to be based on}
 
-\item{w.title}{Title to be used for chart, if desired - defaults to "NULL"}
+\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
-\item{w.sub.title}{Sub-title to be used for chart, if desired - defaults to "NULL"}
+\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{est.type}{Type for the Y values - enter "percent", "currency" or "number", defaults to "number"}
+\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "number"}
 
-\item{w.dec}{Number of decimal points in labels - defaults to 0}
+\item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{x.type}{Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"}
+\item{xtype}{Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"}
 
-\item{d.form}{Format for Date values}
+\item{dform}{Format for Date values}
 
-\item{w.breaks}{Break points to use if using a continuous scale, defaults to NULL}
+\item{breaks}{Break points to use if using a continuous scale, defaults to NULL}
 
-\item{w.lwidth}{Width of lines, defaults to 1}
+\item{lwidth}{Width of lines, defaults to 1}
 
-\item{w.color}{Name of color palette to use - defaults to "psrc_light"}
-
-\item{w.interactive}{Enable hover text and other interactive features - defaults to "no"}
+\item{color}{Name of color palette to use - defaults to "psrc_light"}
 }
 \value{
 line chart

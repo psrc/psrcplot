@@ -17,7 +17,7 @@ interactive_bar_chart(
   hrefcl = NULL,
   title = NULL,
   dec = 0,
-  color = "pgnobgy_5"
+  color = "psrc_dark"
 )
 }
 \arguments{
@@ -45,7 +45,7 @@ interactive_bar_chart(
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{color}{Name of color palette to use - defaults to "pgnobgy_5"}
+\item{color}{Name of color palette to use - defaults to "psrc_dark"}
 }
 \value{
 interactive bar (horizontal bar) chart
