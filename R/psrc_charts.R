@@ -26,7 +26,7 @@ NULL
 #' 
 #' library(dplyr)
 #' # Read in the example data and filter to 2020 Population by Race by County
-#' df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+#' df <- psrcplot::mode_share_example_data %>% 
 #'       filter(Category=="Population by Race" & Year==2020) %>%
 #'       filter(Geography!="Region" & Race!="Total")
 #' 
@@ -145,7 +145,7 @@ create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent", sc
 #' @examples
 #' 
 #' library(dplyr)
-#' mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+#' mode_shares <- psrcplot::mode_share_example_data %>% 
 #'  filter(Category=="Mode to Work by Race") %>%
 #'  filter(Geography=="Region" & Race=="Total") %>%
 #'  mutate(Year = as.character(Year))
@@ -443,7 +443,7 @@ interactive_column_chart <- function(t, x, y, fill,
 #' @examples
 #' 
 #' library(dplyr)
-#' mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+#' mode_shares <- psrcplot::mode_share_example_data %>% 
 #'  filter(Category=="Mode to Work by Race") %>%
 #'  filter(Geography=="Region" & Race=="Total") %>%
 #'  mutate(Year = as.character(Year))
@@ -582,7 +582,7 @@ static_bar_chart <- function(t, x, y, fill,
 #' 
 #' library(dplyr)
 #' library(stringr)
-#' mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+#' mode_shares <- psrcplot::mode_share_example_data %>% 
 #'   filter(Category=="Mode to Work by Race") %>%
 #'   filter(Geography=="Region" & Race=="Total") %>%
 #'   mutate(Year = as.character(Year)) %>%
@@ -716,7 +716,7 @@ interactive_bar_chart <- function(t, x, y, fill,
 #' library(dplyr)
 #' 
 #' # Read in the example data and filter to Mode to Work for Everyone for all years in the data
-#' df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+#' df <- psrcplot::mode_share_example_data %>% 
 #'       filter(Category=="Mode to Work by Race") %>%
 #'       filter(Geography=="Region" & Race=="Total") %>%
 #'       mutate(Year = as.character(Year)) %>%

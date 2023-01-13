@@ -16,17 +16,6 @@ library(psrcplot)
 library(dplyr)
 ```
 
-## Install PSRC Fonts
-
-The PSRC Poppins font needs to be installed when you first start creating charts because it is not built into R.
-
-The following function will install PSRC fonts.
-
-```{r}
-install_psrc_fonts()
-```
-
-
 The function names in PSRC plot have a naming convention that first identifies whether the plot is static or interactive, then what type of chart. For example, interactive_column_chart makes an interactive chart that can be displayed on the web that has vertical bars.
 
 ## Make a static bar plot of Census data
@@ -36,7 +25,7 @@ If you want to create a bar plot, you call the function static_bar_chart specify
 In the example below, we have read in an example data table that shows mode share by race for the region:
 
 ```{r mode_data, message=FALSE}
-mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) %>% 
+mode_shares <- psrcplot::mode_share_example_data %>% 
  filter(Category=="Mode to Work by Race") %>%
  filter(Geography=="Region" & Race=="Total") %>%
  mutate(Year = as.character(Year))

@@ -72,6 +72,24 @@
 
     
     
+<p>These examples each use summarized PUMS data, which you can generate
+yourself using the <strong>psrccensus</strong> package:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># library(magrittr)</span></span>
+<span><span class="co"># library(psrccensus)</span></span>
+<span><span class="co"># library(dplyr)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # Retrieve, summarize and filter Census PUMS data</span></span>
+<span><span class="co">#   z_2019&lt;- get_psrc_pums(span=5,</span></span>
+<span><span class="co">#                          dyear=2019,</span></span>
+<span><span class="co">#                          level='h',</span></span>
+<span><span class="co">#                          vars=c("HRACE", "HINCP"))</span></span>
+<span><span class="co">#   </span></span>
+<span><span class="co">#   hhinc19_x_race &lt;- psrc_pums_median(</span></span>
+<span><span class="co">#                           z_2019, </span></span>
+<span><span class="co">#                           stat_var="HINCP",</span></span>
+<span><span class="co">#                           group_vars="HRACE") %&gt;%</span></span>
+<span><span class="co">#     filter(HRACE !="Total") %&gt;% mutate(DATE=as.character(DATA_YEAR))</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="category-display-order">Category display order<a class="anchor" aria-label="anchor" href="#category-display-order"></a>
 </h2>
@@ -80,23 +98,12 @@ function by converting the variable to a Factor datatype with levels
 specified in the sequence you’d like them displayed.</p>
 <p>In the case below, the HRACE variable arrives as a Factor datatype,
 but still with alphabetical default ordering.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrccensus/" class="external-link">psrccensus</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrcplot/">psrcplot</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Retrieve, summarize and filter Census PUMS data</span></span>
-<span>  <span class="va">z_2019</span><span class="op">&lt;-</span> <span class="fu"><a href="https://psrc.github.io/psrccensus/reference/get_psrc_pums.html" class="external-link">get_psrc_pums</a></span><span class="op">(</span>span<span class="op">=</span><span class="fl">5</span>,</span>
-<span>                         dyear<span class="op">=</span><span class="fl">2019</span>,</span>
-<span>                         level<span class="op">=</span><span class="st">'h'</span>,</span>
-<span>                         vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HRACE"</span>, <span class="st">"HINCP"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
-<span>  <span class="va">hhinc19_x_race</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://psrc.github.io/psrccensus/reference/pums_stat.html" class="external-link">psrc_pums_median</a></span><span class="op">(</span></span>
-<span>                          <span class="va">z_2019</span>, </span>
-<span>                          stat_var<span class="op">=</span><span class="st">"HINCP"</span>,</span>
-<span>                          group_vars<span class="op">=</span><span class="st">"HRACE"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">HRACE</span> <span class="op">!=</span><span class="st">"Total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>DATE<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">DATA_YEAR</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">hhinc19_x_race</span> <span class="op">&lt;-</span> <span class="fu">psrcplot</span><span class="fu">::</span><span class="va">summary_pums_example_data</span></span>
 <span></span>
 <span><span class="co"># Create chart -- default category ordering   </span></span>
 <span><span class="va">income.chart.default</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/static_bar_chart.html">static_bar_chart</a></span><span class="op">(</span></span>
@@ -111,7 +118,7 @@ but still with alphabetical default ordering.</p>
 <p><img src="frequently-asked-questions_files/figure-html/default_ordering-1.png" width="700"></p>
 <p>Factor levels can be reversed using the <code>fct_rev()</code>
 function from the <strong>forcats</strong> package.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hhinc19_rev</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_REV<span class="op">=</span><span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_rev.html" class="external-link">fct_rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">HRACE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -132,7 +139,7 @@ function from the <strong>forcats</strong> package.</p>
 This uses another <strong>forcats</strong> function,
 <code>fct_reorder()</code> (more complex multi-variable ordering
 expressions are also possible using this function).</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">hhinc19_low_high</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_low_high<span class="op">=</span><span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_reorder.html" class="external-link">fct_reorder</a></span><span class="op">(</span><span class="va">HRACE</span>, <span class="op">-</span><span class="va">HINCP_median</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -156,7 +163,7 @@ numeric rank–for example, setting remainder or combination categories
 last. To do that, you’ll need to order the factor levels manually. Be
 careful that you type the exact factor names, or they will be omitted
 (ugh).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hhinc19_custom</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_custom<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">HRACE</span>, </span>
 <span>       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"American Indian or Alaskan Native Alone"</span>, </span>
@@ -189,7 +196,7 @@ messy!<a class="anchor" aria-label="anchor" href="#how-can-i-wrap-the-text-on-a-
 </h2>
 <p>It does look messy when you don’t wrap the text on the x-axis often
 on a column chart - like this:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">income.column.messy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/static_column_chart.html">static_column_chart</a></span><span class="op">(</span></span>
 <span>      t<span class="op">=</span><span class="va">hhinc19_custom</span>, </span>
 <span>      x<span class="op">=</span><span class="st">"HRACE"</span>, </span>
@@ -207,7 +214,7 @@ need to play around with the <code><a href="https://stringr.tidyverse.org/refere
 the breaks looking nice. This leaves the category variable in the data
 alone (since <code>str_wrap</code> would otherwise convert the type to
 character and lose factor level ordering, etc).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xlabs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">hhinc19_custom</span><span class="op">$</span><span class="va">HRACE_custom</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html" class="external-link">str_wrap</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.wrapped</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/static_column_chart.html">static_column_chart</a></span><span class="op">(</span></span>

@@ -13,6 +13,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
+These examples each use summarized PUMS data, which you can generate yourself using the **psrccensus** package:
+
+```{r example_data_retrieval, message=FALSE}
+# library(magrittr)
+# library(psrccensus)
+# library(dplyr)
+# 
+# # Retrieve, summarize and filter Census PUMS data
+#   z_2019<- get_psrc_pums(span=5,
+#                          dyear=2019,
+#                          level='h',
+#                          vars=c("HRACE", "HINCP"))
+#   
+#   hhinc19_x_race <- psrc_pums_median(
+#                           z_2019, 
+#                           stat_var="HINCP",
+#                           group_vars="HRACE") %>%
+#     filter(HRACE !="Total") %>% mutate(DATE=as.character(DATA_YEAR))
+
+```
+
 ## Category display order
 
 This is best done prior to invoking the **psrcplot** function by converting the variable to a Factor datatype with  levels specified in the sequence you'd like them displayed. 
@@ -21,21 +42,10 @@ In the case below, the HRACE variable arrives as a Factor datatype, but still wi
 
 ```{r default_ordering, message=FALSE}
 library(magrittr)
-library(psrccensus)
 library(dplyr)
 library(psrcplot)
-
-# Retrieve, summarize and filter Census PUMS data
-  z_2019<- get_psrc_pums(span=5,
-                         dyear=2019,
-                         level='h',
-                         vars=c("HRACE", "HINCP"))
   
-  hhinc19_x_race <- psrc_pums_median(
-                          z_2019, 
-                          stat_var="HINCP",
-                          group_vars="HRACE") %>%
-    filter(HRACE !="Total") %>% mutate(DATE=as.character(DATA_YEAR))
+hhinc19_x_race <- psrcplot::summary_pums_example_data
 
 # Create chart -- default category ordering   
 income.chart.default <- static_bar_chart(

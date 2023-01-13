@@ -63,7 +63,7 @@ This function allows you to create facet bar charts.
 
 library(dplyr)
 # Read in the example data and filter to 2020 Population by Race by County
-df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
+df <- psrcplot::mode_share_example_data \%>\% 
       filter(Category=="Population by Race" & Year==2020) \%>\%
       filter(Geography!="Region" & Race!="Total")
 

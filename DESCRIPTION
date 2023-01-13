@@ -17,10 +17,13 @@ Encoding: UTF-8
 LazyData: true
 Suggests:
     dplyr,
+    forcats,
     stringr,
     tidyverse,
     psrctrends,
-    psrccensus
+    psrccensus,
+    knitr,
+    htmlwidgets
 Imports: 
     magrittr,
     scales,
@@ -36,3 +39,5 @@ RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://psrc.github.io/psrcplot/
+Depends: 
+    R (>= 2.10)

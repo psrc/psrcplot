@@ -57,7 +57,7 @@ This function allows you to create bar charts (horizontal bars).
 
 library(dplyr)
 library(stringr)
-mode_shares <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
+mode_shares <- psrcplot::mode_share_example_data \%>\% 
   filter(Category=="Mode to Work by Race") \%>\%
   filter(Geography=="Region" & Race=="Total") \%>\%
   mutate(Year = as.character(Year)) \%>\%

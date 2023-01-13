@@ -43,7 +43,7 @@ This function allows you to create treemap charts.
 library(dplyr)
 
 # Read in the example data and filter to Mode to Work for Everyone for all years in the data
-df <- read.csv(system.file('extdata', 'example_data.csv', package='psrcplot')) \%>\% 
+df <- psrcplot::mode_share_example_data \%>\% 
       filter(Category=="Mode to Work by Race") \%>\%
       filter(Geography=="Region" & Race=="Total") \%>\%
       mutate(Year = as.character(Year)) \%>\%
