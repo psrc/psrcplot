@@ -22,11 +22,11 @@ create_bubble_chart(
 
 \item{y}{The name of the variable you want plotted on the Y-Axis}
 
-\item{fill}{The name of the variable you want the fill color of the bubbles to be based on}
+\item{fill}{The name of the variable you want the fill color of the bars to be based on}
 
 \item{s}{The name of the variable used to size the bubbles}
 
-\item{color}{Name of color palette to use - defaults to "psrc_light"}
+\item{color}{Name of color palette to use - generally defaults to "psrc_dark"}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 

@@ -27,13 +27,13 @@ create.line.chart(
 
 \item{y}{The name of the variable you want plotted on the Y-Axis}
 
-\item{fill}{The name of the variable you want the fill color of the lines to be based on}
+\item{fill}{The name of the variable you want the fill color of the bars to be based on}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "number"}
+\item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
@@ -45,7 +45,7 @@ create.line.chart(
 
 \item{lwidth}{Width of lines, defaults to 1}
 
-\item{color}{Name of color palette to use - defaults to "psrc_light"}
+\item{color}{Name of color palette to use - generally defaults to "psrc_dark"}
 }
 \value{
 line chart

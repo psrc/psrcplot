@@ -19,7 +19,7 @@ create_facet_bar_chart(
   color = "psrc_dark",
   title = NULL,
   subtitle = NULL,
-  interactive = "no"
+  interactive = FALSE
 )
 }
 \arguments{
@@ -35,7 +35,7 @@ create_facet_bar_chart(
 
 \item{moe}{The name of the variable to be used for error bars, if desired - default to "NULL"}
 
-\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
+\item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{scales}{Value for axis in facets, either "fixed" or "free" - defaults to "free"}
 
@@ -45,13 +45,13 @@ create_facet_bar_chart(
 
 \item{lpos}{Position for the bar labels of "above" or "within" - defaults to "above"}
 
-\item{color}{Name of color palette to use - defaults to "psrc_dark"}
+\item{color}{Name of color palette to use - generally defaults to "psrc_dark"}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{interactive}{Enable hover text and other interactive features - defaults to "no"}
+\item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 }
 \value{
 facet bar chart that is either static or interactive depending on choice
