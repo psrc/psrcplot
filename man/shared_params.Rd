@@ -18,7 +18,7 @@
 
 \item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 
-\item{source}{Source reference to be used for chart, if desired - defaults to blank}
+\item{source}{Source reference as character string, if desired - defaults to blank}
 }
 \description{
 Parameters shared among other functions

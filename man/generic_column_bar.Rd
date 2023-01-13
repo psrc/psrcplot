@@ -53,7 +53,7 @@ generic_column_bar(
 
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{source}{Source reference to be used for chart, if desired - defaults to blank}
+\item{source}{Source reference as character string, if desired - defaults to blank}
 
 \item{alt}{Text to be used for alt-text, if desired - defaults to "NULL"}
 

@@ -11,9 +11,29 @@ NULL
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
-#' @param source Source reference to be used for chart, if desired - defaults to blank
+#' @param source Source reference as character string, if desired - defaults to blank
 #' @name shared_params
 NULL
+
+#' Helper - add source citation to ggplot object
+#' 
+#' @param chart ggplot or plotly object
+#' @param source Source reference as character string
+add_citation <- function(chart, source){
+  if(!is.character(source)){
+    warning("Source parameter must be provided as text.")
+  }else{
+    if("plotly" %in% class(chart)){
+      c <- plotly::layout(chart, annotations = list(x= -0.05, y= -0.2, text=source,
+                                                xref='paper', yref='paper', showarrow=FALSE, 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font = list(family="Poppins",size=10, color="#4C4C4C")))    
+    }else{
+      # Do something here for ggplot2 objects
+    }
+  }
+  return(c)
+}
 
 #' Generic column/bar workhorse function
 #' 
@@ -119,7 +139,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], ymax=.data[[numeric_var]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9))
   }
   
-  # Add Bar Labels if there is no Error Bar and remove y-axis since we have the labels
+  # Add Bar Labels if there is no Error Bar and remove the category-variable axis since we have the labels
   if (is.null(moe)) {
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                              y=.data[[numeric_var]], 
@@ -205,15 +225,12 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                                   font = list(family="Poppins Black",size=14, color="#4C4C4C")))
       }
     }
-    # Turn on Source if Provided
-    if (!(is.null(source))) {
-      
-      c <- plotly::layout(c, annotations = list(x = -0.05, y = -0.2, text = source,
-                                                xref='paper', yref='paper', showarrow = F, 
-                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                                font = list(family="Poppins",size=10, color="#4C4C4C")))
-    }
   }
+  # Turn on Source if Provided
+  if(!source==""){
+    c <- add_citation(c, source)
+    }
+  
   return(c)
 }
 
