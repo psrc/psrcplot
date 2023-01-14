@@ -525,11 +525,9 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
   
 }
 
-
-#' Static Line Chart
+#' Generic Line Chart
 #'
-#' This function allows you to create a line chart.
-#' 
+#' Used for both static and interactive line functions.
 #' @inheritParams shared_params
 #' @param t A tibble or dataframe in long form for plotting
 #' @param x The name of the variable you want plotted on the X-Axis
@@ -538,92 +536,15 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
 #' @param dform Format for Date values 
 #' @param breaks Break points to use if using a continuous scale, defaults to NULL
 #' @param lwidth Width of lines, defaults to 1
+#' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @return line chart
 #' 
-#' @export
-#'
-create.line.chart <- function(t, x, y, fill, title=NULL, subtitle=NULL, est="number", dec=0, xtype="Date", dform="%b-%Y", breaks=NULL, lwidth=1, color="psrc_light") {
-  
-  confirm_fonts() 
-  
-  grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
-  num.grps <- length(grps)
-  l.colors <- unlist(psrc_colors[color])
-  l.colors <- l.colors[1:num.grps]
-  cols <- stats::setNames(l.colors, grps)
-  
-  # Estimate type determines the labels for the axis and the format of the number for the hover-text
-  if (est=="percent") {
-    fac=100
-    p=""
-    s="%"
-    lab=scales::label_percent()
-    
-  } else if (est=="currency") {
-    fac=1
-    p="$"
-    s=""
-    lab=scales::label_dollar()
-    
-  } else {
-    fac=1
-    p=""
-    s=""
-    lab=scales::label_comma()
-  }
-    
-  if (xtype=="Continuous") {
-    g <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=.data[[x]],
-                                      y=.data[[y]], 
-                                      group=.data[[fill]]))  + 
-      ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size=lwidth, linejoin = "round") +
-      ggplot2::geom_point(ggplot2::aes(color=.data[[fill]]))+
-      ggplot2::scale_x_discrete(breaks=breaks) +
-      ggplot2::scale_y_continuous(labels = lab) +
-      ggplot2::scale_color_manual(values=cols)  +
-      ggplot2::ggtitle(title, subtitle = subtitle) +
-      psrc_style()
-    
-  } else {
-    
-    g <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=.data[[x]],
-                                      y=.data[[y]], 
-                                      group=.data[[fill]]))  + 
-      ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size = lwidth, linejoin = "round") +
-      ggplot2::scale_x_date(labels = scales::date_format(dform)) +
-      ggplot2::scale_y_continuous(labels = lab) +
-      ggplot2::scale_color_manual(values=cols)  +
-      ggplot2::ggtitle(title, subtitle = subtitle) +
-      psrc_style()
-    
-  }
-  
-  return(g)
-}
-
-#' Interactive Line Chart
-#'
-#' This function allows you to create a line chart.
-#' 
-#' @inheritParams shared_params
-#' @param t A tibble or dataframe in long form for plotting
-#' @param x The name of the variable you want plotted on the X-Axis
-#' @param y The name of the variable you want plotted on the Y-Axis
-#' @param xtype Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"
-#' @param dform Format for Date values 
-#' @param breaks Break points to use if using a continuous scale, defaults to NULL
-#' @param lwidth Width of lines, defaults to 1
-#' @return line chart
-#' 
-#' @export
-#'
-interactive_line_chart <- function(t, x, y, fill, 
-                                   title="", 
-                                   est="number", dec=0, 
-                                   xtype="Date", dform="%b-%Y", 
-                                   breaks=NULL, lwidth=1, color="psrc_light") {
+generic_line <- function(t, x, y, fill, 
+                         title="", 
+                         est="number", dec=0, 
+                         xtype="Date", dform="%b-%Y", 
+                         breaks=NULL, lwidth=1, color="psrc_light",
+                         interactive=FALSE){
   
   confirm_fonts() 
   
@@ -671,7 +592,7 @@ interactive_line_chart <- function(t, x, y, fill,
       ggplot2::labs(title=title) +
       psrc_style()
     
-  } else {
+  }else{
     
     c <- ggplot2::ggplot(data=t, 
                          ggplot2::aes(x=.data[[x]],
@@ -687,33 +608,56 @@ interactive_line_chart <- function(t, x, y, fill,
     
   }
   
-  # Remove Bar labels and axis titles
-  c <- c + ggplot2::theme(axis.title = ggplot2::element_blank())
-  
-  # Make Interactive
-  m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
-  c <- plotly::ggplotly(c, tooltip = c("text"), autosize = T, margin = m)
-  
-  # Set Font for Hover-Text
-  c <- plotly::style(c, hoverlabel = list(font=list(family="Poppins",size=11, color="white")))
-  
-  # Format X-Axis
-  c <- plotly::layout(c, xaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
-  
-  # Format Y-Axis
-  c <- plotly::layout(c, yaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
-  
-  # Turn on Legend
-  c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", xref="container", x = 0.5, y = -0.10, 
-                                       title = "", 
-                                       font = list(family="Poppins", size=11, color="#2f3030"),
-                                       pad = list(b=50, t=50)), 
-                      hovermode = "x")
-  
-  # Update Plotly Title
-  c <- plotly::layout(c, title= list(text = title, 
-                                     font = list(family="Poppins Black",size=12, color="#4C4C4C"),
-                                     x=0.02,
-                                     xref="container"))
+  # Make interactive
+  if(interactive==TRUE){
+    
+        c <- c + ggplot2::theme(axis.title = ggplot2::element_blank())                             # Remove Bar labels and axis titles
+        m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
+        c <- plotly::ggplotly(c, tooltip=c("text"), autosize = T, margin = m)                      # Make Interactive
+        c <- plotly::style(c, hoverlabel=list(font=list(family="Poppins", size=11, color="white"))) # Set Font for Hover-Text
+        c <- plotly::layout(c, xaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030"))) # Format X-Axis
+        c <- plotly::layout(c, yaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030"))) # Format Y-Axis
+        c <- plotly::layout(c,                                                                     # Turn on Legend
+                  legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10, 
+                              title="", 
+                              font=list(family="Poppins", size=11, color="#2f3030"),
+                              pad=list(b=50, t=50)), 
+                              hovermode = "x")
+        c <- plotly::layout(c,                                                                     # Update Plotly Title
+                   title=list(text=title, 
+                              font=list(family="Poppins Black", size=12, color="#4C4C4C"),
+                              x=0.02,
+                              xref="container")) 
+  }
+
+  return(c)
+}
+
+#' Line charts
+#'
+#' Separate functions for static and interactive line charts
+#'
+#' @param t A tibble in long form for plotting
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param fill The name of the variable you want the fill color of the bars to be based on
+#' @param ... additional arguments passed to  \code{\link{generic_line}}
+#' @name line_charts
+#' @return static or interactive column or bar chart
+NULL
+
+#' @rdname line_charts
+#' @title Generate static line chart
+#' @export
+static_line_chart <- function(t, x, y, fill, ...){
+  c <- generic_line(t=t, x=x, y=y, interactive=FALSE)
+  return(c)
+}
+
+#' @rdname line_charts
+#' @title Generate static line chart
+#' @export
+interactive_line_chart <- function(t, x, y, fill, ...){
+  c <- generic_line(t=t, x=x, y=y, interactive=TRUE)
   return(c)
 }
