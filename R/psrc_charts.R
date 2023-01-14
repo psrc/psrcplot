@@ -213,7 +213,7 @@ static_column_chart <- function(t, x, y, fill,
                                     y=.data[[y]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
                                     fill = .data[[fill]],
-                                    group=.data[[x]])) +
+                                    group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
@@ -329,7 +329,7 @@ interactive_column_chart <- function(t, x, y, fill,
                                     y=.data[[y]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
                                     fill = .data[[fill]],
-                                    group=.data[[x]])) +
+                                    group=.data[[fill])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab) +
@@ -511,7 +511,7 @@ static_bar_chart <- function(t, x, y, fill,
                                     y=.data[[x]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[x]]*fac, dec), big.mark = ","),s),
                                     fill=.data[[fill]],
-                                    group=.data[[y]])) +
+                                    group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
 
@@ -640,7 +640,7 @@ interactive_bar_chart <- function(t, x, y, fill,
                                     y=.data[[x]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[x]]*fac, dec), big.mark = ","),s),
                                     fill=.data[[fill]],
-                                    group=.data[[y]])) +
+                                    group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab, expand = c(0, 0)) +
