@@ -4,6 +4,13 @@
 \name{mode_share_example_data}
 \alias{mode_share_example_data}
 \title{Mode share example data included in psrcplot}
+\format{
+An object of class \code{data.frame} with 262 rows and 9 columns.
+}
+\usage{
+mode_share_example_data
+}
 \description{
 Mode share example data included in psrcplot
 }
+\keyword{datasets}
