@@ -4,6 +4,13 @@
 \name{transit_access_example_data}
 \alias{transit_access_example_data}
 \title{Transit access example data included in psrcplot}
+\format{
+An object of class \code{data.frame} with 4 rows and 8 columns.
+}
+\usage{
+transit_access_example_data
+}
 \description{
 Transit access example data included in psrcplot
 }
+\keyword{datasets}

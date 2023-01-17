@@ -55,6 +55,9 @@
     <loc>https://psrc.github.io/psrcplot/reference/interactive_line_chart.html</loc>
   </url>
   <url>
+    <loc>https://psrc.github.io/psrcplot/reference/mode_share_example_data.html</loc>
+  </url>
+  <url>
     <loc>https://psrc.github.io/psrcplot/reference/print_psrc_palette.html</loc>
   </url>
   <url>
@@ -77,5 +80,11 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/static_column_chart.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/summary_pums_example_data.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/transit_access_example_data.html</loc>
   </url>
 </urlset>
