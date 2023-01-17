@@ -329,7 +329,7 @@ interactive_column_chart <- function(t, x, y, fill,
                                     y=.data[[y]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
                                     fill = .data[[fill]],
-                                    group=.data[[fill])) +
+                                    group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels = lab) +
