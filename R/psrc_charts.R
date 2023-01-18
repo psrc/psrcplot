@@ -2,10 +2,6 @@
 #' @importFrom rlang .data
 NULL
 
-#' @importFrom magrittr %<>% %>%
-#' @importFrom rlang .data
-NULL
-
 #' Parameters shared among other functions
 #' 
 #' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
