@@ -16,7 +16,6 @@ License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests:
-    dplyr,
     forcats,
     stringr,
     tidyverse,
@@ -26,6 +25,7 @@ Suggests:
     htmlwidgets
 Imports: 
     magrittr,
+    dplyr,
     scales,
     ggplot2,
     ggiraph,

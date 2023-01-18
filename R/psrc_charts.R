@@ -1,5 +1,6 @@
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
+#' @importFrom dplyr select all_of distinct
 NULL
 
 #' Parameters shared among other functions
@@ -27,9 +28,7 @@ add_citation <- function(p, source){
       p <- plotly::layout(p, annotations = list(x= -0.05, y= -0.2, text=source,
                                                     xref='paper', yref='paper', showarrow=FALSE, 
                                                     xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                                    font = list(family="Poppins",size=10, color="#4C4C4C")))    
-    }else{
-      # Do something here for ggplot2 objects
+                                                    font = list(family="Poppins",size=10, color="#4C4C4C")))
     }
   }
   return(p)
@@ -225,10 +224,10 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                                   font = list(family="Poppins Black",size=14, color="#4C4C4C")))
       }
     }
-  }
-  # Turn on Source if Provided
-  if(!source==""){
-    c <- add_citation(c, source)
+    # Turn on Source if Provided
+    if(!source==""){
+      c <- add_citation(c, source)
+    }
   }
   
   return(c)
@@ -459,41 +458,31 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="per
     p=""
     s=""
   }
-  
+
   if (est=="percent") {
     c <- ggplot2::ggplot(t,
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
                                                     paste0(p, prettyNum(round(.data[[s]]*fac,dec), big.mark = ","), s),
-                                                    sep = "\n"))) +
-      treemapify::geom_treemap() +
-      treemapify::geom_treemap_text(colour = "white",
-                                    place = "centre",
-                                    size = 28) +
-      psrc_style() +
-      ggplot2::theme(legend.position = "none") +
-      scale_fill_discrete_psrc(color) +
-      ggplot2::ggtitle(title, subtitle = subtitle)
-    
+                                                    sep = "\n")))
   } else {
-    
     c <- ggplot2::ggplot(t,
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
                                                     paste0(p, prettyNum(round(.data[[s]]*fac,dec), big.mark = ","), s),
                                                     paste0(prettyNum(round(.data$total_share*100,0), big.mark = ","), "%"), 
-                                                    sep = "\n"))) +
-      treemapify::geom_treemap() +
-      treemapify::geom_treemap_text(colour = "white",
+                                                    sep = "\n")))
+  }
+  c <- c + treemapify::geom_treemap() +
+           treemapify::geom_treemap_text(colour = "white",
                                     place = "centre",
                                     size = 28) +
-      psrc_style() +
-      ggplot2::theme(legend.position = "none") +
-      scale_fill_discrete_psrc(color) +
-      ggplot2::ggtitle(title, subtitle = subtitle)
-  }
+           psrc_style() +
+           ggplot2::theme(legend.position = "none") +
+           scale_fill_discrete_psrc(color) +
+           ggplot2::ggtitle(title, subtitle = subtitle)
   
   return(c)
 }
@@ -562,7 +551,7 @@ generic_line <- function(t, x, y, fill,
   confirm_fonts() 
   
   # Create a color palette from PSRC palette
-  grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
+  grps <- t %>% dplyr::select(all_of(fill)) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
   l.colors <- unlist(psrcplot::psrc_colors[color])
   l.colors <- l.colors[1:num.grps]
@@ -591,34 +580,22 @@ generic_line <- function(t, x, y, fill,
     annot = 1
   }
   
-  if (xtype=="Continuous") {
-    c <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=.data[[x]],
-                                      y=.data[[y]],
-                                      text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
-                                      group=.data[[fill]]))  + 
-      ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size=lwidth, linejoin = "round") +
-      ggplot2::geom_point(ggplot2::aes(color=.data[[fill]]))+
-      ggplot2::scale_x_discrete(breaks=breaks) +
-      ggplot2::scale_y_continuous(labels = lab) +
-      ggplot2::scale_color_manual(values=cols)  +
-      ggplot2::labs(title=title) +
-      psrc_style()
-    
+  c <- ggplot2::ggplot(data=t, 
+                       ggplot2::aes(x=.data[[x]],
+                                    y=.data[[y]],
+                                    text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","), s),
+                                    group=.data[[fill]]))  + 
+    ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round") +
+    ggplot2::scale_y_continuous(labels = lab) +
+    ggplot2::scale_color_manual(values=cols)  +
+    ggplot2::labs(title=title) +
+    psrc_style()
+
+  if (xtype=="Continuous"){
+    c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]])) +	
+             ggplot2::scale_x_discrete(breaks=breaks)
   }else{
-    
-    c <- ggplot2::ggplot(data=t, 
-                         ggplot2::aes(x=.data[[x]],
-                                      y=.data[[y]], 
-                                      text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","),s),
-                                      group=.data[[fill]]))  +
-      ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), size = lwidth, linejoin = "round") +
-      ggplot2::scale_x_date(labels = scales::date_format(dform)) +
-      ggplot2::scale_y_continuous(labels = lab) +
-      ggplot2::scale_color_manual(values=cols)  +
-      ggplot2::labs(title=title) +
-      psrc_style()
-    
+    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform))
   }
   
   # Make interactive
@@ -640,7 +617,10 @@ generic_line <- function(t, x, y, fill,
                         title=list(text=title, 
                                    font=list(family="Poppins Black", size=12, color="#4C4C4C"),
                                    x=0.02,
-                                   xref="container")) 
+                                   xref="container"))
+    if(!source==""){
+      c <- add_citation(c, source)
+    }
   }
   
   return(c)
@@ -663,7 +643,7 @@ NULL
 #' @title Generate static line chart
 #' @export
 static_line_chart <- function(t, x, y, fill, ...){
-  c <- generic_line(t=t, x=x, y=y, interactive=FALSE, ...)
+  c <- generic_line(t=t, x=x, y=y, fill=fill, interactive=FALSE, ...)
   return(c)
 }
 
@@ -671,6 +651,6 @@ static_line_chart <- function(t, x, y, fill, ...){
 #' @title Generate static line chart
 #' @export
 interactive_line_chart <- function(t, x, y, fill, ...){
-  c <- generic_line(t=t, x=x, y=y, interactive=TRUE, ...)
+  c <- generic_line(t=t, x=x, y=y, fill=fill, interactive=TRUE, ...)
   return(c)
 }
