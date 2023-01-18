@@ -21,14 +21,14 @@ NULL
 
 #' Helper - add source citation to ggplot object
 #' 
-#' @param chart ggplot or plotly object
+#' @param p ggplot or plotly object
 #' @param source Source reference as character string
-add_citation <- function(chart, source){
+add_citation <- function(p, source){
   if(!is.character(source)){
     warning("Source parameter must be provided as text.")
   }else{
-    if("plotly" %in% class(chart)){
-      c <- plotly::layout(chart, annotations = list(x= -0.05, y= -0.2, text=source,
+    if("plotly" %in% class(p)){
+      p <- plotly::layout(p, annotations = list(x= -0.05, y= -0.2, text=source,
                                                     xref='paper', yref='paper', showarrow=FALSE, 
                                                     xanchor='left', yanchor='auto', xshift=0, yshift=0,
                                                     font = list(family="Poppins",size=10, color="#4C4C4C")))    
@@ -36,7 +36,7 @@ add_citation <- function(chart, source){
       # Do something here for ggplot2 objects
     }
   }
-  return(c)
+  return(p)
 }
 
 #' Generic column/bar workhorse function
@@ -56,7 +56,7 @@ add_citation <- function(chart, source){
 #' @param category_label category-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param numeric_label numeric-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param axis_scale Enlarge or reduce the axis weight - defaults to 1
-#' @param orientation "column": vertical bars or "bar": horizontal bars - defaults to "column"
+#' @param column_vs_bar "column": vertical bars or "bar": horizontal bars - defaults to "column"
 #' @return static or interactive column or bar chart
 
 generic_column_bar <- function(t, category_var, numeric_var, fill,
@@ -64,7 +64,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                href=NULL, hrefnm=NULL, hrefcl=NULL,
                                title=NULL, subtitle=NULL, source="", alt=NULL,
                                category_label=NULL, numeric_label=NULL, 
-                               axis_scale=1, orientation="column",
+                               axis_scale=1, column_vs_bar="column",
                                dec = 0, color="psrc_dark",
                                interactive=FALSE){
   
@@ -112,7 +112,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
-                       ggplot2::aes(x=if(orientation=="bar"){forcats::fct_rev(.data[[category_var]])}else{.data[[category_var]]},
+                       ggplot2::aes(x=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[category_var]])}else{.data[[category_var]]},
                                     y=.data[[numeric_var]],
                                     text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[numeric_var]]*fac, dec), big.mark = ","),s),
                                     fill = .data[[fill]],
@@ -131,7 +131,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   }
   
   # Pivot for bar chart
-  if(orientation=="bar"){
+  if(column_vs_bar=="bar"){
     c <- c + ggplot2::coord_flip()
     ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
                    panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
@@ -181,7 +181,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     # Format Y-Axis
     c <- plotly::layout(c, yaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
     
-    if(orientation=="bar"){
+    if(column_vs_bar=="bar"){
       # Turn on Legend  
       c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", xref="container", x = 0.5, y = -0.10,   
                                            title = "",  
@@ -259,7 +259,7 @@ NULL
 static_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   c <- generic_column_bar(t=t, category_var=x, numeric_var=y, fill=fill,
                           category_label=xlabel, numeric_label=ylabel,
-                          axis_scale=1.1, orientation="column")
+                          axis_scale=1.1, column_vs_bar="column", ...)
   return(c)
 }
 
@@ -269,7 +269,7 @@ static_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 static_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   c <- generic_column_bar(t=t, category_var=y, numeric_var=x, fill=fill,
                           category_label=ylabel, numeric_label=xlabel,
-                          axis_scale=1.25, orientation="bar")
+                          axis_scale=1.25, column_vs_bar="bar", ...)
   return(c)
 }
 
@@ -279,7 +279,7 @@ static_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 interactive_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   c <- generic_column_bar(t=t, category_var=x, numeric_var=y, fill=fill,
                           category_label=xlabel, numeric_label=ylabel,
-                          axis_scale=1.1, orientation="column", interactive=TRUE)
+                          axis_scale=1.1, column_vs_bar="column", interactive=TRUE, ...)
   return(c)
 }
 
@@ -289,7 +289,7 @@ interactive_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ..
 interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   c <- generic_column_bar(t=t, category_var=y, numeric_var=x, 
                           category_label=ylabel, numeric_label=xlabel,
-                          axis_scale=1.25, orientation="bar", interactive=TRUE)
+                          axis_scale=1.25, column_vs_bar="bar", interactive=TRUE, ...)
   return(c)
 }
 
@@ -667,7 +667,7 @@ NULL
 #' @title Generate static line chart
 #' @export
 static_line_chart <- function(t, x, y, fill, ...){
-  c <- generic_line(t=t, x=x, y=y, interactive=FALSE)
+  c <- generic_line(t=t, x=x, y=y, interactive=FALSE, ...)
   return(c)
 }
 
@@ -675,6 +675,6 @@ static_line_chart <- function(t, x, y, fill, ...){
 #' @title Generate static line chart
 #' @export
 interactive_line_chart <- function(t, x, y, fill, ...){
-  c <- generic_line(t=t, x=x, y=y, interactive=TRUE)
+  c <- generic_line(t=t, x=x, y=y, interactive=TRUE, ...)
   return(c)
 }

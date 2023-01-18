@@ -22,7 +22,7 @@ generic_column_bar(
   category_label = NULL,
   numeric_label = NULL,
   axis_scale = 1,
-  orientation = "column",
+  column_vs_bar = "column",
   dec = 0,
   color = "psrc_dark",
   interactive = FALSE
@@ -63,7 +63,7 @@ generic_column_bar(
 
 \item{axis_scale}{Enlarge or reduce the axis weight - defaults to 1}
 
-\item{orientation}{"column": vertical bars or "bar": horizontal bars - defaults to "column"}
+\item{column_vs_bar}{"column": vertical bars or "bar": horizontal bars - defaults to "column"}
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 

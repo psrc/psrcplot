@@ -4,10 +4,10 @@
 \alias{add_citation}
 \title{Helper - add source citation to ggplot object}
 \usage{
-add_citation(chart, source)
+add_citation(p, source)
 }
 \arguments{
-\item{chart}{ggplot or plotly object}
+\item{p}{ggplot or plotly object}
 
 \item{source}{Source reference as character string}
 }
