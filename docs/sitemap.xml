@@ -28,7 +28,10 @@
     <loc>https://psrc.github.io/psrcplot/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://psrc.github.io/psrcplot/reference/create.line.chart.html</loc>
+    <loc>https://psrc.github.io/psrcplot/reference/add_citation.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/column_bar_charts.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/create_bubble_chart.html</loc>
@@ -40,19 +43,19 @@
     <loc>https://psrc.github.io/psrcplot/reference/create_treemap_chart.html</loc>
   </url>
   <url>
+    <loc>https://psrc.github.io/psrcplot/reference/generic_column_bar.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/generic_line.html</loc>
+  </url>
+  <url>
     <loc>https://psrc.github.io/psrcplot/reference/index.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/install_psrc_fonts.html</loc>
   </url>
   <url>
-    <loc>https://psrc.github.io/psrcplot/reference/interactive_bar_chart.html</loc>
-  </url>
-  <url>
-    <loc>https://psrc.github.io/psrcplot/reference/interactive_column_chart.html</loc>
-  </url>
-  <url>
-    <loc>https://psrc.github.io/psrcplot/reference/interactive_line_chart.html</loc>
+    <loc>https://psrc.github.io/psrcplot/reference/line_charts.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/mode_share_example_data.html</loc>
@@ -76,10 +79,7 @@
     <loc>https://psrc.github.io/psrcplot/reference/scale_fill_discrete_psrc.html</loc>
   </url>
   <url>
-    <loc>https://psrc.github.io/psrcplot/reference/static_bar_chart.html</loc>
-  </url>
-  <url>
-    <loc>https://psrc.github.io/psrcplot/reference/static_column_chart.html</loc>
+    <loc>https://psrc.github.io/psrcplot/reference/shared_params.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/summary_pums_example_data.html</loc>
