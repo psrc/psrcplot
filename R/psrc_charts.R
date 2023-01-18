@@ -1,6 +1,6 @@
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
-#' @importFrom dplyr select all_of distinct
+#' @importFrom dplyr select all_of
 NULL
 
 #' Parameters shared among other functions
@@ -26,9 +26,9 @@ add_citation <- function(p, source){
   }else{
     if("plotly" %in% class(p)){
       p <- plotly::layout(p, annotations = list(x= -0.05, y= -0.2, text=source,
-                                                    xref='paper', yref='paper', showarrow=FALSE, 
-                                                    xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                                    font = list(family="Poppins",size=10, color="#4C4C4C")))
+                                                xref='paper', yref='paper', showarrow=FALSE, 
+                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                                font = list(family="Poppins",size=10, color="#4C4C4C")))
     }
   }
   return(p)
@@ -66,17 +66,17 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   confirm_fonts()
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
-  max_item <- t %>% dplyr::select(.data[[numeric_var]]) %>% dplyr::pull() %>% max()
+  max_item <- t %>% select(all_of(numeric_var)) %>% dplyr::pull() %>% max()
   
   # Create a color palette from PSRC palette
-  grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
+  grps <- t %>% select(all_of(fill)) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
   l.colors <- unlist(psrcplot::psrc_colors[color])
   l.colors <- l.colors[1:num.grps]
   cols <- stats::setNames(l.colors, grps)
   
   # Figure out how many items are plotted on the category axis for use in Reference Line Titles
-  num_cat_items <- t %>% dplyr::select(.data[[category_var]]) %>% dplyr::distinct() %>% dplyr::pull() %>% length()
+  num_cat_items <- t %>% select(all_of(category_var)) %>% dplyr::distinct() %>% dplyr::pull() %>% length()
   href_label_location <- ceiling(num_cat_items/2)
   
   # Estimate type determines the labels for the axis and the format of the number bar labels
@@ -135,7 +135,9 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # If there is a MOE value then error bars are added to the plot
   if (!(is.null(moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], ymax=.data[[numeric_var]]+.data[[moe]]),width=0.2, position = ggplot2::position_dodge(0.9))
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
+                                                 ymax=.data[[numeric_var]]+.data[[moe]]), 
+                                    width=0.2, position = ggplot2::position_dodge(0.9))
   }
   
   # Add Bar Labels if there is no Error Bar and remove the category-variable axis since we have the labels
@@ -357,7 +359,7 @@ create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent",
                                       x=.data[[x]],
                                       fill=.data[[fill]],
                                       group=.data[[y]],
-                                      tooltip=paste0(.data[[x]], " ", .data[[fill]],": ", p, prettyNum(round(.data[[y]]*fac,dec), big.mark = ","),s),
+                                      tooltip=paste0(.data[[x]], " ", .data[[fill]],": ", p, prettyNum(round(.data[[y]]*fac,dec), big.mark = ","), s),
                                       data_id=.data[[y]])) +
       ggiraph::geom_bar_interactive(position=pos, stat="identity") +
       ggplot2::ggtitle(title, subtitle = subtitle) +
@@ -439,7 +441,7 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="per
   
   confirm_fonts() 
   
-  tot <- t %>% dplyr::select(.data[[s]]) %>% dplyr::pull() %>% sum()
+  tot <- t %>% select(all_of(s)) %>% dplyr::pull() %>% sum()
   t <- t %>% dplyr::mutate(total_share = .data[[s]]/tot)
   
   # Estimate type determines the labels
@@ -507,7 +509,7 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
   confirm_fonts() 
   
   # Create a color palette from PSRC palette
-  grps <- t %>% dplyr::select(.data[[fill]]) %>% unique() %>% dplyr::pull()
+  grps <- t %>% select(all_of(fill)) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
   l.colors <- unlist(psrc_colors[color])
   l.colors <- l.colors[1:num.grps]
@@ -551,7 +553,7 @@ generic_line <- function(t, x, y, fill,
   confirm_fonts() 
   
   # Create a color palette from PSRC palette
-  grps <- t %>% dplyr::select(all_of(fill)) %>% unique() %>% dplyr::pull()
+  grps <- t %>% select(all_of(fill)) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
   l.colors <- unlist(psrcplot::psrc_colors[color])
   l.colors <- l.colors[1:num.grps]
