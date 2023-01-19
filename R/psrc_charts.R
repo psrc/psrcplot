@@ -16,19 +16,61 @@ NULL
 #' @name shared_params
 NULL
 
-#' Helper - add source citation to ggplot object
+#' Helper - make static ggplot object an interactive plotly object
 #' 
-#' @param p ggplot or plotly object
+#' @param p ggplot object
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+make_interactive <- function(p, title=NULL, subtitle=NULL){
+  p <- p + ggplot2::theme(axis.title = ggplot2::element_blank())                                   # Remove Bar labels and axis titles
+  m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
+  p <- plotly::ggplotly(p, tooltip=c("text"), autosize = T, margin = m)                            # Make Interactive
+  p <- plotly::style(p, hoverlabel=list(font=list(family="Poppins", size=11, color="white")))      # Set Font for Hover-Text
+  p <- plotly::layout(p, xaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format X-Axis
+  p <- plotly::layout(p, yaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format Y-Axis
+  p <- plotly::layout(p,                                                                     
+          legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         # Turn on Legend
+                      title="", font=list(family="Poppins", size=11, color="#2f3030"),
+                      pad=list(b=50, t=50)), 
+                      hovermode = "x")
+
+  p <- plotly::layout(p, title= list(text = ""))                                                   # Remove Plotly Title
+  
+  if(!(is.null(title)) & !(is.null(subtitle))) {                                                   # If there is both title and subtitle
+
+    p <- plotly::layout(p, 
+            annotations = list(x = -0.05, y = 1.10, text = title,                                  # -- add the title, located high enough for room for subtitle
+                               xref='paper', yref='paper', showarrow = FALSE, 
+                               font = list(family="Poppins Black",size=14, color="#4C4C4C")))
+    p <- plotly::layout(p, 
+            annotations = list(x = -0.05, y = 1.05, text = subtitle,                               # -- then add the subtitle 
+                               showarrow = FALSE, xref='paper', yref='paper', 
+                               font=list(family="Poppins",size=12, color="#4C4C4C")))
+  }
+  
+  if(!(is.null(title)) & is.null(subtitle)) {                                                      # If there is no Subtitle
+    
+    p <- plotly::layout(p, 
+            annotations = list(x = -0.05, y = 1.05, text = title,                                  # -- just add the title
+                               xref='paper', yref='paper', showarrow = FALSE,
+                               font = list(family="Poppins Black",size=14, color="#4C4C4C")))
+  }
+}
+
+#' Helper - add source citation to plotly object
+#' 
+#' @param p plotly object
 #' @param source Source reference as character string
 add_citation <- function(p, source){
   if(!is.character(source)){
     warning("Source parameter must be provided as text.")
   }else{
     if("plotly" %in% class(p)){
-      p <- plotly::layout(p, annotations = list(x= -0.05, y= -0.2, text=source,
-                                                xref='paper', yref='paper', showarrow=FALSE, 
-                                                xanchor='left', yanchor='auto', xshift=0, yshift=0,
-                                                font = list(family="Poppins",size=10, color="#4C4C4C")))
+      p <- plotly::layout(p, 
+              annotations = list(x= -0.05, y= -0.2, text=source,
+                                 xref='paper', yref='paper', showarrow=FALSE, 
+                                 xanchor='left', yanchor='auto', xshift=0, yshift=0,
+                                 font = list(family="Poppins",size=10, color="#4C4C4C")))
     }
   }
   return(p)
@@ -161,8 +203,6 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     }
   }
   
-
-  
   # Remove legend if unneccesary
   if (num.grps == 1) {   
     c <- c + ggplot2::theme(legend.position = "none")  
@@ -170,70 +210,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # Interactivity
   if(interactive==TRUE){
-    # Remove Bar labels and axis titles
-    c <- c + ggplot2::theme(axis.title = ggplot2::element_blank())
-    
-    # Make Interactive
-    m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
-    c <- plotly::ggplotly(c, tooltip = c("text"), autosize = T, margin = m)
-    
-    # Set Font for Hover-Text
-    c <- plotly::style(c, hoverlabel = list(font=list(family="Poppins",size=11, color="white")))
-    
-    # Format X-Axis
-    c <- plotly::layout(c, xaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
-    
-    # Format Y-Axis
-    c <- plotly::layout(c, yaxis = list(tickfont = list(family="Poppins", size=11, color="#2f3030")))
-    
-    if(column_vs_bar=="bar"){
-      # Turn on Legend  
-      c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", xref="container", x = 0.5, y = -0.10,   
-                                           title = "",  
-                                           font = list(family="Poppins", size=11, color="#2f3030"), 
-                                           pad = list(b=50, t=50)))
-      
-      # Update Plotly Title 
-      c <- plotly::layout(c, title= list(text = title,  
-                                         font = list(family="Poppins Black",size=12, color="#4C4C4C"),  
-                                         x=0.02,  
-                                         xref="container"))
-    }else{
-      
-      # Turn on Legend
-      c <- plotly::layout(c, legend = list(orientation = "h", xanchor = "center", x = 0.5, y = -0.10, 
-                                           title = "", 
-                                           font = list(family="Poppins", size=11, color="#2f3030"),
-                                           pad = list(b=50, t=50)))
-      
-      # Remove Plotly Title
-      c <- plotly::layout(c, title= list(text = ""))
-      
-      # Chart Title if there is also a Subtitle
-      if(!(is.null(title)) & !(is.null(subtitle))) {
-        
-        # Remove Plotly Title
-        c <- plotly::layout(c, title= list(text = ""))
-        
-        # Add the title and put it high enough for room for subtitle
-        c <- plotly::layout(c, annotations = list(x = -0.05, y = 1.10, text = title,
-                                                  xref='paper', yref='paper', showarrow = F, 
-                                                  font = list(family="Poppins Black",size=14, color="#4C4C4C")))
-        # Add the subtitle 
-        c <- plotly::layout(c, annotations = list(x = -0.05, y = 1.05, text = subtitle, 
-                                                  showarrow = F, xref='paper', yref='paper', 
-                                                  font=list(family="Poppins",size=12, color="#4C4C4C")))
-      }
-      
-      # Chart Title if there is no Subtitle
-      if(!(is.null(title)) & is.null(subtitle)) {
-        
-        # Add the title
-        c <- plotly::layout(c, annotations = list(x = -0.05, y = 1.05, text = title,
-                                                  xref='paper', yref='paper', showarrow = F,
-                                                  font = list(family="Poppins Black",size=14, color="#4C4C4C")))
-      }
-    }
+    c <- make_interactive(c, title=title, subtitle=subtitle)
     # Turn on Source if Provided
     if(!source==""){
       c <- add_citation(c, source)
@@ -610,24 +587,7 @@ generic_line <- function(t, x, y, fill,
   
   # Make interactive
   if(interactive==TRUE){
-    
-    c <- c + ggplot2::theme(axis.title = ggplot2::element_blank())                             # Remove Bar labels and axis titles
-    m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
-    c <- plotly::ggplotly(c, tooltip=c("text"), autosize = T, margin = m)                      # Make Interactive
-    c <- plotly::style(c, hoverlabel=list(font=list(family="Poppins", size=11, color="white"))) # Set Font for Hover-Text
-    c <- plotly::layout(c, xaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030"))) # Format X-Axis
-    c <- plotly::layout(c, yaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030"))) # Format Y-Axis
-    c <- plotly::layout(c,                                                                     # Turn on Legend
-                        legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10, 
-                                    title="", 
-                                    font=list(family="Poppins", size=11, color="#2f3030"),
-                                    pad=list(b=50, t=50)), 
-                        hovermode = "x")
-    c <- plotly::layout(c,                                                                     # Update Plotly Title
-                        title=list(text=title, 
-                                   font=list(family="Poppins Black", size=12, color="#4C4C4C"),
-                                   x=0.02,
-                                   xref="container"))
+    c <- make_interactive(c, title=title, subtitle=subtitle)
     if(!source==""){
       c <- add_citation(c, source)
     }
