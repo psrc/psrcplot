@@ -66,10 +66,10 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   confirm_fonts()
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
-  max_item <- t %>% select(all_of(numeric_var)) %>% dplyr::pull() %>% max()
+  max_item <- select(t, all_of(numeric_var)) %>% dplyr::pull() %>% max()
   
   # Create a color palette from PSRC palette
-  grps <- t %>% select(all_of(fill)) %>% unique() %>% dplyr::pull()
+  grps <- select(t, all_of(fill)) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
   l.colors <- unlist(psrcplot::psrc_colors[color])
   l.colors <- l.colors[1:num.grps]
@@ -284,7 +284,7 @@ interactive_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ..
 #' @title Generate interactive horizontal bar chart
 #' @export
 interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
-  c <- generic_column_bar(t=t, category_var=y, numeric_var=x, 
+  c <- generic_column_bar(t=t, category_var=y, numeric_var=x, fill=fill,
                           category_label=ylabel, numeric_label=xlabel,
                           axis_scale=1.25, column_vs_bar="bar", interactive=TRUE, ...)
   return(c)
@@ -544,10 +544,10 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
 #' @return line chart
 #' 
 generic_line <- function(t, x, y, fill, 
-                         title="", 
-                         est="number", dec=0, 
-                         xtype="Date", dform="%b-%Y", 
+                         est="percent", dec=0, 
+                         xtype="Date", dform="%b-%Y",  
                          breaks=NULL, lwidth=1, color="psrc_light",
+                         title=NULL, subtitle=NULL, source="",
                          interactive=FALSE){
   
   confirm_fonts() 

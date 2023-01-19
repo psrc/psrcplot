@@ -9,14 +9,16 @@ generic_line(
   x,
   y,
   fill,
-  title = "",
-  est = "number",
+  est = "percent",
   dec = 0,
   xtype = "Date",
   dform = "\%b-\%Y",
   breaks = NULL,
   lwidth = 1,
   color = "psrc_light",
+  title = NULL,
+  subtitle = NULL,
+  source = "",
   interactive = FALSE
 )
 }
@@ -28,8 +30,6 @@ generic_line(
 \item{y}{The name of the variable you want plotted on the Y-Axis}
 
 \item{fill}{The name of the variable you want the fill color of the bars to be based on}
-
-\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
 \item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
@@ -44,6 +44,12 @@ generic_line(
 \item{lwidth}{Width of lines, defaults to 1}
 
 \item{color}{Name of color palette to use - generally defaults to "psrc_dark"}
+
+\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
+
+\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
+
+\item{source}{Source reference as character string, if desired - defaults to blank}
 
 \item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 }
