@@ -125,22 +125,22 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
       ggplot2::annotate("text", x = href_label_location, y = href+annot, label = hrefnm, color=hrefcl)
   }
   
-  # Pivot for bar chart
-  if(column_vs_bar=="bar"){
-    c <- c + ggplot2::coord_flip()
-    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
-                   panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
-                   axis.line.y = ggplot2::element_line(color="#cbcbcb"))
-  }
-  
   # If there is a MOE value then error bars are added to the plot
   if (!(is.null(moe))) {
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
                                                  ymax=.data[[numeric_var]]+.data[[moe]]), 
                                     width=0.2, position = ggplot2::position_dodge(0.9))
   }
-  
-  # Add Bar Labels if there is no Error Bar and remove the category-variable axis since we have the labels
+
+  # Pivot for bar chart
+  if(column_vs_bar=="bar"){
+    c <- c + ggplot2::coord_flip()
+    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
+                   panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
+                   axis.line.y = ggplot2::element_line(color="#cbcbcb"))
+  }  
+    
+  # Add value labels if there is no error bar and remove the category-variable axis since we have the labels
   if (is.null(moe)) {
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                              y=.data[[numeric_var]], 
@@ -149,11 +149,19 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 position = ggplot2::position_dodge(0.9),
                                 vjust = -0.25,
                                 size = 11*0.36,
-                                family="Poppins") +
-      ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                     panel.grid.major.y = ggplot2::element_blank(),
-                     axis.line.x = ggplot2::element_line(color="#cbcbcb"))
+                                family="Poppins")
+    if(column_vs_bar=="bar"){
+      c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                              panel.grid.major.y = ggplot2::element_blank(),
+                              axis.line.y = ggplot2::element_line(color="#cbcbcb"))      
+    }else{
+      c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                              panel.grid.major.y = ggplot2::element_blank(),
+                              axis.line.x = ggplot2::element_line(color="#cbcbcb"))     
+    }
   }
+  
+
   
   # Remove legend if unneccesary
   if (num.grps == 1) {   

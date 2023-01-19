@@ -55,14 +55,16 @@
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">fill</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  est <span class="op">=</span> <span class="st">"number"</span>,</span>
+<span>  est <span class="op">=</span> <span class="st">"percent"</span>,</span>
 <span>  dec <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  xtype <span class="op">=</span> <span class="st">"Date"</span>,</span>
 <span>  dform <span class="op">=</span> <span class="st">"%b-%Y"</span>,</span>
 <span>  breaks <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lwidth <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  color <span class="op">=</span> <span class="st">"psrc_light"</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  subtitle <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -83,10 +85,6 @@
 
 <dt>fill</dt>
 <dd><p>The name of the variable you want the fill color of the bars to be based on</p></dd>
-
-
-<dt>title</dt>
-<dd><p>Title to be used for chart, if desired - defaults to "NULL"</p></dd>
 
 
 <dt>est</dt>
@@ -115,6 +113,18 @@
 
 <dt>color</dt>
 <dd><p>Name of color palette to use - generally defaults to "psrc_dark"</p></dd>
+
+
+<dt>title</dt>
+<dd><p>Title to be used for chart, if desired - defaults to "NULL"</p></dd>
+
+
+<dt>subtitle</dt>
+<dd><p>Sub-title to be used for chart, if desired - defaults to "NULL"</p></dd>
+
+
+<dt>source</dt>
+<dd><p>Source reference as character string, if desired - defaults to blank</p></dd>
 
 
 <dt>interactive</dt>
