@@ -15,7 +15,8 @@ psrc_style <- function() {
     #This sets the font, size, type and color of text for the chart's title
     plot.title = ggplot2::element_text(family=font,
                                        face="bold",
-                                       size=14),
+                                       size=13, 
+                                       color='#4C4C4C'),
     plot.title.position = "plot",
 
     #This sets the font, size, type and color of text for the chart's subtitle, as well as setting a margin between the title and the subtitle
