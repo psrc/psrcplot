@@ -2,15 +2,15 @@
 % Please edit documentation in R/psrc_charts.R
 \name{add_citation}
 \alias{add_citation}
-\title{Helper - add source citation to ggplot object}
+\title{Helper - add source citation to plotly object}
 \usage{
 add_citation(p, source)
 }
 \arguments{
-\item{p}{ggplot or plotly object}
+\item{p}{plotly object}
 
 \item{source}{Source reference as character string}
 }
 \description{
-Helper - add source citation to ggplot object
+Helper - add source citation to plotly object
 }

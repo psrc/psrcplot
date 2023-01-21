@@ -16,6 +16,30 @@ NULL
 #' @name shared_params
 NULL
 
+#' Helper - return number formatting to match estimate type
+#' 
+#' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
+est_number_formats <- function(est){
+  x<- data.frame(row.names=c("percent","currency","number"),
+                 fac=c(100,1,1),
+                 pfx=c("","$",""),
+                 sfx=c("%","",""),
+                 annot=c(0.01, 1, 1))
+  y <- x[est,] %>% as.vector()
+  return(y)
+}
+
+#' Helper - return label format function to match estimate type
+#' 
+#' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
+est_label_formats <- function(est){
+  lab <-    if(est=="percent") {scales::percent
+      }else if(est=="currency"){scales::dollar
+      }else if(est=="number")  {scales::label_comma
+      }
+  return(lab)
+}
+
 #' Helper - make static ggplot object an interactive plotly object
 #' 
 #' @param p ggplot object
@@ -105,7 +129,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                dec = 0, color="psrc_dark",
                                interactive=FALSE){
   
-  confirm_fonts()
+  psrcplot:::confirm_fonts()
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- select(t, all_of(numeric_var)) %>% dplyr::pull() %>% max()
@@ -120,38 +144,17 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Figure out how many items are plotted on the category axis for use in Reference Line Titles
   num_cat_items <- t %>% select(all_of(category_var)) %>% dplyr::distinct() %>% dplyr::pull() %>% length()
   href_label_location <- ceiling(num_cat_items/2)
+  scale_max <- max_item * axis_scale
   
-  # Estimate type determines the labels for the axis and the format of the number bar labels
-  if (est=="percent") {
-    scale_max <- max_item * axis_scale
-    fac=100
-    p=""
-    s="%"
-    lab=scales::label_percent()
-    annot = 0.01
-    
-  } else if (est=="currency") {
-    scale_max <- max_item * axis_scale
-    fac=1
-    p="$"
-    s=""
-    lab=scales::label_dollar()
-    annot = 1
-    
-  } else {
-    scale_max <- max_item * axis_scale
-    fac=1
-    p=""
-    s=""
-    lab=scales::label_comma()
-    annot = 1
-  }
+  # Estimate type determines the labels for the axis and the format of the value labels
+  valfrmt <- est_number_formats(est)
+  lab <- est_label_formats(est)
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
                        ggplot2::aes(x=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[category_var]])}else{.data[[category_var]]},
                                     y=.data[[numeric_var]],
-                                    text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[numeric_var]]*fac, dec), big.mark = ","),s),
+                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(round(.data[[numeric_var]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
                                     fill = .data[[fill]],
                                     group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
@@ -164,7 +167,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   if (!(is.null(href))) {
     c <- c + 
       ggplot2::geom_hline(yintercept = href, color=hrefcl, linetype='solid', linewidth=1, show.legend = FALSE) +
-      ggplot2::annotate("text", x = href_label_location, y = href+annot, label = hrefnm, color=hrefcl)
+      ggplot2::annotate("text", x = href_label_location, y = href + valfrmt$annot, label = hrefnm, color=hrefcl)
   }
   
   # If there is a MOE value then error bars are added to the plot
@@ -186,7 +189,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   if (is.null(moe)) {
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                              y=.data[[numeric_var]], 
-                                             label=paste0(p,prettyNum(round(.data[[numeric_var]]*fac,dec), big.mark = ","),s)),
+                                             label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.9),
                                 vjust = -0.25,
@@ -210,7 +213,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # Interactivity
   if(interactive==TRUE){
-    c <- make_interactive(c, title=title, subtitle=subtitle)
+    c <- make_interactive(p=c, title=title, subtitle=subtitle)
     # Turn on Source if Provided
     if(!source==""){
       c <- add_citation(c, source)
@@ -318,24 +321,9 @@ create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent",
     l = -0.5
   } else {l = 0.5}
   
-  if (est=="percent") {
-    fac=100
-    p=""
-    s="%"
-    lab=scales::label_percent()
-    
-  } else if (est=="currency") {
-    fac=1
-    p="$"
-    s=""
-    lab=scales::label_dollar()
-    
-  } else {
-    fac=1
-    p=""
-    s=""
-    lab=scales::label_comma()
-  }
+  # Estimate type determines the labels for the axis and the format of the value labels
+  valfrmt <- est_number_formats(est)
+  lab <- est_label_formats(est)
   
   if (interactive==TRUE) {
     
@@ -344,7 +332,7 @@ create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent",
                                       x=.data[[x]],
                                       fill=.data[[fill]],
                                       group=.data[[y]],
-                                      tooltip=paste0(.data[[x]], " ", .data[[fill]],": ", p, prettyNum(round(.data[[y]]*fac,dec), big.mark = ","), s),
+                                      tooltip=paste0(.data[[x]], " ", .data[[fill]],": ", valfrmt$pfx, prettyNum(round(.data[[y]] * valfrmt$fac,dec), big.mark = ","), valfrmt$sfx),
                                       data_id=.data[[y]])) +
       ggiraph::geom_bar_interactive(position=pos, stat="identity") +
       ggplot2::ggtitle(title, subtitle = subtitle) +
@@ -430,36 +418,22 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="per
   t <- t %>% dplyr::mutate(total_share = .data[[s]]/tot)
   
   # Estimate type determines the labels
-  if (est=="percent") {
-    fac=100
-    p=""
-    s="%"
-    
-  } else if (est=="currency") {
-    fac=1
-    p="$"
-    s=""
-    
-  } else {
-    fac=1
-    p=""
-    s=""
-  }
+  valfrmt <- est_number_formats(est)
 
   if (est=="percent") {
     c <- ggplot2::ggplot(t,
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
-                                                    paste0(p, prettyNum(round(.data[[s]]*fac,dec), big.mark = ","), s),
+                                                    paste0(valfrmt$pfx, prettyNum(round(.data[[s]]*fac, dec), big.mark = ","), valfrmt$sfx),
                                                     sep = "\n")))
   } else {
     c <- ggplot2::ggplot(t,
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
-                                                    paste0(p, prettyNum(round(.data[[s]]*fac,dec), big.mark = ","), s),
-                                                    paste0(prettyNum(round(.data$total_share*100,0), big.mark = ","), "%"), 
+                                                    paste0(valfrmt$pfx, prettyNum(round(.data[[s]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
+                                                    paste0(prettyNum(round(.data$total_share * 100,0), big.mark = ","), "%"), 
                                                     sep = "\n")))
   }
   c <- c + treemapify::geom_treemap() +
@@ -544,33 +518,14 @@ generic_line <- function(t, x, y, fill,
   l.colors <- l.colors[1:num.grps]
   cols <- stats::setNames(l.colors, grps)
   
-  # Estimate type determines the labels for the axis and the format of the number for the hover-text
-  if (est=="percent") {
-    fac=100
-    p=""
-    s="%"
-    lab=scales::label_percent()
-    annot = 0.01
-    
-  } else if (est=="currency") {
-    fac=1
-    p="$"
-    s=""
-    lab=scales::label_dollar()
-    annot = 1
-    
-  } else {
-    fac=1
-    p=""
-    s=""
-    lab=scales::label_comma()
-    annot = 1
-  }
+  # Estimate type determines the labels for the axis and the format of the value labels
+  valfrmt <- est_number_formats(est)
+  lab <- est_label_formats(est)
   
   c <- ggplot2::ggplot(data=t, 
                        ggplot2::aes(x=.data[[x]],
                                     y=.data[[y]],
-                                    text=paste0(.data[[fill]], ": ", p, prettyNum(round(.data[[y]]*fac, dec), big.mark = ","), s),
+                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(round(.data[[y]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
                                     group=.data[[fill]]))  + 
     ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round") +
     ggplot2::scale_y_continuous(labels = lab) +
@@ -587,7 +542,7 @@ generic_line <- function(t, x, y, fill,
   
   # Make interactive
   if(interactive==TRUE){
-    c <- make_interactive(c, title=title, subtitle=subtitle)
+    c <- make_interactive(p=c, title=title, subtitle=subtitle)
     if(!source==""){
       c <- add_citation(c, source)
     }
