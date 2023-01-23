@@ -43,6 +43,12 @@
     <loc>https://psrc.github.io/psrcplot/reference/create_treemap_chart.html</loc>
   </url>
   <url>
+    <loc>https://psrc.github.io/psrcplot/reference/est_label_formats.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/est_number_formats.html</loc>
+  </url>
+  <url>
     <loc>https://psrc.github.io/psrcplot/reference/generic_column_bar.html</loc>
   </url>
   <url>
@@ -56,6 +62,9 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/line_charts.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/make_interactive.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/mode_share_example_data.html</loc>
