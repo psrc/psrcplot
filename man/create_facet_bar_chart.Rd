@@ -16,7 +16,7 @@ create_facet_bar_chart(
   facet = 3,
   dec = 0,
   lpos = "above",
-  color = "psrc_dark",
+  color = "pgnobgy_5",
   title = NULL,
   subtitle = NULL,
   interactive = "no"
@@ -45,7 +45,7 @@ create_facet_bar_chart(
 
 \item{lpos}{Position for the bar labels of "above" or "within" - defaults to "above"}
 
-\item{color}{Name of color palette to use - generally defaults to "psrc_dark"}
+\item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 

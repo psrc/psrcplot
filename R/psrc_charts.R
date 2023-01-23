@@ -8,7 +8,7 @@ NULL
 #' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
 #' @param fill The name of the variable you want the fill color of the bars to be based on
 #' @param dec Number of decimal points in labels - defaults to 0
-#' @param color Name of color palette to use - generally defaults to "psrc_dark"
+#' @param color Name of color palette to use - generally defaults to "pgnobgy_5"
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
@@ -121,7 +121,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                title=NULL, subtitle=NULL, source="", alt=NULL,
                                category_label=NULL, numeric_label=NULL, 
                                axis_scale=1, column_vs_bar="column",
-                               dec = 0, color="psrc_dark",
+                               dec = 0, color="pgnobgy_5",
                                interactive=FALSE){
   
   confirm_fonts()
@@ -304,7 +304,7 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'
 create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent", 
                                    scales="free", facet=3, dec = 0, lpos="above", 
-                                   color="psrc_dark", title=NULL, subtitle=NULL, interactive="no") {
+                                   color="pgnobgy_5", title=NULL, subtitle=NULL, interactive="no") {
   
   confirm_fonts() 
   

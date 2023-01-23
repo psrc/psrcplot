@@ -24,7 +24,7 @@ generic_column_bar(
   axis_scale = 1,
   column_vs_bar = "column",
   dec = 0,
-  color = "psrc_dark",
+  color = "pgnobgy_5",
   interactive = FALSE
 )
 }
@@ -67,7 +67,7 @@ generic_column_bar(
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{color}{Name of color palette to use - generally defaults to "psrc_dark"}
+\item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
 
 \item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 }

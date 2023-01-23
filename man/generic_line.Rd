@@ -43,7 +43,7 @@ generic_line(
 
 \item{lwidth}{Width of lines, defaults to 1}
 
-\item{color}{Name of color palette to use - generally defaults to "psrc_dark"}
+\item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 

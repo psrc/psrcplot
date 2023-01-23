@@ -10,7 +10,7 @@
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{color}{Name of color palette to use - generally defaults to "psrc_dark"}
+\item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
