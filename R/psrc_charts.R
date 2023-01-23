@@ -124,7 +124,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                dec = 0, color="psrc_dark",
                                interactive=FALSE){
   
-  psrcplot:::confirm_fonts()
+  confirm_fonts()
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- select(t, all_of(numeric_var)) %>% dplyr::pull() %>% max()
@@ -420,7 +420,7 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="per
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
-                                                    paste0(valfrmt$pfx, prettyNum(round(.data[[s]]*fac, dec), big.mark = ","), valfrmt$sfx),
+                                                    paste0(valfrmt$pfx, prettyNum(round(.data[[s]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
                                                     sep = "\n")))
   } else {
     c <- ggplot2::ggplot(t,
