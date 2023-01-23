@@ -30,12 +30,12 @@ est_number_formats <- function(est){
 }
 
 #' Helper - return label format function to match estimate type
-#' 
+#'
 #' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
 est_label_formats <- function(est){
-  lab <-    if(est=="percent") {scales::percent
-      }else if(est=="currency"){scales::dollar
-      }else if(est=="number")  {scales::label_comma
+  lab <-    if(est=="percent") {scales::label_percent()
+      }else if(est=="currency"){scales::label_dollar()
+      }else if(est=="number")  {scales::label_comma()
       }
   return(lab)
 }
@@ -154,7 +154,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
-    ggplot2::scale_y_continuous(labels = lab, limits = c(0, scale_max), expand = c(0, 0)) +
+    ggplot2::scale_y_continuous(labels=lab, limits=c(0, scale_max), expand=c(0, 0)) +
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
   
