@@ -70,15 +70,14 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
             annotations = list(x = -0.05, y = 1.05, text = subtitle,                               # -- then add the subtitle 
                                showarrow = FALSE, xref='paper', yref='paper', 
                                font=list(family="Poppins",size=12, color="#4C4C4C")))
-  }
-  
-  if(!(is.null(title)) & is.null(subtitle)) {                                                      # If there is no Subtitle
+  }else if(!(is.null(title)) & is.null(subtitle)) {                                                # If there is no Subtitle
     
     p <- plotly::layout(p, 
             annotations = list(x = -0.05, y = 1.05, text = title,                                  # -- just add the title
                                xref='paper', yref='paper', showarrow = FALSE,
                                font = list(family="Poppins Black",size=14, color="#4C4C4C")))
   }
+  return(p)
 }
 
 #' Helper - add source citation to plotly object
@@ -86,17 +85,13 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
 #' @param p plotly object
 #' @param source Source reference as character string
 add_citation <- function(p, source){
-  if(!is.character(source)){
-    warning("Source parameter must be provided as text.")
-  }else{
-    if("plotly" %in% class(p)){
+    if("plotly" %in% class(p) & !is.character(source)){
       p <- plotly::layout(p, 
               annotations = list(x= -0.05, y= -0.2, text=source,
                                  xref='paper', yref='paper', showarrow=FALSE, 
                                  xanchor='left', yanchor='auto', xshift=0, yshift=0,
                                  font = list(family="Poppins",size=10, color="#4C4C4C")))
     }
-  }
   return(p)
 }
 
@@ -530,7 +525,7 @@ generic_line <- function(t, x, y, fill,
     ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round") +
     ggplot2::scale_y_continuous(labels = lab) +
     ggplot2::scale_color_manual(values=cols)  +
-    ggplot2::labs(title=title) +
+    ggplot2::labs(title=title, subtitle=subtitle, caption=source) +
     psrc_style()
 
   if (xtype=="Continuous"){
