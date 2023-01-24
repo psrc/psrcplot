@@ -275,106 +275,190 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   return(c)
 }
 
-#' Create PSRC Facet Bar Charts
+#' Create Static Facet Column Charts
 #'
-#' This function allows you to create facet bar charts.
-#' @inheritParams shared_params
+#' This function allows you to create facet column charts based on ggplot2's facet_wrap().
 #' @param t A tibble or dataframe in long form for plotting
 #' @param x The name of the variable you want plotted on the X-Axis
 #' @param y The name of the variable you want plotted on the Y-Axis
-#' @param g The name of the variable to be the facets
+#' @param fill The name of the variable you want the fill color of the bars to be based on
+#' @param facet The name of the variable to be the facets
+#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
 #' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
-#' @param facet Value for the number of columns in your facet - defaults to 3
-#' @param lpos Position for the bar labels of "above" or "within" - defaults to "above"
+#' @param ncol Value for the number of columns in your facet - defaults to 3
+#' @param dec Number of decimal points in labels - defaults to 0
+#' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @param moe The name of the variable to be used for error bars, if desired - default to "NULL"
-#' @return facet bar chart that is either static or interactive depending on choice
+#' @param href A value to be used for a horizontal reference line - default is "NULL"
+#' @param hrefcl A color to be used for horizontal reference lines - default is "NULL"
+#' @param title Title to be used for chart, if desired - defaults to "NULL"
+#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
+#' @param source Source reference to be used for chart, if desired - defaults to blank
+#' @return A static facet column (vertical bar) chart; based on facet_wrap()
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
 #' 
 #' @examples
 #' 
 #' library(dplyr)
 #' # Read in the example data and filter to 2020 Population by Race by County
-#' df <- psrcplot::mode_share_example_data %>% 
+#' df <- mode_share_example_data %>%
 #'       filter(Category=="Population by Race" & Year==2020) %>%
-#'       filter(Geography!="Region" & Race!="Total")
+#'       filter(Race !="Total")
 #' 
-#' # Create a facet chart for population by race using counties as the facet
-#' my.chart <- create_facet_bar_chart(t=df, x="Race", y="share", 
-#'                                    fill="Race", g="Geography", 
-#'                                    facet=2, scales="fixed")
-#' 
+#' my_facet <- static_facet_column_chart(t = df,
+#'                                       x = "Geography",
+#'                                       y = "share",
+#'                                       fill = "Geography",
+#'                                       facet = "Race",
+#'                                       moe = 'share_moe',
+#'                                       href = 'Region',
+#'                                       hrefcl = 'black',
+#'                                       ncol = 4,
+#'                                       scales = "fixed",
+#'                                       color = "pgnobgy_5",
+#'                                       title = "Population by Race 2020",
+#'                                       subtitle = "For counties in the Central Puget Sound Region",
+#'                                       source = paste("Source: ACS 5-Year Estimates, table B03002",
+#'                                                      "for King, Kitsap, Pierce and Snohomish counties.",
+#'                                                      sep = "\n"))
+#'                                                      
+#'  df2 <- mode_share_example_data %>%
+#'       filter(Category=="Population by Race" & Year==2020) %>%
+#'       filter(Geography != "Region", Race !="Total")
+#'                                                           
+#'  my_facet2 <- static_facet_column_chart(t = df2, 
+#'                                         x = "Race", 
+#'                                         y = "share", 
+#'                                         fill = "Race", 
+#'                                         facet = "Geography",
+#'                                         ncol = 2,
+#'                                         moe = 'share_moe',
+#'                                         scales = "fixed",
+#'                                         color = "psrc_light",
+#'                                         title = "Population by Race 2020",
+#'                                         subtitle = "For counties in the Central Puget Sound Region",
+#'                                         source = paste("Source: ACS 5-Year Estimates, table B03002",
+#'                                                        "for King, Kitsap, Pierce and Snohomish counties.",
+#'                                                        sep = "\n"))
 #' @export
 #'
-create_facet_bar_chart <- function(t, x, y, fill, g, moe=NULL, est="percent", 
-                                   scales="free", facet=3, dec = 0, lpos="above", 
-                                   color="pgnobgy_5", title=NULL, subtitle=NULL, interactive="no") {
+static_facet_column_chart <- function(t,
+                                      x, 
+                                      y, 
+                                      fill, 
+                                      facet, 
+                                      moe = NULL,
+                                      href = NULL,
+                                      hrefcl = NULL,
+                                      est = "percent",
+                                      ncol = 3,
+                                      scales = "free", 
+                                      dec = 0, 
+                                      color = "psrc_dark", 
+                                      title = NULL, 
+                                      subtitle = NULL,
+                                      source = "",
+                                      alt = NULL) {
   
-  confirm_fonts() 
+  confirm_fonts()
   
-  l.clr ="#4C4C4C"
-  l.sz=4
-  pos="dodge"
+  l.clr <- "#4C4C4C"
   
-  if (lpos == "above") {
-    l = -0.5
-  } else {l = 0.5}
+  # Create a color palette from PSRC palette
+  grps <- t %>% 
+    dplyr::select(dplyr::all_of(fill)) %>% 
+    unique() %>% 
+    dplyr::pull()
+  num.grps <- length(grps)
+  l.colors <- unlist(psrcplot::psrc_colors[color])
+  l.colors <- l.colors[1:num.grps]
+  cols <- stats::setNames(l.colors, grps)
   
-  # Estimate type determines the labels for the axis and the format of the value labels
-  valfrmt <- est_number_formats(est)
-  lab <- est_label_formats(est)
-  
-  if (interactive==TRUE) {
+  if (est == "percent") {
+    factor <- 100
+    pp <- ""
+    s <- "%"
+    label <- scales::label_percent()
     
-    c <- ggplot2::ggplot(data=t,
-                         ggplot2::aes(y=.data[[y]],
-                                      x=.data[[x]],
-                                      fill=.data[[fill]],
-                                      group=.data[[y]],
-                                      tooltip=paste0(.data[[x]], " ", .data[[fill]],": ", valfrmt$pfx, prettyNum(round(.data[[y]] * valfrmt$fac,dec), big.mark = ","), valfrmt$sfx),
-                                      data_id=.data[[y]])) +
-      ggiraph::geom_bar_interactive(position=pos, stat="identity") +
-      ggplot2::ggtitle(title, subtitle = subtitle) +
-      ggplot2::scale_y_continuous(labels = lab) +
-      scale_fill_discrete_psrc(color)
-    
-    if (!(is.null(moe))) {
-      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[y]]-.data[[moe]], 
-                                                   ymax=.data[[y]]+.data[[moe]]),
-                                      width=0.2, position = ggplot2::position_dodge(0.9))
-    }
-    
-    c <- c + 
-      ggplot2::facet_wrap(ggplot2::vars(get(eval(g))), scales=scales, ncol=facet) +
-      psrc_style() +
-      ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                     axis.text.y = ggplot2::element_text(size=12,color="#4C4C4C"))
-    
-    c <- ggiraph::girafe(ggobj = c)
+  } else if (est == "currency") {
+    factor <- 1
+    pp <- "$"
+    s <- ""
+    label <- scales::label_dollar()
     
   } else {
-    
-    c <- ggplot2::ggplot(data=t,
-                         ggplot2::aes(y=.data[[y]],
-                                      x=.data[[x]],
-                                      fill = .data[[fill]])) +
-      ggplot2::geom_bar(position=pos, stat="identity") +
-      ggplot2::ggtitle(title, subtitle = subtitle) +
-      ggplot2::scale_y_continuous(labels = lab) +
-      scale_fill_discrete_psrc(color)
-    
-    if (!(is.null(moe))) {
-      c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[y]]-.data[[moe]], 
-                                                   ymax=.data[[y]]+.data[[moe]]),
-                                      width=0.2, position = ggplot2::position_dodge(0.9))
-    }
-    
-    c <- c + 
-      ggplot2::facet_wrap(ggplot2::vars(get(eval(g))), scales=scales, ncol=facet) +
-      psrc_style() +
-      ggplot2::theme(axis.text.x = ggplot2::element_text(size=10,color="#4C4C4C"),
-                     axis.text.y = ggplot2::element_text(size=12,color="#4C4C4C"))
+    factor <- 1
+    pp <- ""
+    s <- ""
+    label <- scales::label_comma()
   }
   
-  return(c)
+  if(!(is.null(href))) {
+    # separate column data from hline data
+    tcol <- t %>% 
+      filter(.data[[x]] != eval(href))
+    
+    thline <- t %>% 
+      filter(.data[[x]] == eval(href))
+    
+    p <- ggplot2::ggplot(data = tcol,
+                         ggplot2::aes(x = .data[[x]],
+                                      y = .data[[y]],
+                                      fill = .data[[fill]],
+                                      group = .data[[fill]])) +
+      ggplot2::geom_col() +
+      ggplot2::geom_hline(data = thline, 
+                          ggplot2::aes(yintercept = .data[[y]], color = .data[[x]]),
+                          alpha = .3,
+                          linetype = 'solid', 
+                          linewidth = 1)  +
+      ggplot2::scale_color_manual(values = c('black'))
+  } else {
+    # no horizontal reference line
+    p <- ggplot2::ggplot(data = t,
+                         ggplot2::aes(x = .data[[x]],
+                                      y = .data[[y]],
+                                      fill = .data[[fill]],
+                                      group = .data[[fill]])) +
+      ggplot2::geom_col()
+  }
+  
+  # add labels
+  p <- p +
+    ggplot2::labs(title = title, 
+                  subtitle = subtitle,
+                  alt = alt,
+                  caption = source,
+                  x = NULL,
+                  y = NULL) +
+    ggplot2::scale_y_continuous(labels = label) +
+    scale_fill_discrete_psrc(color)
+  
+  if(!(is.null(moe))) {
+    p <- p + 
+      ggplot2::geom_errorbar(ggplot2::aes(ymin = .data[[y]] - .data[[moe]], 
+                                          ymax = .data[[y]] + .data[[moe]]),
+                             width = 0.2,
+                             position = ggplot2::position_dodge(0.9))
+  }
+  
+  # add facet and theme
+  p <- p +
+    ggplot2::facet_wrap(ggplot2::vars(.data[[facet]]), 
+                        labeller = ggplot2::label_wrap_gen(),
+                        scales = scales, 
+                        ncol = ncol) +
+    psrc_style() +
+    ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
+                   strip.text = ggplot2::element_text(size = 10),
+                   panel.grid.major.y = ggplot2::element_blank()
+    ) 
+  
+  return(p)
 }
 
 #' Create PSRC TreeMap Chart
