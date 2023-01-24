@@ -3,6 +3,8 @@
 #' @importFrom dplyr select all_of
 NULL
 
+is.date <- function(x) inherits(x, 'Date')
+
 #' Parameters shared among other functions
 #' 
 #' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
@@ -574,7 +576,6 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
 #' @param t A tibble or dataframe in long form for plotting
 #' @param x The name of the variable you want plotted on the X-Axis
 #' @param y The name of the variable you want plotted on the Y-Axis
-#' @param xtype Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"
 #' @param dform Format for Date values 
 #' @param breaks Break points to use if using a continuous scale, defaults to NULL
 #' @param lwidth Width of lines, defaults to 1
@@ -582,9 +583,8 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
 #' @return line chart
 #' 
 generic_line <- function(t, x, y, fill, 
-                         est="percent", dec=0, 
-                         xtype="Date", dform="%b-%Y",  
-                         breaks=NULL, lwidth=1, color="psrc_light",
+                         est="percent", dec=0, dform="%b-%Y",  
+                         breaks=NULL, lwidth=1, color="gnbopgy_5",
                          title=NULL, subtitle=NULL, source="",
                          interactive=FALSE){
   
@@ -600,6 +600,7 @@ generic_line <- function(t, x, y, fill,
   # Estimate type determines the labels for the axis and the format of the value labels
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
+  xtype_date <- t %>% select(all_of(x)) %>% is.date()
   
   c <- ggplot2::ggplot(data=t, 
                        ggplot2::aes(x=.data[[x]],
@@ -612,11 +613,11 @@ generic_line <- function(t, x, y, fill,
     ggplot2::labs(title=title, subtitle=subtitle, caption=source) +
     psrc_style()
 
-  if (xtype=="Continuous"){
-    c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]])) +	
-             ggplot2::scale_x_discrete(breaks=breaks)
-  }else{
+  if (xtype_date==TRUE){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform))
+  }else{
+    c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]])) +	
+      ggplot2::scale_x_discrete(breaks=breaks)
   }
   
   # Make interactive

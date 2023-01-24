@@ -11,11 +11,10 @@ generic_line(
   fill,
   est = "percent",
   dec = 0,
-  xtype = "Date",
   dform = "\%b-\%Y",
   breaks = NULL,
   lwidth = 1,
-  color = "psrc_light",
+  color = "gnbopgy_5",
   title = NULL,
   subtitle = NULL,
   source = "",
@@ -34,8 +33,6 @@ generic_line(
 \item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
-
-\item{xtype}{Type of values for the X-Axis either "Continuous" or "Date", defaults to "Date"}
 
 \item{dform}{Format for Date values}
 
