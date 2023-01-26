@@ -115,10 +115,11 @@ but still with alphabetical default ordering.</p>
 <span>     title<span class="op">=</span><span class="st">"Median Household Income by Race - default Race order"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.chart.default</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 9 rows containing missing values (`geom_bar()`).</span></span></code></pre>
 <p><img src="frequently-asked-questions_files/figure-html/default_ordering-1.png" width="700"></p>
 <p>Factor levels can be reversed using the <code>fct_rev()</code>
 function from the <strong>forcats</strong> package.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hhinc19_rev</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_REV<span class="op">=</span><span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_rev.html" class="external-link">fct_rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">HRACE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -131,6 +132,7 @@ function from the <strong>forcats</strong> package.</p>
 <span>     title<span class="op">=</span><span class="st">"Median Household Income by Race - reverse default"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.chart.reverse</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 9 rows containing missing values (`geom_bar()`).</span></span></code></pre>
 <p><img src="frequently-asked-questions_files/figure-html/reverse_ordering-1.png" width="700"></p>
 <div class="section level3">
 <h3 id="sort-by-value">Sort by value<a class="anchor" aria-label="anchor" href="#sort-by-value"></a>
@@ -139,7 +141,7 @@ function from the <strong>forcats</strong> package.</p>
 This uses another <strong>forcats</strong> function,
 <code>fct_reorder()</code> (more complex multi-variable ordering
 expressions are also possible using this function).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">hhinc19_low_high</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_low_high<span class="op">=</span><span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_reorder.html" class="external-link">fct_reorder</a></span><span class="op">(</span><span class="va">HRACE</span>, <span class="op">-</span><span class="va">HINCP_median</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -153,6 +155,7 @@ expressions are also possible using this function).</p>
 <span>      title<span class="op">=</span><span class="st">"Median Household Income by Race - median income order"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.chart.low_high</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 9 rows containing missing values (`geom_bar()`).</span></span></code></pre>
 <p><img src="frequently-asked-questions_files/figure-html/data_ordering-1.png" width="700"></p>
 </div>
 <div class="section level3">
@@ -163,7 +166,7 @@ numeric rank–for example, setting remainder or combination categories
 last. To do that, you’ll need to order the factor levels manually. Be
 careful that you type the exact factor names, or they will be omitted
 (ugh).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hhinc19_custom</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_custom<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">HRACE</span>, </span>
 <span>       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"American Indian or Alaskan Native Alone"</span>, </span>
@@ -187,6 +190,7 @@ careful that you type the exact factor names, or they will be omitted
 <span>      title<span class="op">=</span> <span class="st">"Regional Household Median Income by Race - custom order"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.chart.custom</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 9 rows containing missing values (`geom_bar()`).</span></span></code></pre>
 <p><img src="frequently-asked-questions_files/figure-html/custom_ordering-1.png" width="700"></p>
 </div>
 </div>
@@ -196,7 +200,7 @@ messy!<a class="anchor" aria-label="anchor" href="#how-can-i-wrap-the-text-on-a-
 </h2>
 <p>It does look messy when you don’t wrap the text on the x-axis often
 on a column chart - like this:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">income.column.messy</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/column_bar_charts.html">static_column_chart</a></span><span class="op">(</span></span>
 <span>      t<span class="op">=</span><span class="va">hhinc19_custom</span>, </span>
 <span>      x<span class="op">=</span><span class="st">"HRACE"</span>, </span>
@@ -207,6 +211,7 @@ on a column chart - like this:</p>
 <span>      title<span class="op">=</span> <span class="st">"Regional Household Median Income by Race, lookin messy"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.messy</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 9 rows containing missing values (`geom_bar()`).</span></span></code></pre>
 <p><img src="frequently-asked-questions_files/figure-html/messy_labels-1.png" width="700"></p>
 <p>We can fix these ugly labels using a <strong>ggplot2</strong> command
 and text wrapping via the <strong>stringr</strong> package. You might
@@ -214,7 +219,7 @@ need to play around with the <code>str_wrap()</code> parameter to get
 the breaks looking nice. This leaves the category variable in the data
 alone (since <code>str_wrap</code> would otherwise convert the type to
 character and lose factor level ordering, etc).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xlabs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">hhinc19_custom</span><span class="op">$</span><span class="va">HRACE_custom</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html" class="external-link">str_wrap</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.wrapped</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/column_bar_charts.html">static_column_chart</a></span><span class="op">(</span></span>
@@ -227,6 +232,7 @@ character and lose factor level ordering, etc).</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="va">xlabs</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.wrapped</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removed 9 rows containing missing values (`geom_bar()`).</span></span></code></pre>
 <p><img src="frequently-asked-questions_files/figure-html/wrapped_labels-1.png" width="700"></p>
 </div>
 <div class="section level2">

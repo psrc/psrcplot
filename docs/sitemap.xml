@@ -37,9 +37,6 @@
     <loc>https://psrc.github.io/psrcplot/reference/create_bubble_chart.html</loc>
   </url>
   <url>
-    <loc>https://psrc.github.io/psrcplot/reference/create_facet_bar_chart.html</loc>
-  </url>
-  <url>
     <loc>https://psrc.github.io/psrcplot/reference/create_treemap_chart.html</loc>
   </url>
   <url>
@@ -89,6 +86,9 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/shared_params.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/static_facet_column_chart.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/summary_pums_example_data.html</loc>
