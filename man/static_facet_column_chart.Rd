@@ -17,7 +17,7 @@ static_facet_column_chart(
   ncol = 3,
   scales = "free",
   dec = 0,
-  color = "psrc_dark",
+  color = "pgnobgy_5",
   title = NULL,
   subtitle = NULL,
   source = "",
@@ -41,7 +41,7 @@ static_facet_column_chart(
 
 \item{hrefcl}{A color to be used for horizontal reference lines - default is "NULL"}
 
-\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
+\item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{ncol}{Value for the number of columns in your facet - defaults to 3}
 
@@ -49,13 +49,13 @@ static_facet_column_chart(
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{color}{Name of color palette to use - defaults to "psrc_dark"}
+\item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{source}{Source reference to be used for chart, if desired - defaults to blank}
+\item{source}{Source reference as character string, if desired - defaults to blank}
 
 \item{alt}{Text to be used for alt-text, if desired - defaults to "NULL"}
 }
@@ -74,38 +74,38 @@ df <- mode_share_example_data \%>\%
       filter(Race !="Total")
 
 my_facet <- static_facet_column_chart(t = df,
-                                      x = "Geography",
-                                      y = "share",
-                                      fill = "Geography",
-                                      facet = "Race",
-                                      moe = 'share_moe',
-                                      href = 'Region',
-                                      hrefcl = 'black',
-                                      ncol = 4,
-                                      scales = "fixed",
-                                      color = "pgnobgy_5",
-                                      title = "Population by Race 2020",
-                                      subtitle = "For counties in the Central Puget Sound Region",
-                                      source = paste("Source: ACS 5-Year Estimates, table B03002",
-                                                     "for King, Kitsap, Pierce and Snohomish counties.",
-                                                     sep = "\n"))
-                                                     
+                x = "Geography",
+                y = "share",
+                fill = "Geography",
+                facet = "Race",
+                moe = 'share_moe',
+                href = 'Region',
+                hrefcl = 'black',
+                ncol = 4,
+                scales = "fixed",
+                color = "pgnobgy_5",
+                title = "Population by Race 2020",
+                subtitle = "For counties in the Central Puget Sound Region",
+                source = paste("Source: ACS 5-Year Estimates, table B03002",
+                               "for King, Kitsap, Pierce and Snohomish counties.",
+                               sep = "\n"))
+
  df2 <- mode_share_example_data \%>\%
       filter(Category=="Population by Race" & Year==2020) \%>\%
       filter(Geography != "Region", Race !="Total")
-                                                          
- my_facet2 <- static_facet_column_chart(t = df2, 
-                                        x = "Race", 
-                                        y = "share", 
-                                        fill = "Race", 
-                                        facet = "Geography",
-                                        ncol = 2,
-                                        moe = 'share_moe',
-                                        scales = "fixed",
-                                        color = "psrc_light",
-                                        title = "Population by Race 2020",
-                                        subtitle = "For counties in the Central Puget Sound Region",
-                                        source = paste("Source: ACS 5-Year Estimates, table B03002",
-                                                       "for King, Kitsap, Pierce and Snohomish counties.",
-                                                       sep = "\n"))
+
+ my_facet2 <- static_facet_column_chart(t = df2,
+                x = "Race",
+                y = "share",
+                fill = "Race",
+                facet = "Geography",
+                ncol = 2,
+                moe = 'share_moe',
+                scales = "fixed",
+                color = "psrc_light",
+                title = "Population by Race 2020",
+                subtitle = "For counties in the Central Puget Sound Region",
+                source = paste("Source: ACS 5-Year Estimates, table B03002",
+                               "for King, Kitsap, Pierce and Snohomish counties.",
+                               sep = "\n"))
 }

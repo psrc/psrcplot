@@ -18,19 +18,19 @@ create_treemap_chart(
 \arguments{
 \item{t}{A tibble or dataframe in long form for plotting}
 
-\item{s}{The name of the variable with the value you want to use to size the bars}
+\item{s}{The name of the variable with the value you want to use to size the bar}
 
-\item{fill}{The name of the variable you want to fill the bars}
+\item{fill}{The name of the variable you want the fill color of the bars to be based on}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
-\item{est}{Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"}
+\item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{color}{Name of color palette to use - defaults to "psrc_light"}
+\item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
 }
 \value{
 static treemap chart

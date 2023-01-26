@@ -7,13 +7,12 @@ is.date <- function(x) inherits(x, 'Date')
 
 #' Parameters shared among other functions
 #' 
-#' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
 #' @param fill The name of the variable you want the fill color of the bars to be based on
+#' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
 #' @param dec Number of decimal points in labels - defaults to 0
 #' @param color Name of color palette to use - generally defaults to "pgnobgy_5"
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @param source Source reference as character string, if desired - defaults to blank
 #' @name shared_params
 NULL
@@ -114,7 +113,8 @@ add_citation <- function(p, source){
 #' @param category_label category-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param numeric_label numeric-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param axis_scale Enlarge or reduce the axis weight - defaults to 1
-#' @param column_vs_bar "column": vertical bars or "bar": horizontal bars - defaults to "column"
+#' @param column_vs_bar "column": vertical bars or "bar": horizontal bars - defaults to "column" 
+#' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @return static or interactive column or bar chart
 
 generic_column_bar <- function(t, category_var, numeric_var, fill,
@@ -278,27 +278,22 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #' Create Static Facet Column Charts
 #'
 #' This function allows you to create facet column charts based on ggplot2's facet_wrap().
+#' @inheritParams shared_params
 #' @param t A tibble or dataframe in long form for plotting
 #' @param x The name of the variable you want plotted on the X-Axis
 #' @param y The name of the variable you want plotted on the Y-Axis
-#' @param fill The name of the variable you want the fill color of the bars to be based on
 #' @param facet The name of the variable to be the facets
-#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
 #' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
 #' @param ncol Value for the number of columns in your facet - defaults to 3
-#' @param dec Number of decimal points in labels - defaults to 0
-#' @param color Name of color palette to use - defaults to "psrc_dark"
 #' @param moe The name of the variable to be used for error bars, if desired - default to "NULL"
 #' @param href A value to be used for a horizontal reference line - default is "NULL"
 #' @param hrefcl A color to be used for horizontal reference lines - default is "NULL"
-#' @param title Title to be used for chart, if desired - defaults to "NULL"
-#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
-#' @param source Source reference to be used for chart, if desired - defaults to blank
 #' @return A static facet column (vertical bar) chart; based on facet_wrap()
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
+#' @importFrom dplyr filter
 #' 
 #' @examples
 #' 
@@ -309,40 +304,40 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'       filter(Race !="Total")
 #' 
 #' my_facet <- static_facet_column_chart(t = df,
-#'                                       x = "Geography",
-#'                                       y = "share",
-#'                                       fill = "Geography",
-#'                                       facet = "Race",
-#'                                       moe = 'share_moe',
-#'                                       href = 'Region',
-#'                                       hrefcl = 'black',
-#'                                       ncol = 4,
-#'                                       scales = "fixed",
-#'                                       color = "pgnobgy_5",
-#'                                       title = "Population by Race 2020",
-#'                                       subtitle = "For counties in the Central Puget Sound Region",
-#'                                       source = paste("Source: ACS 5-Year Estimates, table B03002",
-#'                                                      "for King, Kitsap, Pierce and Snohomish counties.",
-#'                                                      sep = "\n"))
-#'                                                      
+#'                 x = "Geography",
+#'                 y = "share",
+#'                 fill = "Geography",
+#'                 facet = "Race",
+#'                 moe = 'share_moe',
+#'                 href = 'Region',
+#'                 hrefcl = 'black',
+#'                 ncol = 4,
+#'                 scales = "fixed",
+#'                 color = "pgnobgy_5",
+#'                 title = "Population by Race 2020",
+#'                 subtitle = "For counties in the Central Puget Sound Region",
+#'                 source = paste("Source: ACS 5-Year Estimates, table B03002",
+#'                                "for King, Kitsap, Pierce and Snohomish counties.",
+#'                                sep = "\n"))
+#' 
 #'  df2 <- mode_share_example_data %>%
 #'       filter(Category=="Population by Race" & Year==2020) %>%
 #'       filter(Geography != "Region", Race !="Total")
-#'                                                           
-#'  my_facet2 <- static_facet_column_chart(t = df2, 
-#'                                         x = "Race", 
-#'                                         y = "share", 
-#'                                         fill = "Race", 
-#'                                         facet = "Geography",
-#'                                         ncol = 2,
-#'                                         moe = 'share_moe',
-#'                                         scales = "fixed",
-#'                                         color = "psrc_light",
-#'                                         title = "Population by Race 2020",
-#'                                         subtitle = "For counties in the Central Puget Sound Region",
-#'                                         source = paste("Source: ACS 5-Year Estimates, table B03002",
-#'                                                        "for King, Kitsap, Pierce and Snohomish counties.",
-#'                                                        sep = "\n"))
+#' 
+#'  my_facet2 <- static_facet_column_chart(t = df2,
+#'                 x = "Race",
+#'                 y = "share",
+#'                 fill = "Race",
+#'                 facet = "Geography",
+#'                 ncol = 2,
+#'                 moe = 'share_moe',
+#'                 scales = "fixed",
+#'                 color = "psrc_light",
+#'                 title = "Population by Race 2020",
+#'                 subtitle = "For counties in the Central Puget Sound Region",
+#'                 source = paste("Source: ACS 5-Year Estimates, table B03002",
+#'                                "for King, Kitsap, Pierce and Snohomish counties.",
+#'                                sep = "\n"))
 #' @export
 #'
 static_facet_column_chart <- function(t,
@@ -357,7 +352,7 @@ static_facet_column_chart <- function(t,
                                       ncol = 3,
                                       scales = "free", 
                                       dec = 0, 
-                                      color = "psrc_dark", 
+                                      color = "pgnobgy_5", 
                                       title = NULL, 
                                       subtitle = NULL,
                                       source = "",
@@ -377,24 +372,10 @@ static_facet_column_chart <- function(t,
   l.colors <- l.colors[1:num.grps]
   cols <- stats::setNames(l.colors, grps)
   
-  if (est == "percent") {
-    factor <- 100
-    pp <- ""
-    s <- "%"
-    label <- scales::label_percent()
-    
-  } else if (est == "currency") {
-    factor <- 1
-    pp <- "$"
-    s <- ""
-    label <- scales::label_dollar()
-    
-  } else {
-    factor <- 1
-    pp <- ""
-    s <- ""
-    label <- scales::label_comma()
-  }
+  
+  # Estimate type determines the labels for the axis and the format of the value labels
+  valfrmt <- est_number_formats(est)
+  label <- est_label_formats(est)
   
   if(!(is.null(href))) {
     # separate column data from hline data
@@ -464,14 +445,9 @@ static_facet_column_chart <- function(t,
 #' Create PSRC TreeMap Chart
 #'
 #' This function allows you to create treemap charts.
+#' @inheritParams shared_params
 #' @param t A tibble or dataframe in long form for plotting
-#' @param s The name of the variable with the value you want to use to size the bars
-#' @param fill The name of the variable you want to fill the bars
-#' @param title Title to be used for chart, if desired - defaults to "NULL"
-#' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
-#' @param est Type for the Y values - enter "percent", "currency" or "number", defaults to "percent"
-#' @param dec Number of decimal points in labels - defaults to 0
-#' @param color Name of color palette to use - defaults to "psrc_light"
+#' @param s The name of the variable with the value you want to use to size the bar
 #' @return static treemap chart
 #' 
 #' @examples

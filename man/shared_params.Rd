@@ -4,9 +4,9 @@
 \alias{shared_params}
 \title{Parameters shared among other functions}
 \arguments{
-\item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
-
 \item{fill}{The name of the variable you want the fill color of the bars to be based on}
+
+\item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
@@ -15,8 +15,6 @@
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
-
-\item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 
 \item{source}{Source reference as character string, if desired - defaults to blank}
 }

@@ -28,7 +28,6 @@ Imports:
     dplyr,
     scales,
     ggplot2,
-    ggiraph,
     treemapify,
     rlang,
     graphics,
