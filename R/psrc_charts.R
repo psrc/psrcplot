@@ -176,7 +176,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
 
   # Pivot for bar chart
   if(column_vs_bar=="bar"){
-    c <- c + ggplot2::coord_flip()
+    c <- c + ggplot2::coord_flip() +
     ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
                    panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
                    axis.line.y = ggplot2::element_line(color="#cbcbcb"))
