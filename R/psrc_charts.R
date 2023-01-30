@@ -282,6 +282,7 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #' @param t A tibble or dataframe in long form for plotting
 #' @param x The name of the variable you want plotted on the X-Axis
 #' @param y The name of the variable you want plotted on the Y-Axis
+#' @param pos The position of the columns, either "dodge" or "stack" - defaults to "dodge"
 #' @param facet The name of the variable to be the facets
 #' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
 #' @param ncol Value for the number of columns in your facet - defaults to 3
@@ -338,12 +339,33 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'                 source = paste("Source: ACS 5-Year Estimates, table B03002",
 #'                                "for King, Kitsap, Pierce and Snohomish counties.",
 #'                                sep = "\n"))
+#'                                
+#' df3 <- mode_share_example_data %>%
+#'      filter(Category == "Population by Race" & Year %in% c(2010, 2020)) %>%
+#'      mutate(Year = as.character(Year)) %>%
+#'      filter(Race !="Total")
+#'  
+#' my_facet3 <- static_facet_column_chart(t = df3,
+#'                                        x = "Race",
+#'                                        y = "share",
+#'                                        fill = "Year",
+#'                                        facet = "Geography",
+#'                                        ncol = 2,
+#'                                        moe = 'share_moe',
+#'                                        scales = "fixed",
+#'                                        color = "psrc_light",
+#'                                        title = "Population by Race 2020",
+#'                                        subtitle = "For counties in the Central Puget Sound Region",
+#'                                        source = paste("Source: ACS 5-Year Estimates, table B03002",
+#'                                                       "for King, Kitsap, Pierce and Snohomish counties.",
+#'                                                       sep = "\n"))
 #' @export
 #'
 static_facet_column_chart <- function(t,
                                       x, 
                                       y, 
-                                      fill, 
+                                      fill,
+                                      pos = "dodge",
                                       facet, 
                                       moe = NULL,
                                       href = NULL,
@@ -390,7 +412,7 @@ static_facet_column_chart <- function(t,
                                       y = .data[[y]],
                                       fill = .data[[fill]],
                                       group = .data[[fill]])) +
-      ggplot2::geom_col() +
+      ggplot2::geom_col(position = pos) +
       ggplot2::geom_hline(data = thline, 
                           ggplot2::aes(yintercept = .data[[y]], color = .data[[x]]),
                           alpha = .3,
@@ -404,7 +426,7 @@ static_facet_column_chart <- function(t,
                                       y = .data[[y]],
                                       fill = .data[[fill]],
                                       group = .data[[fill]])) +
-      ggplot2::geom_col()
+      ggplot2::geom_col(position = pos)
   }
   
   # add labels
@@ -426,6 +448,21 @@ static_facet_column_chart <- function(t,
                              position = ggplot2::position_dodge(0.9))
   }
   
+  # display x-axis tick values if another variable is introduced
+  if(x != fill) {
+    x.vals <- length(unique(p$data[[x]]))
+    if(x.vals > 5) {
+      # smaller font size and wrap/angle labels if there's a lot of x categories
+      p <- p +
+        ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
+      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
+    } else {
+      axis.text.x.value <- ggplot2::element_text(size = 7)
+    }
+  } else {
+    axis.text.x.value <- ggplot2::element_blank()
+  }
+  
   # add facet and theme
   p <- p +
     ggplot2::facet_wrap(ggplot2::vars(.data[[facet]]), 
@@ -433,7 +470,7 @@ static_facet_column_chart <- function(t,
                         scales = scales, 
                         ncol = ncol) +
     psrc_style() +
-    ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+    ggplot2::theme(axis.text.x = axis.text.x.value,
                    axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
                    strip.text = ggplot2::element_text(size = 10),
                    panel.grid.major.y = ggplot2::element_blank()
