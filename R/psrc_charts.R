@@ -435,7 +435,7 @@ static_facet_column_chart <- function(t,
     psrc_style() +
     ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
-                   strip.text = ggplot2::element_text(size = 10),
+                   strip.text = ggplot2::element_text(family = "Poppins", size = 10),
                    panel.grid.major.y = ggplot2::element_blank()
     ) 
   
