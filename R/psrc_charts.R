@@ -128,15 +128,8 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   confirm_fonts()
   
-  # Determine max & min values to ensure bar labels are not cut-off
-  if(is.null(moe)){
-    range <- summarize(t, ymin=min({{ numeric_var }}), ymax=max({{ numeric_var }}))
-  }else{
-    ci <- mutate(t, high_range= {{ numeric_var }} + {{ moe }}, 
-                     low_range= {{ numeric_var }} - {{ moe }})
-    range <- summarize(ci, ymin=min(low_range), ymax=max(high_range)) 
-  }
-  range %<>% lapply(function(x){x * axis_scale})
+  # Determine the Maximum Value to ensure bar labels are not cut-off
+  max_item <- select(t, all_of(numeric_var)) %>% dplyr::pull() %>% max()
   
   # Create a color palette from PSRC palette
   grps <- select(t, all_of(fill)) %>% unique() %>% dplyr::pull()
@@ -148,6 +141,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Figure out how many items are plotted on the category axis for use in Reference Line Titles
   num_cat_items <- t %>% select(all_of(category_var)) %>% dplyr::distinct() %>% dplyr::pull() %>% length()
   href_label_location <- ceiling(num_cat_items/2)
+  scale_max <- max_item * axis_scale
   
   # Estimate type determines the labels for the axis and the format of the value labels
   valfrmt <- est_number_formats(est)
@@ -162,7 +156,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
-    ggplot2::scale_y_continuous(labels=lab, limits=c(range$ymin, range$ymax), expand=c(0, 0)) +
+    ggplot2::scale_y_continuous(labels=lab, limits=c(0, scale_max), expand=c(0, 0)) +
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
   
