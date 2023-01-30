@@ -9,6 +9,7 @@ static_facet_column_chart(
   x,
   y,
   fill,
+  pos = "dodge",
   facet,
   moe = NULL,
   href = NULL,
@@ -32,6 +33,8 @@ static_facet_column_chart(
 \item{y}{The name of the variable you want plotted on the Y-Axis}
 
 \item{fill}{The name of the variable you want the fill color of the bars to be based on}
+
+\item{pos}{The position of the columns, either "dodge" or "stack" - defaults to "dodge"}
 
 \item{facet}{The name of the variable to be the facets}
 
@@ -108,4 +111,24 @@ my_facet <- static_facet_column_chart(t = df,
                 source = paste("Source: ACS 5-Year Estimates, table B03002",
                                "for King, Kitsap, Pierce and Snohomish counties.",
                                sep = "\n"))
+                               
+df3 <- mode_share_example_data \%>\%
+     filter(Category == "Population by Race" & Year \%in\% c(2010, 2020)) \%>\%
+     mutate(Year = as.character(Year)) \%>\%
+     filter(Race !="Total")
+ 
+my_facet3 <- static_facet_column_chart(t = df3,
+                                       x = "Race",
+                                       y = "share",
+                                       fill = "Year",
+                                       facet = "Geography",
+                                       ncol = 2,
+                                       moe = 'share_moe',
+                                       scales = "fixed",
+                                       color = "psrc_light",
+                                       title = "Population by Race 2020",
+                                       subtitle = "For counties in the Central Puget Sound Region",
+                                       source = paste("Source: ACS 5-Year Estimates, table B03002",
+                                                      "for King, Kitsap, Pierce and Snohomish counties.",
+                                                      sep = "\n"))
 }
