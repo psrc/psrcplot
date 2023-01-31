@@ -183,7 +183,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   }  
     
   # Add value labels if there is no error bar and remove the category-variable axis since we have the labels
-  if (is.null(moe)) {
+  if (is.null(moe) & interactive==FALSE) {
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                              y=.data[[numeric_var]], 
                                              label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
