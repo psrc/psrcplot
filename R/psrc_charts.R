@@ -156,7 +156,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols)  +
-    ggplot2::scale_y_continuous(labels=lab, limits=c(0, scale_max), expand=c(0, 0)) +
+    ggplot2::scale_y_continuous(labels=lab) +
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
   

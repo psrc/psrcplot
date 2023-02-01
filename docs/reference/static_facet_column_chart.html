@@ -55,6 +55,7 @@
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">fill</span>,</span>
+<span>  pos <span class="op">=</span> <span class="st">"dodge"</span>,</span>
 <span>  <span class="va">facet</span>,</span>
 <span>  moe <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  href <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -87,6 +88,10 @@
 
 <dt>fill</dt>
 <dd><p>The name of the variable you want the fill color of the bars to be based on</p></dd>
+
+
+<dt>pos</dt>
+<dd><p>The position of the columns, either "dodge" or "stack" - defaults to "dodge"</p></dd>
 
 
 <dt>facet</dt>
@@ -192,6 +197,26 @@
 <span class="r-in"><span>                source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Source: ACS 5-Year Estimates, table B03002"</span>,</span></span>
 <span class="r-in"><span>                               <span class="st">"for King, Kitsap, Pierce and Snohomish counties."</span>,</span></span>
 <span class="r-in"><span>                               sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                               </span></span>
+<span class="r-in"><span><span class="va">df3</span> <span class="op">&lt;-</span> <span class="va">mode_share_example_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Category</span> <span class="op">==</span> <span class="st">"Population by Race"</span> <span class="op">&amp;</span> <span class="va">Year</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>, <span class="fl">2020</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">Year</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Race</span> <span class="op">!=</span><span class="st">"Total"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span><span class="va">my_facet3</span> <span class="op">&lt;-</span> <span class="fu">static_facet_column_chart</span><span class="op">(</span>t <span class="op">=</span> <span class="va">df3</span>,</span></span>
+<span class="r-in"><span>                                       x <span class="op">=</span> <span class="st">"Race"</span>,</span></span>
+<span class="r-in"><span>                                       y <span class="op">=</span> <span class="st">"share"</span>,</span></span>
+<span class="r-in"><span>                                       fill <span class="op">=</span> <span class="st">"Year"</span>,</span></span>
+<span class="r-in"><span>                                       facet <span class="op">=</span> <span class="st">"Geography"</span>,</span></span>
+<span class="r-in"><span>                                       ncol <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>                                       moe <span class="op">=</span> <span class="st">'share_moe'</span>,</span></span>
+<span class="r-in"><span>                                       scales <span class="op">=</span> <span class="st">"fixed"</span>,</span></span>
+<span class="r-in"><span>                                       color <span class="op">=</span> <span class="st">"psrc_light"</span>,</span></span>
+<span class="r-in"><span>                                       title <span class="op">=</span> <span class="st">"Population by Race 2020"</span>,</span></span>
+<span class="r-in"><span>                                       subtitle <span class="op">=</span> <span class="st">"For counties in the Central Puget Sound Region"</span>,</span></span>
+<span class="r-in"><span>                                       source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Source: ACS 5-Year Estimates, table B03002"</span>,</span></span>
+<span class="r-in"><span>                                                      <span class="st">"for King, Kitsap, Pierce and Snohomish counties."</span>,</span></span>
+<span class="r-in"><span>                                                      sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

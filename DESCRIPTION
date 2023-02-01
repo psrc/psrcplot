@@ -22,7 +22,8 @@ Suggests:
     psrctrends,
     psrccensus,
     knitr,
-    htmlwidgets
+    htmlwidgets,
+    testthat (>= 3.0.0)
 Imports: 
     magrittr,
     dplyr,
