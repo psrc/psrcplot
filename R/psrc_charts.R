@@ -64,17 +64,17 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
   if(!(is.null(title)) & !(is.null(subtitle))) {                                                   # If there is both title and subtitle
 
     p <- plotly::layout(p, 
-            annotations = list(x = -0.05, y = 1.10, text = title,                                  # -- add the title, located high enough for room for subtitle
+            annotations = list(x= 0.03 , y = 1.10, text = title,                              # -- add the title, located high enough for room for subtitle
                                xref='paper', yref='paper', showarrow = FALSE, 
                                font = list(family="Poppins Black",size=14, color="#4C4C4C")))
     p <- plotly::layout(p, 
-            annotations = list(x = -0.05, y = 1.05, text = subtitle,                               # -- then add the subtitle 
+            annotations = list(x = 0.03, y = 1.05, text = subtitle, align = "left",                             # -- then add the subtitle 
                                showarrow = FALSE, xref='paper', yref='paper', 
                                font=list(family="Poppins",size=12, color="#4C4C4C")))
   }else if(!(is.null(title)) & is.null(subtitle)) {                                                # If there is no Subtitle
     
     p <- plotly::layout(p, 
-            annotations = list(x = -0.05, y = 1.05, text = title,                                  # -- just add the title
+            annotations = list(x=0.03, y = 1.05, text = title,                                  # -- just add the title
                                xref='paper', yref='paper', showarrow = FALSE,
                                font = list(family="Poppins Black",size=14, color="#4C4C4C")))
   }
@@ -126,6 +126,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                dec = 0, color="pgnobgy_5",
                                interactive=FALSE){
   
+  # do we want to do this? let's discuss:
   confirm_fonts()
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
