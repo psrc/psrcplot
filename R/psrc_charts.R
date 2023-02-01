@@ -141,7 +141,6 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Figure out how many items are plotted on the category axis for use in Reference Line Titles
   num_cat_items <- t %>% select(all_of(category_var)) %>% dplyr::distinct() %>% dplyr::pull() %>% length()
   href_label_location <- ceiling(num_cat_items/2)
-  scale_max <- max_item * axis_scale
   
   # Estimate type determines the labels for the axis and the format of the value labels
   valfrmt <- est_number_formats(est)
@@ -183,7 +182,8 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   }  
     
   # Add value labels if there is no error bar and remove the category-variable axis since we have the labels
-  if (is.null(moe) & interactive==FALSE) {
+  # placement of the labels is different between column and bar charts to look nicer
+  if (is.null(moe) & interactive==FALSE & column_vs_bar =='column') {
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                              y=.data[[numeric_var]], 
                                              label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
@@ -192,6 +192,18 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 vjust = -0.25,
                                 size = 11*0.36,
                                 family="Poppins")
+  }
+  else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
+    c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
+                                             y=.data[[numeric_var]], 
+                                             label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                                check_overlap = TRUE,
+                                position = ggplot2::position_dodge(0.9),
+                                hjust = -0.25,
+                                size = 11*0.36,
+                                family="Poppins")
+  }
+  
     if(column_vs_bar=="bar"){
       c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                               panel.grid.major.y = ggplot2::element_blank(),
@@ -201,7 +213,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                               panel.grid.major.y = ggplot2::element_blank(),
                               axis.line.x = ggplot2::element_line(color="#cbcbcb"))     
     }
-  }
+  
   
   # Remove legend if unneccesary
   if (num.grps == 1) {   

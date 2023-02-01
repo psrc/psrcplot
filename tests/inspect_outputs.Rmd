@@ -8,7 +8,7 @@ output: html_document
 This is standalone code that you should run before you check in changes to psrcplot.
 
 ```{r setup, include=FALSE}
-#library(psrcplot)
+library(psrcplot)
 library(tidyverse)
 ```
 
