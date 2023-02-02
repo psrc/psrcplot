@@ -68,7 +68,7 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
                                xref='paper', yref='paper', showarrow = FALSE, 
                                font = list(family="Poppins Black",size=14, color="#4C4C4C")))
     p <- plotly::layout(p, 
-            annotations = list(x = 0.03, y = 1.05, text = subtitle, align = "left",                             # -- then add the subtitle 
+            annotations = list(x = 0.03, y = 1.05, text = subtitle,                             # -- then add the subtitle 
                                showarrow = FALSE, xref='paper', yref='paper', 
                                font=list(family="Poppins",size=12, color="#4C4C4C")))
   }else if(!(is.null(title)) & is.null(subtitle)) {                                                # If there is no Subtitle
@@ -181,6 +181,9 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                    panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
                    axis.line.y = ggplot2::element_line(color="#cbcbcb"))
   }  
+  else{
+    c<- c+ ggplot2::scale_x_discrete(labels = scales::label_wrap(20))       # auto wrap text on column chart
+  }
     
   # Add value labels if there is no error bar and remove the category-variable axis since we have the labels
   # placement of the labels is different between column and bar charts to look nicer
@@ -193,6 +196,9 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 vjust = -0.25,
                                 size = 11*0.36,
                                 family="Poppins")
+    c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                            panel.grid.major.y = ggplot2::element_blank(),
+                            axis.line.y = ggplot2::element_line(color="#cbcbcb"))  
   }
   else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
@@ -203,18 +209,12 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 hjust = -0.25,
                                 size = 11*0.36,
                                 family="Poppins")
+    c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                            panel.grid.major.y = ggplot2::element_blank(),
+                            axis.line.x = ggplot2::element_line(color="#cbcbcb"))     
   }
   
-    if(column_vs_bar=="bar"){
-      c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                              panel.grid.major.y = ggplot2::element_blank(),
-                              axis.line.y = ggplot2::element_line(color="#cbcbcb"))      
-    }else{
-      c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                              panel.grid.major.y = ggplot2::element_blank(),
-                              axis.line.x = ggplot2::element_line(color="#cbcbcb"))     
-    }
-  
+
   
   # Remove legend if unneccesary
   if (num.grps == 1) {   

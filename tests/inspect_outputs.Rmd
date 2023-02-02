@@ -20,10 +20,10 @@ install_psrc_fonts()
 mode_shares <- read.csv(file='example_data.csv') %>% 
   filter(Category=="Mode to Work by Race") %>%
   filter(Geography=="Region" & Race=="Total") %>%
-  mutate(Year = as.character(Year)) %>%
-  mutate(axis_labels = stringr::str_wrap(Mode, width = 10))
+  mutate(Year = as.character(Year)) 
+
 # Column Charts -----------------------------------------------------
-modes_column_chart <- static_column_chart(t=mode_shares, x="axis_labels",y="share", fill="Year",
+modes_column_chart <- static_column_chart(t=mode_shares, x="Mode",y="share", fill="Year",
                                           est = "percent",
                                           title="Mode Share to Work",
                                           alt="Chart of Work Mode Shares",
@@ -36,7 +36,7 @@ modes_column_chart <- static_column_chart(t=mode_shares, x="axis_labels",y="shar
 modes_column_chart
 ```
 ```{r}
-interactive_modes_column_chart <- interactive_column_chart(t=mode_shares, x="axis_labels",y="share", fill="Year",
+interactive_modes_column_chart <- interactive_column_chart(t=mode_shares, x="Mode",y="share", fill="Year",
                                                            est = "percent",
                                                            title="Mode Share to Work",
                                                            subtitle="For People 16+ with a job",
@@ -55,8 +55,8 @@ interactive_modes_column_chart
 
 
 ```{r pressure, echo=FALSE}
-modes_column_chart_moe <- static_column_chart(t=mode_shares, x="axis_labels",y="count", fill="Year",
-                                              alt="Chart of Work Mode Shares",
+modes_column_chart_moe <- static_column_chart(t=mode_shares, x="Mode",y="count", fill="Year",
+                                              alt="Chart of Workers by Mode",
                                               source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                            "for King, Kitsap, Pierce and Snohomish counties.",
                                                            sep = "\n"),
@@ -64,14 +64,14 @@ modes_column_chart_moe <- static_column_chart(t=mode_shares, x="axis_labels",y="
                                               est = "number",
                                               moe = "count_moe",
                                               xlabel = "Mode to Work",
-                                              ylabel = "Share of Workers")
+                                              ylabel = "Total Workers")
 
 modes_column_chart_moe
 ```
 
 
 ```{r}
-modes_bar_chart <- static_bar_chart(t=mode_shares, x="share", y="axis_labels", fill="Year",
+modes_bar_chart <- static_bar_chart(t=mode_shares, x="share", y="Mode", fill="Year",
                                     est = "percent",
                                     title="Mode Share to Work",
                                     alt="Chart of Work Mode Shares",
@@ -85,7 +85,7 @@ modes_bar_chart
 
 ```
 ```{r}
-modes_bar_chart_moe <- static_bar_chart(t=mode_shares, x="share", y="axis_labels", fill="Year",
+modes_bar_chart_moe <- static_bar_chart(t=mode_shares, x="share", y="Mode", fill="Year",
                                         alt="Chart of Work Mode Shares",
                                         source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                      "for King, Kitsap, Pierce and Snohomish counties.",
@@ -100,7 +100,7 @@ modes_bar_chart_moe
 
 ```{r}
 interactive_modes_bar_chart <- interactive_bar_chart(t=mode_shares, 
-                                                     x="share", y="axis_labels", fill="Year",
+                                                     x="share", y="Mode", fill="Year",
                                                      est = "percent",
                                                      title="Mode Share to Work",
                                                      color="gnbopgy_5",
