@@ -3,8 +3,8 @@ title: "residential_displacement"
 author: "suzanne"
 date: "3/31/2022"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -28,7 +28,7 @@ Code is here: <https://github.com/psrc/psrc.travelsurvey>
 3,044 households answered res_dur in 2019
 2, 793 household answered res_dur in 2021
 
-```{r get_started}
+```{r }
 library(psrc.travelsurvey)
 library(dplyr)
 library(stringr)
@@ -37,6 +37,8 @@ library(psrcplot)
 library(ggplot2)
 library(forcats)
 library(data.table)
+
+psrcplot::install_psrc_fonts()
 
 res_dur_2019<-get_hhts(survey='2019', level="h", vars="res_dur")
 res_dur_2019_counts<- hhts_count(df=res_dur_2019, group_vars='res_dur')
@@ -130,7 +132,7 @@ In 2019, there was a strong correlation between income and experiencing displace
 
 
 Both datasets in the past 5 years (there is overlap in the time frame); no statistically significant difference (987 hhs in 2019, 860 in 2021)
-```{r get_started}
+```{r }
 displaced_hh_2019<-get_hhts(survey='2019', level="h", vars=c("prev_res_factors_displaced", 'res_dur', 'prev_home_wa'))%>%filter(res_dur %in% c('Less than a year', '	Between 1 and 2 years', 'Between 2 and 3 years', 	'Between 3 and 5 years') & prev_home_wa =='Yes, previous home was in Washington')%>% mutate(prev_res_factors_displaced = replace_na(prev_res_factors_displaced,'No response'))
 displaced_hh_2019_counts<- hhts_count(df=displaced_hh_2019, group_vars='prev_res_factors_displaced')%>%
 filter(prev_res_factors_displaced!='Total')
@@ -149,7 +151,7 @@ static_column_chart(t=displaced_2019_2021_counts, x='prev_res_factors_displaced'
 ```
 `
 Both datasets in the past 2 years NO overlap; 361 hhs in 2019; 298 hhs in 2021; 42% of hhs to 28%
-```{r get_started}
+```{r }
 displaced_hh_2019<-get_hhts(survey='2019', level="h", vars=c("prev_res_factors_displaced", 'res_dur', 'prev_home_wa'))%>%filter(res_dur %in% c('Less than a year', '	Between 1 and 2 years') & prev_home_wa =='Yes, previous home was in Washington')%>% mutate(prev_res_factors_displaced = replace_na(prev_res_factors_displaced,'No response'))
 displaced_hh_2019_counts<- hhts_count(df=displaced_hh_2019, group_vars='prev_res_factors_displaced')%>%
 filter(prev_res_factors_displaced!='Total')
@@ -461,7 +463,7 @@ static_column_chart(t=displaced_hh_2019_counts, x='prev_res_factors_displaced_2'
 
 ```
 
-``````{r}
+```{r}
 displaced_hh_2021<-get_hhts(survey='2021', level="h", vars=c("prev_res_factors_displaced", "prev_res_factors_housing_cost", "prev_res_factors_forced", "prev_res_factors_income_change", 'res_dur', 'prev_home_wa', 'hh_race_apoc', 'hhincome_broad' ))%>%filter(res_dur %in% c('Less than a year', '	Between 1 and 2 years') & prev_home_wa =='Yes, previous home was in Washington')%>%
   mutate(prev_res_factors_displaced_2 =case_when((prev_res_factors_housing_cost=='Selected' | 
                                                    prev_res_factors_forced=='Selected' | 
@@ -521,7 +523,7 @@ static_column_chart(t=displaced_hh_2019_counts, x='prev_res_factors_displaced_2'
 
 ```
 
-``````{r}
+```{r}
 displaced_hh_2021<-get_hhts(survey='2021', level="h", vars=c("prev_res_factors_displaced", "prev_res_factors_housing_cost", "prev_res_factors_forced", "prev_res_factors_income_change",  'res_dur', 'prev_home_wa', 'hh_race_apoc', 'hhincome_broad' ))%>%filter(res_dur %in% c('Less than a year', '	Between 1 and 2 years') & prev_home_wa =='Yes, previous home was in Washington')%>%
   mutate(prev_res_factors_displaced_2 =case_when(prev_res_factors_housing_cost=='Selected' | 
                                                    prev_res_factors_forced=='Selected' | 

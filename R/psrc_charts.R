@@ -182,13 +182,20 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # If there is a MOE value then error bars are added to the plot
  
   
+  
   # Pivot for bar chart
+  # Also make the lines for the numeric values flip
   if(column_vs_bar=="bar"){
     c <- c + ggplot2::coord_flip() 
-  }  
+    c<- c+
+      ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
+                     panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"))
+  }
+  # in 
   else{
     c<- c + ggplot2::scale_x_discrete(labels=scales::label_wrap(20))
   }
+  
   
   # Add value labels if there is no error bar and remove the category-variable axis since we have the labels
   # placement of the labels is different between column and bar charts to look nicer
@@ -197,7 +204,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                              y=.data[[numeric_var]], 
                                              label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
-                                position = ggplot2::position_dodge(0.9),
+                                position = ggplot2::position_dodge(0.8),
                                 vjust = -0.25,
                                 size = 11*0.32,
                                 family="Poppins")
@@ -207,41 +214,20 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                              y=.data[[numeric_var]], 
                                              label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
-                                position = ggplot2::position_dodge(0.9),
+                                position = ggplot2::position_dodge(0.8),
                                 hjust = -0.25,
                                 size = 11*0.32,
                                 family="Poppins")
   }
   
-  if(is.null(moe)){
-    if(column_vs_bar=='bar'){
-    c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                            panel.grid.major.y = ggplot2::element_blank(),
-                            axis.line.x = ggplot2::element_blank(), 
-                            axis.title.x = ggplot2::element_blank())
-    }
-    else{
-      c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                              panel.grid.major.y = ggplot2::element_blank(),
-                              axis.line.x = ggplot2::element_blank(), 
-                              axis.title.x = ggplot2::element_blank())
-    }
 
-
-  }
 
   if (!(is.null(moe))) {
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
                                                  ymax=.data[[numeric_var]]+.data[[moe]]), 
                                     width=0.2, position = ggplot2::position_dodge(0.9))
-    if(column_vs_bar=='bar'){
-    c<- c+
-        ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
-                       panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
-                       axis.line.y = ggplot2::element_line(color="#cbcbcb"))
-      
     }
-  }
+  
 
   
   # Remove legend if unneccesary
