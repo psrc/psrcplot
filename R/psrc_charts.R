@@ -127,7 +127,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                interactive=FALSE){
   
   # do we want to do this? let's discuss:
-  confirm_fonts()
+  #confirm_fonts()
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- select(t, all_of(numeric_var)) %>% dplyr::pull() %>% max()
@@ -155,7 +155,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     fill = .data[[fill]],
                                     group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
-    ggplot2::scale_fill_manual(values=cols)  +
+    ggplot2::scale_fill_manual(values=cols) +
     ggplot2::scale_y_continuous(labels=lab) +
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
@@ -168,23 +168,20 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   }
   
   # If there is a MOE value then error bars are added to the plot
-  if (!(is.null(moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
-                                                 ymax=.data[[numeric_var]]+.data[[moe]]), 
-                                    width=0.2, position = ggplot2::position_dodge(0.9))
-  }
-
+  # If there is a MOE value then error bars are added to the plot
+ 
+  
   # Pivot for bar chart
   if(column_vs_bar=="bar"){
     c <- c + ggplot2::coord_flip() +
-    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
-                   panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
-                   axis.line.y = ggplot2::element_line(color="#cbcbcb"))
+      ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
+                     panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
+                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))
   }  
   else{
-    c<- c+ ggplot2::scale_x_discrete(labels = scales::label_wrap(20))       # auto wrap text on column chart
+    c<- c + ggplot2::scale_x_discrete(labels=scales::label_wrap(20))
   }
-    
+  
   # Add value labels if there is no error bar and remove the category-variable axis since we have the labels
   # placement of the labels is different between column and bar charts to look nicer
   if (is.null(moe) & interactive==FALSE & column_vs_bar =='column') {
@@ -196,9 +193,6 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 vjust = -0.25,
                                 size = 11*0.36,
                                 family="Poppins")
-    c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                            panel.grid.major.y = ggplot2::element_blank(),
-                            axis.line.y = ggplot2::element_line(color="#cbcbcb"))  
   }
   else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
@@ -209,11 +203,24 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 hjust = -0.25,
                                 size = 11*0.36,
                                 family="Poppins")
+  }
+  
+  if(column_vs_bar=="bar" & is.null(moe)){
+    c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                            panel.grid.major.y = ggplot2::element_blank(),
+                            axis.line.y = ggplot2::element_line(color="#cbcbcb"))      
+  }else if(is.null(moe)){
     c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                             panel.grid.major.y = ggplot2::element_blank(),
                             axis.line.x = ggplot2::element_line(color="#cbcbcb"))     
   }
   
+  if (!(is.null(moe))) {
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
+                                                 ymax=.data[[numeric_var]]+.data[[moe]]), 
+                                    width=0.2, position = ggplot2::position_dodge(0.9))
+    
+  }
 
   
   # Remove legend if unneccesary

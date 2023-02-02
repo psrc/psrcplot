@@ -285,6 +285,8 @@ static_column_chart(mover_shares_19_21, x='var_name' , y='share', fill='survey',
 
 static_column_chart(mover_shares_19_21, x='var_name' , y='share', fill='survey', color= "pognbgy_5", moe='share_moe')+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
+static_bar_chart(mover_shares_19_21, y='var_name' , x='share', fill='survey', color= "pognbgy_5")
+
 ```
 
 
