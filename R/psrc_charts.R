@@ -188,7 +188,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.9),
                                 vjust = -0.25,
-                                size = 11*0.36,
+                                size = 11*0.32,
                                 family="Poppins")
   }
   else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
@@ -198,15 +198,23 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.9),
                                 hjust = -0.25,
-                                size = 11*0.36,
+                                size = 11*0.32,
                                 family="Poppins")
   }
   
   if(is.null(moe)){
-    c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+    if(column_vs_bar=='bar'){
+    c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                             panel.grid.major.y = ggplot2::element_blank(),
                             axis.line.x = ggplot2::element_blank(), 
                             axis.title.x = element_blank())
+    }
+    else{
+      c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                              panel.grid.major.y = ggplot2::element_blank(),
+                              axis.line.x = ggplot2::element_blank(), 
+                              axis.title.x = element_blank())
+    }
   }
 
   if (!(is.null(moe))) {
