@@ -21,7 +21,6 @@ generic_column_bar(
   alt = NULL,
   category_label = NULL,
   numeric_label = NULL,
-  axis_scale = 1,
   column_vs_bar = "column",
   dec = 0,
   color = "pgnobgy_5",
@@ -60,8 +59,6 @@ generic_column_bar(
 \item{category_label}{category-axis title to be used for chart, if desired - defaults to "NULL"}
 
 \item{numeric_label}{numeric-axis title to be used for chart, if desired - defaults to "NULL"}
-
-\item{axis_scale}{Enlarge or reduce the axis weight - defaults to 1}
 
 \item{column_vs_bar}{"column": vertical bars or "bar": horizontal bars - defaults to "column"}
 
