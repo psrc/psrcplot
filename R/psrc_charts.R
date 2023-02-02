@@ -214,7 +214,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                               axis.line.x = ggplot2::element_blank(), 
                               axis.title.x = element_blank())
     }
-                            axis.title.x = ggplot2::element_blank())
+
 
   }
 
@@ -222,7 +222,13 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
                                                  ymax=.data[[numeric_var]]+.data[[moe]]), 
                                     width=0.2, position = ggplot2::position_dodge(0.9))
-    
+    if(column_vs_bar=='bar'){
+    c<- c+
+        ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
+                       panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
+                       axis.line.y = ggplot2::element_line(color="#cbcbcb"))
+      
+    }
   }
 
   
