@@ -47,17 +47,29 @@ est_label_formats <- function(est){
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 make_interactive <- function(p, title=NULL, subtitle=NULL){
+  x.vals <- length(ggplot2::layer_scales(p)$x$range$range) # number of x categories in ggplot object
+  x.pos <- ggplot2::layer_scales(p)$x$position # left or bottom (i.e. bar or column chart)
+  
   p <- p + ggplot2::theme(axis.title = ggplot2::element_blank())                                   # Remove Bar labels and axis titles
   m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
   p <- plotly::ggplotly(p, tooltip=c("text"), autosize = T, margin = m)                            # Make Interactive
   p <- plotly::style(p, hoverlabel=list(font=list(family="Poppins", size=11, color="white")))      # Set Font for Hover-Text
   p <- plotly::layout(p, xaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format X-Axis
   p <- plotly::layout(p, yaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format Y-Axis
-  p <- plotly::layout(p,                                                                     
-          legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         # Turn on Legend
-                      title="", font=list(family="Poppins", size=11, color="#2f3030"),
-                      pad=list(b=50, t=50)), 
-                      hovermode = "x")
+  
+  if(x.vals > 5 & x.pos == 'bottom') { # position legend on top right if many x categories
+    p <- plotly::layout(p,
+                        legend=list(xref="container",         # Turn on Legend
+                                    title="", font=list(family="Poppins", size=11, color="#2f3030"),
+                                    pad=list(b=50, t=50)),
+                        hovermode = "x")
+  } else {
+    p <- plotly::layout(p,
+                        legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         # Turn on Legend
+                                    title="", font=list(family="Poppins", size=11, color="#2f3030"),
+                                    pad=list(b=50, t=50)),
+                        hovermode = "x")
+  }
 
   p <- plotly::layout(p, title= list(text = ""))                                                   # Remove Plotly Title
   
@@ -206,13 +218,13 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                             panel.grid.major.y = ggplot2::element_blank(),
                             axis.line.x = ggplot2::element_blank(), 
-                            axis.title.x = element_blank())
+                            axis.title.x = ggplot2::element_blank())
     }
     else{
       c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                               panel.grid.major.y = ggplot2::element_blank(),
                               axis.line.x = ggplot2::element_blank(), 
-                              axis.title.x = element_blank())
+                              axis.title.x = ggplot2::element_blank())
     }
 
 
@@ -235,6 +247,40 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Remove legend if unneccesary
   if (num.grps == 1) {   
     c <- c + ggplot2::theme(legend.position = "none")  
+  }
+  
+  # Smaller font size and wrap/angle labels if there's a lot of x categories ----
+  x.vals <- length(unique(c$data[[category_var]]))
+  
+  if(category_var != fill & x.vals > 5) {
+    c <- c +
+      ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 15))
+  }
+  
+  if(column_vs_bar == "bar"){ 
+    if(category_var != fill & x.vals > 5) {
+      axis.text.y.value <- ggplot2::element_text(size = 9, vjust = 0.5, hjust=1)
+    } else if(category_var != fill & x.vals <= 5) {
+      axis.text.y.value <- ggplot2::element_text(size = 9)
+    } else {
+      axis.text.y.value <- ggplot2::element_blank()
+    }
+  } else {
+    if(category_var != fill & x.vals > 5) {
+      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 9, vjust = 0.5, hjust=1)
+    } else if(category_var != fill & x.vals <= 5) {
+      axis.text.x.value <- ggplot2::element_text(size = 9)
+    } else {
+      axis.text.x.value <- ggplot2::element_blank()
+    }
+  }
+  
+  if(column_vs_bar == "bar"){ 
+    c <- c +
+      ggplot2::theme(axis.text.y = axis.text.y.value)
+  } else {
+    c <- c +
+      ggplot2::theme(axis.text.x = axis.text.x.value)
   }
   
   # Interactivity
