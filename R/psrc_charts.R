@@ -173,10 +173,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # Pivot for bar chart
   if(column_vs_bar=="bar"){
-    c <- c + ggplot2::coord_flip() +
-      ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
-                     panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"), 
-                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))
+    c <- c + ggplot2::coord_flip() 
   }  
   else{
     c<- c + ggplot2::scale_x_discrete(labels=scales::label_wrap(20))
@@ -205,16 +202,13 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 family="Poppins")
   }
   
-  if(column_vs_bar=="bar" & is.null(moe)){
-    c <- c + ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                            panel.grid.major.y = ggplot2::element_blank(),
-                            axis.line.y = ggplot2::element_line(color="#cbcbcb"))      
-  }else if(is.null(moe)){
+  if(is.null(moe)){
     c <- c + ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                             panel.grid.major.y = ggplot2::element_blank(),
-                            axis.line.x = ggplot2::element_line(color="#cbcbcb"))     
+                            axis.line.x = ggplot2::element_blank(), 
+                            axis.title.x = element_blank())
   }
-  
+
   if (!(is.null(moe))) {
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
                                                  ymax=.data[[numeric_var]]+.data[[moe]]), 
