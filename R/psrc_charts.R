@@ -667,6 +667,9 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
 #' @param dform Format for Date values 
 #' @param breaks Break points to use if using a continuous scale, defaults to NULL
 #' @param lwidth Width of lines, defaults to 1
+#' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
+#' @param xlabel category-axis title to be used for chart, if desired - defaults to "NULL"
+#' @param ylabel numeric-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @return line chart
 #' 
@@ -674,6 +677,7 @@ generic_line <- function(t, x, y, fill,
                          est="percent", dec=0, dform="%b-%Y",  
                          breaks=NULL, lwidth=1, color="gnbopgy_5",
                          title=NULL, subtitle=NULL, source="",
+                         alt=NULL, xlabel=NULL, ylabel=NULL,
                          interactive=FALSE){
   
   confirm_fonts() 
@@ -688,7 +692,7 @@ generic_line <- function(t, x, y, fill,
   # Estimate type determines the labels for the axis and the format of the value labels
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
-  xtype_date <- t %>% select(all_of(x)) %>% is.date()
+  xtype_date <- t %>% dplyr::pull(.data[[x]]) %>% is.date()
   
   c <- ggplot2::ggplot(data=t, 
                        ggplot2::aes(x=.data[[x]],
@@ -698,11 +702,11 @@ generic_line <- function(t, x, y, fill,
     ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round") +
     ggplot2::scale_y_continuous(labels = lab) +
     ggplot2::scale_color_manual(values=cols)  +
-    ggplot2::labs(title=title, subtitle=subtitle, caption=source) +
+    ggplot2::labs(title=title, subtitle=subtitle, caption=source, alt=alt, x=xlabel, y=ylabel) +
     psrc_style()
 
   if (xtype_date==TRUE){
-    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform))
+    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
   }else{
     c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]])) +	
       ggplot2::scale_x_discrete(breaks=breaks)

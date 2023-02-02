@@ -18,6 +18,9 @@ generic_line(
   title = NULL,
   subtitle = NULL,
   source = "",
+  alt = NULL,
+  xlabel = NULL,
+  ylabel = NULL,
   interactive = FALSE
 )
 }
@@ -47,6 +50,12 @@ generic_line(
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
 \item{source}{Source reference as character string, if desired - defaults to blank}
+
+\item{alt}{Text to be used for alt-text, if desired - defaults to "NULL"}
+
+\item{xlabel}{category-axis title to be used for chart, if desired - defaults to "NULL"}
+
+\item{ylabel}{numeric-axis title to be used for chart, if desired - defaults to "NULL"}
 
 \item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 }
