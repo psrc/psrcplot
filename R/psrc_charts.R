@@ -112,7 +112,6 @@ add_citation <- function(p, source){
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
 #' @param category_label category-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param numeric_label numeric-axis title to be used for chart, if desired - defaults to "NULL"
-#' @param axis_scale Enlarge or reduce the axis weight - defaults to 1
 #' @param column_vs_bar "column": vertical bars or "bar": horizontal bars - defaults to "column" 
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @return static or interactive column or bar chart
@@ -122,7 +121,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                href=NULL, hrefnm=NULL, hrefcl=NULL,
                                title=NULL, subtitle=NULL, source="", alt=NULL,
                                category_label=NULL, numeric_label=NULL, 
-                               axis_scale=1, column_vs_bar="column",
+                               column_vs_bar="column",
                                dec = 0, color="pgnobgy_5",
                                interactive=FALSE){
   
@@ -215,6 +214,8 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                               axis.line.x = ggplot2::element_blank(), 
                               axis.title.x = element_blank())
     }
+                            axis.title.x = ggplot2::element_blank())
+
   }
 
   if (!(is.null(moe))) {
@@ -263,7 +264,7 @@ NULL
 static_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   c <- generic_column_bar(t=t, category_var=x, numeric_var=y, fill=fill,
                           category_label=xlabel, numeric_label=ylabel,
-                          axis_scale=1.1, column_vs_bar="column", ...)
+                          column_vs_bar="column", ...)
   return(c)
 }
 
@@ -273,7 +274,7 @@ static_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 static_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   c <- generic_column_bar(t=t, category_var=y, numeric_var=x, fill=fill,
                           category_label=ylabel, numeric_label=xlabel,
-                          axis_scale=1.25, column_vs_bar="bar", ...)
+                          column_vs_bar="bar", ...)
   return(c)
 }
 
@@ -283,7 +284,7 @@ static_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 interactive_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   c <- generic_column_bar(t=t, category_var=x, numeric_var=y, fill=fill,
                           category_label=xlabel, numeric_label=ylabel,
-                          axis_scale=1.1, column_vs_bar="column", interactive=TRUE, ...)
+                          column_vs_bar="column", interactive=TRUE, ...)
   return(c)
 }
 
@@ -293,7 +294,7 @@ interactive_column_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ..
 interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
   c <- generic_column_bar(t=t, category_var=y, numeric_var=x, fill=fill,
                           category_label=ylabel, numeric_label=xlabel,
-                          axis_scale=1.25, column_vs_bar="bar", interactive=TRUE, ...)
+                          column_vs_bar="bar", interactive=TRUE, ...)
   return(c)
 }
 
