@@ -237,7 +237,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   }
   
   # Remove legend if unneccesary
-  if (num.grps == 1) {   
+  if (num.grps == 1 | category_var==fill) {   
     c <- c + ggplot2::theme(legend.position = "none")  
   }
   
@@ -252,27 +252,19 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   if(column_vs_bar == "bar"){ 
     if(category_var != fill & x.vals > 5) {
       axis.text.y.value <- ggplot2::element_text(size = 9, vjust = 0.5, hjust=1)
+      c <- c + ggplot2::theme(axis.text.y = axis.text.y.value)
     } else if(category_var != fill & x.vals <= 5) {
       axis.text.y.value <- ggplot2::element_text(size = 9)
-    } else {
-      axis.text.y.value <- ggplot2::element_blank()
+      c <- c + ggplot2::theme(axis.text.y = axis.text.y.value)
     }
   } else {
     if(category_var != fill & x.vals > 5) {
       axis.text.x.value <- ggplot2::element_text(angle = 90, size = 9, vjust = 0.5, hjust=1)
+      c <- c + ggplot2::theme(axis.text.x = axis.text.x.value)
     } else if(category_var != fill & x.vals <= 5) {
       axis.text.x.value <- ggplot2::element_text(size = 9)
-    } else {
-      axis.text.x.value <- ggplot2::element_blank()
+      c <- c + ggplot2::theme(axis.text.x = axis.text.x.value)
     }
-  }
-  
-  if(column_vs_bar == "bar"){ 
-    c <- c +
-      ggplot2::theme(axis.text.y = axis.text.y.value)
-  } else {
-    c <- c +
-      ggplot2::theme(axis.text.x = axis.text.x.value)
   }
   
   # Interactivity
