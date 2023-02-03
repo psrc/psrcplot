@@ -71,9 +71,9 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
                         hovermode = "x")
   }
 
-  p <- plotly::layout(p, title= list(text = ""))                                                   # Remove Plotly Title
+  p <- plotly::layout(p, title= list(text = ""))                            # Remove Plotly Title
   
-  if(!(is.null(title)) & !(is.null(subtitle))) {                                                   # If there is both title and subtitle
+  if(!(is.null(title)) & !(is.null(subtitle))) {                            # If there is both title and subtitle
 
     p <- plotly::layout(p, 
             annotations = list(x= 0.03 , y = 1.10, text = title,                              # -- add the title, located high enough for room for subtitle
@@ -83,7 +83,7 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
             annotations = list(x = 0.03, y = 1.05, text = subtitle,                             # -- then add the subtitle 
                                showarrow = FALSE, xref='paper', yref='paper', 
                                font=list(family="Poppins",size=12, color="#4C4C4C")))
-  }else if(!(is.null(title)) & is.null(subtitle)) {                                                # If there is no Subtitle
+  }else if(!(is.null(title)) & is.null(subtitle)) {                         # If there is no Subtitle
     
     p <- plotly::layout(p, 
             annotations = list(x=0.03, y = 1.05, text = title,                                  # -- just add the title
@@ -118,6 +118,7 @@ add_citation <- function(p, source){
 #' @param numeric_var The name of the variable with numeric values to plot
 #' @param pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
 #' @param moe The name of the variable to be used for error bars, if desired - default is "NULL"
+#' @param dform Format for Date values 
 #' @param href A list of values to be used for any horizontal reference lines - default is "NULL"
 #' @param hrefnm A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
 #' @param hrefcl A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
@@ -129,7 +130,7 @@ add_citation <- function(p, source){
 #' @return static or interactive column or bar chart
 
 generic_column_bar <- function(t, category_var, numeric_var, fill,
-                               pos="dodge", est="percent", moe=NULL,
+                               pos="dodge", est="percent", moe=NULL, dform="%Y",
                                href=NULL, hrefnm=NULL, hrefcl=NULL,
                                title=NULL, subtitle=NULL, source="", alt=NULL,
                                category_label=NULL, numeric_label=NULL, 
@@ -157,6 +158,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Estimate type determines the labels for the axis and the format of the value labels
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
+  xtype_date <- t %>% dplyr::pull(.data[[category_var]]) %>% is.date()
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
@@ -171,6 +173,11 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
   
+  if (xtype_date==TRUE){
+    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
+  }
+  
+  
   # Add reference lines if they are included 
   if (!(is.null(href))) {
     c <- c + 
@@ -181,7 +188,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # If there are margins of error, add error bars
   if (!(is.null(moe))) {
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
-                                                 ymax=.data[[numeric_var]]+.data[[moe]]), 
+                          ymax=.data[[numeric_var]]+.data[[moe]]), 
                                     width=0.2, position = ggplot2::position_dodge(0.9))
   }
 
@@ -198,34 +205,36 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # Add value labels if there is no error bar or moe and remove the category-variable axis since we have the labels
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
-  if (is.null(moe) & interactive==FALSE & column_vs_bar =='column') {
+  if(is.null(moe) & interactive==FALSE & column_vs_bar =='column'){
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
-                                             y=.data[[numeric_var]], 
-                                             label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                      y=.data[[numeric_var]], 
+                      label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.8),
                                 vjust = -0.20,
                                 size = 11*0.32,
                                 family="Poppins") +
-      ggplot2::theme(axis.title = ggplot2::element_blank())   
+      ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                     panel.grid.major.y = ggplot2::element_blank(),
+                     axis.line.x = ggplot2::element_line(color="#cbcbcb"))  
 
-  }
+                              
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
-  else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
+  }else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
-                                             y=.data[[numeric_var]], 
-                                             label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                      y=.data[[numeric_var]], 
+                      label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.8),
                                 hjust = -0.20,
                                 size = 11*0.32,
                                 family="Poppins")+
                          # need to add some buffer around the axis because of the labels
-      ggplot2::theme(axis.title = ggplot2::element_blank())   
+      ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                     panel.grid.major.y = ggplot2::element_blank(),
+                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))    
     
   }
-  
-
   
   # Remove legend if unneccesary
   if (num.grps == 1) {   
@@ -404,19 +413,19 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'      filter(Race !="Total")
 #'  
 #' my_facet3 <- static_facet_column_chart(t = df3,
-#'                                        x = "Race",
-#'                                        y = "share",
-#'                                        fill = "Year",
-#'                                        facet = "Geography",
-#'                                        ncol = 2,
-#'                                        moe = 'share_moe',
-#'                                        scales = "fixed",
-#'                                        color = "psrc_light",
-#'                                        title = "Population by Race 2020",
-#'                                        subtitle = "For counties in the Central Puget Sound Region",
-#'                                        source = paste("Source: ACS 5-Year Estimates, table B03002",
-#'                                                       "for King, Kitsap, Pierce and Snohomish counties.",
-#'                                                       sep = "\n"))
+#'                 x = "Race",
+#'                 y = "share",
+#'                 fill = "Year",
+#'                 facet = "Geography",
+#'                 ncol = 2,
+#'                 moe = 'share_moe',
+#'                 scales = "fixed",
+#'                 color = "psrc_light",
+#'                 title = "Population by Race 2020",
+#'                 subtitle = "For counties in the Central Puget Sound Region",
+#'                 source = paste("Source: ACS 5-Year Estimates, table B03002",
+#'                                "for King, Kitsap, Pierce and Snohomish counties.",
+#'                                sep = "\n"))
 #' @export
 #'
 static_facet_column_chart <- function(t,
@@ -501,7 +510,7 @@ static_facet_column_chart <- function(t,
   if(!(is.null(moe))) {
     p <- p + 
       ggplot2::geom_errorbar(ggplot2::aes(ymin = .data[[y]] - .data[[moe]], 
-                                          ymax = .data[[y]] + .data[[moe]]),
+                   ymax = .data[[y]] + .data[[moe]]),
                              width = 0.2,
                              position = ggplot2::position_dodge(0.9))
   }
@@ -577,16 +586,16 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="per
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
-                                                    paste0(valfrmt$pfx, prettyNum(round(.data[[s]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
-                                                    sep = "\n")))
+                             paste0(valfrmt$pfx, prettyNum(round(.data[[s]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
+                             sep = "\n")))
   } else {
     c <- ggplot2::ggplot(t,
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
-                                                    paste0(valfrmt$pfx, prettyNum(round(.data[[s]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
-                                                    paste0(prettyNum(round(.data$total_share * 100,0), big.mark = ","), "%"), 
-                                                    sep = "\n")))
+                             paste0(valfrmt$pfx, prettyNum(round(.data[[s]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
+                             paste0(prettyNum(round(.data$total_share * 100,0), big.mark = ","), "%"), 
+                             sep = "\n")))
   }
   c <- c + treemapify::geom_treemap() +
            treemapify::geom_treemap_text(colour = "white",

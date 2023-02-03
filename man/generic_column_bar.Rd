@@ -12,6 +12,7 @@ generic_column_bar(
   pos = "dodge",
   est = "percent",
   moe = NULL,
+  dform = "\%Y",
   href = NULL,
   hrefnm = NULL,
   hrefcl = NULL,
@@ -41,6 +42,8 @@ generic_column_bar(
 \item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{moe}{The name of the variable to be used for error bars, if desired - default is "NULL"}
+
+\item{dform}{Format for Date values}
 
 \item{href}{A list of values to be used for any horizontal reference lines - default is "NULL"}
 
