@@ -138,7 +138,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                interactive=FALSE){
   
   # do we want to do this? let's discuss:
-  #confirm_fonts()
+  confirm_fonts()
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- select(t, all_of(numeric_var)) %>% dplyr::pull() %>% max()
@@ -167,7 +167,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols) +
-    ggplot2::scale_y_continuous(labels=lab) +
+    ggplot2::scale_y_continuous(labels=lab, expand = ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
   
@@ -178,10 +178,13 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
       ggplot2::annotate("text", x = href_label_location, y = href + valfrmt$annot, label = hrefnm, color=hrefcl)
   }
   
-  # If there is a MOE value then error bars are added to the plot
-  # If there is a MOE value then error bars are added to the plot
- 
-  
+  # If there are margins of error, add error bars
+  if (!(is.null(moe))) {
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
+                                                 ymax=.data[[numeric_var]]+.data[[moe]]), 
+                                    width=0.2, position = ggplot2::position_dodge(0.9))
+  }
+
   
   # Pivot for bar chart
   # Also make the lines for the numeric values flip
@@ -191,42 +194,36 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
       ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
                      panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"))
   }
-  # in 
-  else{
-    c<- c + ggplot2::scale_x_discrete(labels=scales::label_wrap(20))
-  }
+ 
   
-  
-  # Add value labels if there is no error bar and remove the category-variable axis since we have the labels
-  # placement of the labels is different between column and bar charts to look nicer
+  # Add value labels if there is no error bar or moe and remove the category-variable axis since we have the labels
+  # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
   if (is.null(moe) & interactive==FALSE & column_vs_bar =='column') {
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                              y=.data[[numeric_var]], 
                                              label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.8),
-                                vjust = -0.25,
+                                vjust = -0.20,
                                 size = 11*0.32,
-                                family="Poppins")
+                                family="Poppins") +
+      ggplot2::theme(axis.title = ggplot2::element_blank())   
+
   }
+  # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
   else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                              y=.data[[numeric_var]], 
                                              label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.8),
-                                hjust = -0.25,
+                                hjust = -0.20,
                                 size = 11*0.32,
-                                family="Poppins")
+                                family="Poppins")+
+                         # need to add some buffer around the axis because of the labels
+      ggplot2::theme(axis.title = ggplot2::element_blank())   
+    
   }
-  
-
-
-  if (!(is.null(moe))) {
-    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
-                                                 ymax=.data[[numeric_var]]+.data[[moe]]), 
-                                    width=0.2, position = ggplot2::position_dodge(0.9))
-    }
   
 
   

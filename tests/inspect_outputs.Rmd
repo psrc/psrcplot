@@ -10,6 +10,14 @@ This is standalone code that you should run before you check in changes to psrcp
 ```{r setup, include=FALSE}
 library(psrcplot)
 library(tidyverse)
+
+`%not_in%` <- Negate(`%in%`)
+
+confirm_fonts <- function(){
+  if("Poppins" %not_in% sysfonts::font_families()){
+    psrcplot::install_psrc_fonts()
+  }
+}
 ```
 
 
