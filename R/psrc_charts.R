@@ -47,8 +47,9 @@ est_label_formats <- function(est){
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 make_interactive <- function(p, title=NULL, subtitle=NULL){
-  x.vals <- length(ggplot2::layer_scales(p)$x$range$range) # number of x categories in ggplot object
-  x.pos <- ggplot2::layer_scales(p)$x$position # left or bottom (i.e. bar or column chart)
+  x.vals <- length(ggplot2::layer_scales(p)$x$range$range)                                         # Number of x categories in ggplot object
+  x.pos <- ggplot2::layer_scales(p)$x$position                                                     # Left or bottom (i.e. bar or column chart)
+  geom_list <- sapply(p$layers, function(x) class(x$geom)[1])                                      # Used to differentiate between chart types  
   
   p <- p + ggplot2::theme(axis.title = ggplot2::element_blank())                                   # Remove Bar labels and axis titles
   m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
@@ -57,36 +58,36 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
   p <- plotly::layout(p, xaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format X-Axis
   p <- plotly::layout(p, yaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format Y-Axis
   
-  if(x.vals > 5 & x.pos == 'bottom') { # position legend on top right if many x categories
+  if(x.vals > 5 & x.pos == 'bottom') {                                                             # position legend on top right if many x categories
     p <- plotly::layout(p,
-                        legend=list(xref="container",         # Turn on Legend
+                        legend=list(xref="container",
                                     title="", font=list(family="Poppins", size=11, color="#2f3030"),
                                     pad=list(b=50, t=50)),
-                        hovermode = "x")
-  } else {
+                        hovermode = if("GeomBar" %in% geom_list){NULL}else{"x"})
+  } else {                                                                                         # Turn on Legend
     p <- plotly::layout(p,
-                        legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         # Turn on Legend
+                        legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         
                                     title="", font=list(family="Poppins", size=11, color="#2f3030"),
                                     pad=list(b=50, t=50)),
-                        hovermode = "x")
+                        hovermode = if("GeomBar" %in% geom_list){NULL}else{"x"})
   }
 
-  p <- plotly::layout(p, title= list(text = ""))                            # Remove Plotly Title
+  p <- plotly::layout(p, title= list(text = ""))                                                   # Remove Plotly Title
   
-  if(!(is.null(title)) & !(is.null(subtitle))) {                            # If there is both title and subtitle
+  if(!(is.null(title)) & !(is.null(subtitle))) {                                                   # If there is both title and subtitle
 
     p <- plotly::layout(p, 
-            annotations = list(x= 0.03 , y = 1.10, text = title,                              # -- add the title, located high enough for room for subtitle
+            annotations = list(x= 0.03 , y = 1.10, text = title,                                   # -- add the title, located high enough for room for subtitle
                                xref='paper', yref='paper', showarrow = FALSE, 
                                font = list(family="Poppins Black",size=14, color="#4C4C4C")))
     p <- plotly::layout(p, 
-            annotations = list(x = 0.03, y = 1.05, text = subtitle,                             # -- then add the subtitle 
+            annotations = list(x = 0.03, y = 1.05, text = subtitle,                                # -- then add the subtitle 
                                showarrow = FALSE, xref='paper', yref='paper', 
                                font=list(family="Poppins",size=12, color="#4C4C4C")))
-  }else if(!(is.null(title)) & is.null(subtitle)) {                         # If there is no Subtitle
+  }else if(!(is.null(title)) & is.null(subtitle)) {                                                # If there is no Subtitle
     
     p <- plotly::layout(p, 
-            annotations = list(x=0.03, y = 1.05, text = title,                                  # -- just add the title
+            annotations = list(x=0.03, y = 1.05, text = title,                                     # -- just add the title
                                xref='paper', yref='paper', showarrow = FALSE,
                                font = list(family="Poppins Black",size=14, color="#4C4C4C")))
   }
