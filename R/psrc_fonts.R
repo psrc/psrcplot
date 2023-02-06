@@ -21,6 +21,7 @@ install_psrc_fonts <- function() {
 
 confirm_fonts <- function(){
   if("Poppins" %not_in% sysfonts::font_families()){
-    psrcplot::install_psrc_fonts()
+    sysfonts::font_add_google(name="Poppins", family="Poppins")
   }
+  showtext::showtext_auto()
 }
