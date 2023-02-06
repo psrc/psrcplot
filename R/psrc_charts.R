@@ -3,8 +3,6 @@
 #' @importFrom dplyr select all_of
 NULL
 
-is.date <- function(x) inherits(x, 'Date')
-
 #' Parameters shared among other functions
 #' 
 #' @param fill The name of the variable you want the fill color of the bars to be based on
@@ -50,7 +48,9 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
   x.vals <- length(ggplot2::layer_scales(p)$x$range$range)                                         # Number of x categories in ggplot object
   x.pos <- ggplot2::layer_scales(p)$x$position                                                     # Left or bottom (i.e. bar or column chart)
   geom_list <- sapply(p$layers, function(x) class(x$geom)[1])                                      # Used to differentiate between chart types  
-  
+  hover_yn <- if("GeomBar" %in% geom_list){NULL}else{"x"}
+  vlift <- if("GeomBar" %in% geom_list){1.05}else{1.08}
+    
   p <- p + ggplot2::theme(axis.title = ggplot2::element_blank())                                   # Remove Bar labels and axis titles
   m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
   p <- plotly::ggplotly(p, tooltip=c("text"), autosize = T, margin = m)                            # Make Interactive
@@ -63,13 +63,13 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
                         legend=list(xref="container",
                                     title="", font=list(family="Poppins", size=11, color="#2f3030"),
                                     pad=list(b=50, t=50)),
-                        hovermode = if("GeomBar" %in% geom_list){NULL}else{"x"})
+                        hovermode = hover_yn)
   } else {                                                                                         # Turn on Legend
     p <- plotly::layout(p,
                         legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         
                                     title="", font=list(family="Poppins", size=11, color="#2f3030"),
                                     pad=list(b=50, t=50)),
-                        hovermode = if("GeomBar" %in% geom_list){NULL}else{"x"})
+                        hovermode = hover_yn)
   }
 
   p <- plotly::layout(p, title= list(text = ""))                                                   # Remove Plotly Title
@@ -77,17 +77,17 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
   if(!(is.null(title)) & !(is.null(subtitle))) {                                                   # If there is both title and subtitle
 
     p <- plotly::layout(p, 
-            annotations = list(x= 0.03 , y = 1.10, text = title,                                   # -- add the title, located high enough for room for subtitle
+            annotations = list(x= 0 , y = vlift + 0.05, text = title,                              # -- add the title, located high enough for room for subtitle
                                xref='paper', yref='paper', showarrow = FALSE, 
                                font = list(family="Poppins Black",size=14, color="#4C4C4C")))
     p <- plotly::layout(p, 
-            annotations = list(x = 0.03, y = 1.05, text = subtitle,                                # -- then add the subtitle 
+            annotations = list(x= 0, y = vlift, text = subtitle,                                   # -- then add the subtitle 
                                showarrow = FALSE, xref='paper', yref='paper', 
                                font=list(family="Poppins",size=12, color="#4C4C4C")))
   }else if(!(is.null(title)) & is.null(subtitle)) {                                                # If there is no Subtitle
     
     p <- plotly::layout(p, 
-            annotations = list(x=0.03, y = 1.05, text = title,                                     # -- just add the title
+            annotations = list(x= 0, y = vlift, text = title,                                      # -- just add the title
                                xref='paper', yref='paper', showarrow = FALSE,
                                font = list(family="Poppins Black",size=14, color="#4C4C4C")))
   }
@@ -101,7 +101,7 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
 add_citation <- function(p, source){
     if("plotly" %in% class(p) & !is.character(source)){
       p <- plotly::layout(p, 
-              annotations = list(x= -0.05, y= -0.2, text=source,
+              annotations = list(x= -0.04, y= -0.2, text=source,
                                  xref='paper', yref='paper', showarrow=FALSE, 
                                  xanchor='left', yanchor='auto', xshift=0, yshift=0,
                                  font = list(family="Poppins",size=10, color="#4C4C4C")))
@@ -159,14 +159,15 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Estimate type determines the labels for the axis and the format of the value labels
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
-  xtype_date <- t %>% dplyr::pull(.data[[category_var]]) %>% is.date()
+  xcats <- t %>% dplyr::pull(.data[[category_var]]) %>% unique()
+  xtype <- class(xcats)
   
   # Create the Basic Static Chart
   c <- ggplot2::ggplot(data=t,
                        ggplot2::aes(x=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[category_var]])}else{.data[[category_var]]},
                                     y=.data[[numeric_var]],
                                     text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(round(.data[[numeric_var]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
-                                    fill = .data[[fill]],
+                                    fill=.data[[fill]],
                                     group=.data[[fill]])) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols) +
@@ -174,10 +175,9 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
   
-  if (xtype_date==TRUE){
+  if (xtype=="Date"){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
   }
-  
   
   # Add reference lines if they are included 
   if (!(is.null(href))) {
@@ -677,7 +677,7 @@ generic_line <- function(t, x, y, fill,
   # Estimate type determines the labels for the axis and the format of the value labels
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
-  xtype_date <- t %>% dplyr::pull(.data[[x]]) %>% is.date()
+  xtype <- t %>% dplyr::pull(.data[[x]]) %>% class()
   
   c <- ggplot2::ggplot(data=t, 
                        ggplot2::aes(x=.data[[x]],
@@ -690,7 +690,7 @@ generic_line <- function(t, x, y, fill,
     ggplot2::labs(title=title, subtitle=subtitle, caption=source, alt=alt, x=xlabel, y=ylabel) +
     psrc_style()
 
-  if (xtype_date==TRUE){
+  if (xtype=="Date"){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
   }else{
     c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]])) +	
