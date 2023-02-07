@@ -390,9 +390,9 @@ static_facet_column_chart <- function(t,
                              position = ggplot2::position_dodge(0.9))
   }
   
+  x.vals <- length(unique(p$data[[x]]))
   # display x-axis tick values if another variable is introduced
   if(x != fill) {
-    x.vals <- length(unique(p$data[[x]]))
     if(x.vals > 5) {
       # smaller font size and wrap/angle labels if there's a lot of x categories
       p <- p +
@@ -400,6 +400,15 @@ static_facet_column_chart <- function(t,
       axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
     } else {
       axis.text.x.value <- ggplot2::element_text(size = 7)
+    }
+  } else if(x %in% c('Year', 'year') & fill %in% c('Year', 'year')) {
+    # remove legend but keep x-axis labels for each year
+    p <- p +
+      ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
+      ggplot2::guides(fill = "none")
+    axis.text.x.value <- ggplot2::element_text(size = 7)
+    if(x.vals > 5) {
+      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
     }
   } else {
     axis.text.x.value <- ggplot2::element_blank()
