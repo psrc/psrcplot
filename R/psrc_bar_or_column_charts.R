@@ -409,7 +409,7 @@ static_facet_column_chart <- function(t,
     } else {
       axis.text.x.value <- ggplot2::element_text(size = 7)
     }
-  } else if(x %in% c('Year', 'year') & fill %in% c('Year', 'year')) {
+  } else if(stringr::str_detect(x, ".*[Y|y]ear.*") & stringr::str_detect(fill, ".*[Y|y]ear.*")) {
     # remove legend but keep x-axis labels for each year
     p <- p +
       ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
