@@ -57,19 +57,14 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
   p <- plotly::layout(p, xaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format X-Axis
   p <- plotly::layout(p, yaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format Y-Axis
   
-  if(x.vals > 5 & x.pos == 'bottom') {                                                             # position legend on top right if many x categories
-    p <- plotly::layout(p,
-                        legend=list(xref="container",
-                                    title="", font=list(family="Poppins", size=11, color="#2f3030"),
-                                    pad=list(b=50, t=50)),
-                        hovermode = hover_yn)
-  } else {                                                                                         # Turn on Legend
-    p <- plotly::layout(p,
+                                                                                                  # Turn on Legend
+  # if labels are rotated, they might run into the legend now?
+  p <- plotly::layout(p,
                         legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         
                                     title="", font=list(family="Poppins", size=11, color="#2f3030"),
                                     pad=list(b=50, t=50)),
                         hovermode = hover_yn)
-  }
+
   
   p <- plotly::layout(p, title= list(text = ""))                                                   # Remove Plotly Title
   
