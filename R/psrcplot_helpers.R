@@ -48,7 +48,7 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
   x.pos <- ggplot2::layer_scales(p)$x$position                                                     # Left or bottom (i.e. bar or column chart)
   geom_list <- sapply(p$layers, function(x) class(x$geom)[1])                                      # Used to differentiate between chart types  
   hover_yn <- if("GeomBar" %in% geom_list){NULL}else{"x"}
-  vlift <- if("GeomBar" %in% geom_list){1.05}else{1.12}
+  vlift <- if("GeomBar" %in% geom_list){1.10}else{1.05}
   
   p <- p + ggplot2::theme(axis.title = ggplot2::element_blank())                                   # Remove Bar labels and axis titles
   m <- list(l = 50, r = 50, b = 200, t = 200, pad = 4)
