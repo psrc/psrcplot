@@ -92,32 +92,21 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Also make the lines for the numeric values flip
   if(column_vs_bar=="bar"){
     c <- c + ggplot2::coord_flip()
+    c<- c+
+      ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
+                     panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"))
   }
   
-  if(interactive==TRUE | is.null(moe)){
-    c<- c +                       
-    ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
-    panel.grid.major.y = ggplot2::element_blank())
-                     
-    if(column_vs_bar=='column'){
-      c<- c+
-        ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                       axis.line.x = ggplot2::element_line(color="#cbcbcb"))  
-      
-    }
-    else{
-      c<- c+
-        # need to add some buffer around the axis because of the labels
-        ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                       axis.line.y = ggplot2::element_line(color="#cbcbcb"))    
-      
-    }
-  }
+
  
-  
+  # Handling static charts with no MOE: they have value labels but no numeric axis labels and no grid lines
   # Add value labels if there is no error bar or moe and remove the category-variable axis since we have the labels
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
   if(is.null(moe) & interactive==FALSE & column_vs_bar =='column'){
+    c<- c +                       
+      ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
+                     panel.grid.major.y = ggplot2::element_blank())
+    
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                       y=.data[[numeric_var]], 
                       label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
@@ -125,7 +114,10 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 position = ggplot2::position_dodge(0.8),
                                 vjust = -0.20,
                                 size = 11*0.32,
-                                family="Poppins") 
+                                family="Poppins")
+    c<- c+
+      ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                     axis.line.x = ggplot2::element_line(color="#cbcbcb"))  
                               
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
   }else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
@@ -137,6 +129,10 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 hjust = -0.20,
                                 size = 11*0.32,
                                 family="Poppins")
+    c<- c+
+      # need to add some buffer around the axis because of the labels
+      ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))  
     
   }
   
