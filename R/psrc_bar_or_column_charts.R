@@ -57,7 +57,8 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   xtype <- class(xcats)
   
   # Create the Basic Static Chart
-  c <- ggplot2::ggplot(data=t,
+  t %<>% dplyr::arrange(.data[[fill]])
+  c <- ggplot2::ggplot(t,
                        ggplot2::aes(x=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[category_var]])}else{.data[[category_var]]},
                                     y=.data[[numeric_var]],
                                     text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(round(.data[[numeric_var]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
