@@ -91,10 +91,27 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Pivot for bar chart
   # Also make the lines for the numeric values flip
   if(column_vs_bar=="bar"){
-    c <- c + ggplot2::coord_flip() 
-    c<- c+
-      ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
-                     panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"))
+    c <- c + ggplot2::coord_flip()
+  }
+  
+  if(interactive==TRUE | is.null(moe)){
+    c<- c +                       
+    ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
+    panel.grid.major.y = ggplot2::element_blank())
+                     
+    if(column_vs_bar=='column'){
+      c<- c+
+        ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                       axis.line.x = ggplot2::element_line(color="#cbcbcb"))  
+      
+    }
+    else{
+      c<- c+
+        # need to add some buffer around the axis because of the labels
+        ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                       axis.line.y = ggplot2::element_line(color="#cbcbcb"))    
+      
+    }
   }
  
   
@@ -108,11 +125,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 position = ggplot2::position_dodge(0.8),
                                 vjust = -0.20,
                                 size = 11*0.32,
-                                family="Poppins") +
-      ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                     panel.grid.major.y = ggplot2::element_blank(),
-                     axis.line.x = ggplot2::element_line(color="#cbcbcb"))  
-
+                                family="Poppins") 
                               
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
   }else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
@@ -123,11 +136,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 position = ggplot2::position_dodge(0.8),
                                 hjust = -0.20,
                                 size = 11*0.32,
-                                family="Poppins")+
-                         # need to add some buffer around the axis because of the labels
-      ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                     panel.grid.major.y = ggplot2::element_blank(),
-                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))    
+                                family="Poppins")
     
   }
   
@@ -136,20 +145,22 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     c <- c + ggplot2::theme(legend.position = "none")  
   }
   
-  # Smaller font size and wrap/angle labels if there's a lot of x categories ----
-  x.vals <- length(unique(c$data[[category_var]]))
-
-  if(category_var != fill & x.vals > 5) {
-    axis.text.x.value <- ggplot2::element_text(angle = if(column_vs_bar!="bar"){90}else{0}, 
-                                               size = 9, vjust = 0.5, hjust=1)
-    c <- c + 
-      ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 15)) + 
-      ggplot2::theme(axis.text.x = axis.text.x.value)
-  } else if(category_var != fill & x.vals <= 5) {
-    axis.text.x.value <- ggplot2::element_text(size = 9)
-    c <- c + ggplot2::theme(axis.text.x = axis.text.x.value)
-  }
+  # only wrap for column charts
+  if(column_vs_bar=="column"){
+    # Smaller font size and wrap/angle labels if there's a lot of x categories ----
+    x.vals <- length(unique(c$data[[category_var]]))
   
+    if(category_var != fill & x.vals > 5) {
+      axis.text.x.value <- ggplot2::element_text(angle = if(column_vs_bar!="bar"){90}else{0}, 
+                                                 size = 9, vjust = 0.5, hjust=1)
+      c <- c + 
+        ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 15)) + 
+        ggplot2::theme(axis.text.x = axis.text.x.value)
+    } else if(category_var != fill & x.vals <= 5) {
+      axis.text.x.value <- ggplot2::element_text(size = 9)
+      c <- c + ggplot2::theme(axis.text.x = axis.text.x.value)
+    }
+  }
   # Interactivity
   if(interactive==TRUE){
     c <- make_interactive(p=c, title=title, subtitle=subtitle)
