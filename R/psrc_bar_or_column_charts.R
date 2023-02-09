@@ -70,7 +70,10 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
   
-
+  if (xtype=="Date"){
+    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
+  }
+  
   # Add reference lines if they are included 
   if (!(is.null(href))) {
     c <- c + 
@@ -155,11 +158,6 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
       c <- c + ggplot2::theme(axis.text.x = axis.text.x.value)
     }
   }
-  
-  if (xtype=="Date"){
-    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
-  }
-  
   # Interactivity
   if(interactive==TRUE){
     c <- make_interactive(p=c, title=title, subtitle=subtitle)
