@@ -118,6 +118,10 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                               
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
   }else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
+    c<- c +                       
+      ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
+                     panel.grid.major.y = ggplot2::element_blank())
+    
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                       y=.data[[numeric_var]], 
                       label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
