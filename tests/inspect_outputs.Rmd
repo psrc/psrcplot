@@ -6,6 +6,7 @@ output: html_document
 ---
 
 This is standalone code that you should run before you check in changes to psrcplot.
+The data is expected to be in the directory psrcplot/tests.
 
 ```{r setup, include=FALSE}
 library(tidyverse)
@@ -13,6 +14,14 @@ library(magrittr)
 library(ggplot2)
 library(plotly)
 library(psrcplot)
+
+initial_test_data<-read.csv(file='example_data.csv')
+rtp_data<- read.csv(file='rtp-dashboard-data.csv')
+```
+
+These helper functions are needed for changes to the main plot code; you can test changes for them here if you need. Otherwise use them to test the plot changes.
+```{r setup, include=FALSE}
+
 
 `%not_in%` <- Negate(`%in%`)
 
@@ -81,14 +90,14 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
   p <- plotly::layout(p, xaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format X-Axis
   p <- plotly::layout(p, yaxis=list(tickfont=list(family="Poppins", size=11, color="#2f3030")))    # Format Y-Axis
   
-                                                                                                  # Turn on Legend
+  # Turn on Legend
   # if labels are rotated, they might run into the legend now?
   p <- plotly::layout(p,
-                        legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         
-                                    title="", font=list(family="Poppins", size=11, color="#2f3030"),
-                                    pad=list(b=50, t=50)),
-                        hovermode = hover_yn)
-
+                      legend=list(orientation="h", xanchor="center", xref="container", x=0.5, y=-0.10,         
+                                  title="", font=list(family="Poppins", size=11, color="#2f3030"),
+                                  pad=list(b=50, t=50)),
+                      hovermode = hover_yn)
+  
   
   p <- plotly::layout(p, title= list(text = ""))                                                   # Remove Plotly Title
   
@@ -136,7 +145,7 @@ add_citation <- function(p, source){
 
 # This allows PSRC fonts to be used in the R session
 install_psrc_fonts()
-mode_shares <- read.csv(file='example_data.csv') %>% 
+mode_shares <- initial_test_data %>% 
   filter(Category=="Mode to Work by Race") %>%
   filter(Geography=="Region" & Race=="Total") %>%
   mutate(Year = as.character(Year)) 
@@ -248,18 +257,172 @@ interactive_mode_line_chart
 ##RTP Dashboard test cases
 
 ```{r}
-rtp_data<- read.csv(file=example_data)
+# Create MPO rtp_data for Charts ----------------------------------------------
+metros <- c("Portland", "Bay Area", "San Diego", "Denver", "Atlanta","Washington DC", "Boston", "Miami" ,"Phoenix", "Austin", "Dallas")
+base_year <- "2005"
+pre_covid <- "2019"
+current_population_year <- "2022"
+current_jobs_year <- "2021"
+
+wgs84 <- 4326
+
+rtp_data <- rtp_data%>%
+  #mutate(date = lubridate::mdy(date)) %>%
+  mutate(data_year = as.character(lubridate::year(date)))
+
+
+safety_min_year <- rtp_data %>% 
+  filter(geography_type=="Metro Regions" & metric=="5yr Fatality Rate" & variable=="Fatalities per 100,000 People") %>%
+  select(date) %>%
+  distinct() %>% 
+  pull() %>%
+  min() %>%
+  lubridate::year()
+
+safety_max_year <- rtp_data %>% 
+  filter(geography_type=="Metro Regions" & metric=="5yr Fatality Rate" & variable=="Fatalities per 100,000 People") %>%
+  select(date) %>%
+  distinct() %>% 
+  pull() %>%
+  max() %>%
+  lubridate::year()
+
+mpo_safety_tbl_min <- rtp_data %>% 
+  filter(geography_type=="Metro Regions" & metric=="5yr Fatality Rate" & variable=="Fatalities per 100,000 People" & lubridate::year(date)==safety_min_year) %>%
+  mutate(plot_id = case_when(
+    geography == "Seattle" ~ "PSRC",
+    geography %in% metros ~ "Comparable Metros")) %>%
+  mutate(plot_id=replace_na(plot_id,"Other")) %>%
+  arrange(desc(estimate))
+
+mpo_order <- mpo_safety_tbl_min %>% select(geography) %>% pull()
+mpo_safety_tbl_min <- mpo_safety_tbl_min %>% mutate(geography = factor(x=geography, levels=mpo_order))
+
+mpo_safety_tbl_max <- rtp_data %>% 
+  filter(geography_type=="Metro Regions" & metric=="5yr Fatality Rate" & variable=="Fatalities per 100,000 People" & lubridate::year(date)==safety_max_year) %>%
+  mutate(plot_id = case_when(
+    geography == "Seattle" ~ "PSRC",
+    geography %in% metros ~ "Comparable Metros")) %>%
+  mutate(plot_id=replace_na(plot_id,"Other")) %>%
+  arrange(desc(estimate))
+
+mpo_order <- mpo_safety_tbl_max %>% select(geography) %>% pull()
+mpo_safety_tbl_max <- mpo_safety_tbl_max %>% mutate(geography = factor(x=geography, levels=mpo_order))
+
+mpo_transit_boardings_precovid <- rtp_data %>% 
+  filter(geography_type=="Metro Regions" & metric=="YTD Transit Boardings" & variable=="All Transit Modes" & lubridate::year(date)==pre_covid & geography!="New York City") %>%
+  mutate(plot_id = case_when(
+    geography == "Seattle" ~ "PSRC",
+    geography %in% metros ~ "Comparable Metros")) %>%
+  mutate(plot_id=replace_na(plot_id,"Other")) %>%
+  arrange(desc(estimate))
+
+mpo_order <- mpo_transit_boardings_precovid %>% select(geography) %>% pull()
+mpo_transit_boardings_precovid <- mpo_transit_boardings_precovid %>% mutate(geography = factor(x=geography, levels=mpo_order))
+
+mpo_transit_boardings_today <- rtp_data %>% 
+  filter(geography_type=="Metro Regions" & metric=="YTD Transit Boardings" & variable=="All Transit Modes" & lubridate::year(date)==current_population_year & geography!="New York City") %>%
+  mutate(plot_id = case_when(
+    geography == "Seattle" ~ "PSRC",
+    geography %in% metros ~ "Comparable Metros")) %>%
+  mutate(plot_id=replace_na(plot_id,"Other")) %>%
+  arrange(desc(estimate))
+
+mpo_order <- mpo_transit_boardings_today %>% select(geography) %>% pull()
+mpo_transit_boardings_today <- mpo_transit_boardings_today %>% mutate(geography = factor(x=geography, levels=mpo_order))
+
+mpo_transit_hours_precovid <- rtp_data %>% 
+  filter(geography_type=="Metro Regions" & metric=="YTD Transit Revenue-Hours" & variable=="All Transit Modes" & lubridate::year(date)==pre_covid & geography!="New York City") %>%
+  mutate(plot_id = case_when(
+    geography == "Seattle" ~ "PSRC",
+    geography %in% metros ~ "Comparable Metros")) %>%
+  mutate(plot_id=replace_na(plot_id,"Other")) %>%
+  arrange(desc(estimate))
+
+mpo_order <- mpo_transit_hours_precovid %>% select(geography) %>% pull()
+mpo_transit_hours_precovid <- mpo_transit_hours_precovid %>% mutate(geography = factor(x=geography, levels=mpo_order))
+
+mpo_transit_hours_today <- rtp_data %>% 
+  filter(geography_type=="Metro Regions" & metric=="YTD Transit Revenue-Hours" & variable=="All Transit Modes" & lubridate::year(date)==current_population_year & geography!="New York City") %>%
+  mutate(plot_id = case_when(
+    geography == "Seattle" ~ "PSRC",
+    geography %in% metros ~ "Comparable Metros")) %>%
+  mutate(plot_id=replace_na(plot_id,"Other")) %>%
+  arrange(desc(estimate))
+
+mpo_order <- mpo_transit_hours_today %>% select(geography) %>% pull()
+mpo_transit_hours_today <- mpo_transit_hours_today %>% mutate(geography = factor(x=geography, levels=mpo_order))
+
+# Population rtp_data for Text ---------------------------------------------------------
+vision_pop_today <- rtp_data %>% filter(lubridate::year(date)==current_population_year & variable=="Forecast Population") %>% select(estimate) %>% pull()
+actual_pop_today <- rtp_data %>% filter(lubridate::year(date)==current_population_year & variable=="Observed Population") %>% select(estimate) %>% pull()
+population_delta <- actual_pop_today - vision_pop_today
+
+# Employment rtp_data for Text ------------------------------------------------
+vision_jobs_today <- rtp_data %>% filter(lubridate::year(date)==current_jobs_year & metric=="Forecast Employment" & variable=="Total") %>% select(estimate) %>% pull()
+actual_jobs_today <- rtp_data %>% filter(lubridate::year(date)==current_jobs_year & metric=="Observed Employment" & variable=="Total") %>% select(estimate) %>% pull()
+jobs_delta <- actual_jobs_today - vision_jobs_today
+
+
+
+```
+
+
+```{r}
+base_year= 2018
+interactive_line_chart(t=rtp_data %>% filter(grouping=="Population" & variable=="Total" & geography=="Region" & data_year>=base_year), 
+                       x='data_year', y='estimate', fill='metric', est="number", 
+                       title="Regional Population: 2000 to 2050",
+                       lwidth = 2,
+                       breaks = c("2000","2010","2020","2030","2040","2050"),color = "pgnobgy_5")
 ```
 
 
 ```{r}
 
-interactive_column_chart(t=rtp_data %>% filter(metric=="New Vehicle Registrations" & geography=="Region")%>%
-                                                                                      mutate(year=lubridate::year(date))%>%
-                                                                                      mutate(year=as.character(year)) %>%
-                                                                                      mutate(date=as.character(date)),
-                                                                                      y='share', x='year', fill='variable', pos = "stack",
-                                                                                      est="percent", dec=0, color='pgnobgy_5',
-                                                                                      title=(paste0('Share of New Vehicle Registrations')))
+make_interactive(static_line_chart(t=rtp_data %>% filter(grouping=="Growth Near High Capacity Transit" & geography=="Inside HCT Area" & variable=="Change" & metric=="Population"), 
+                                   x='data_year', y='share', fill='geography', est="percent", 
+                                   title="Share of Regional Population Growth near HCT: 2010 to 2022",
+                                   lwidth = 2,
+                                   breaks = c("2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022"),
+                                   color = "pgnobgy_5") + ggplot2::scale_y_continuous(limits=c(0,1), labels=scales::label_percent()), title="Share of Regional Population Growth near HCT: 2010 to 2022")
 ```
+
+
+```{r}
+interactive_line_chart(t=rtp_data %>% filter(metric=="1yr Fatality Rate" & geography=="Seattle" & variable%in%c("Fatal Collisions","Fatalities")),
+                       x='data_year', y='estimate', fill='variable', est="number", 
+                       title="Fatal Collisions by Year in the PSRC Region: 2010 to 2020",
+                       lwidth = 2,
+                       breaks = c("2010","2015","2020"),
+                       color = "pgnobgy_5")
+
+```
+
+```{r}
+static_facet_column_chart(t=rtp_data %>% filter(metric=="1yr Fatality Rate" & geography_type=="PSRC Region" & variable%in%c("Fatal Collisions") & data_year >= 2015), 
+                          x="data_year", y="estimate", 
+                          fill="data_year", facet="geography", 
+                          est = "number",
+                          color = "pgnobgy_10",
+                          title="Fatal Collisions by County: 2015 to 2020",
+                          ncol=2, scales="fixed")
+```
+
+
+```{r}
+interactive_bar_chart(t=mpo_safety_tbl_min,
+                      y='geography', x='estimate', fill='plot_id',
+                      est="number", dec=1, color='pgnobgy_5',
+                      title=paste0('Annual Fatalities per 100,000 people: ',safety_min_year))
+```
+
+
+```{r}
+interactive_column_chart(t=rtp_data %>% filter(metric=="New Vehicle Registrations" & geography=="Region") %>% mutate(date=as.character(date)),
+                         y='share', x='date', fill='variable', pos = "stack",
+                         est="percent", dec=0, color='pgnobgy_5',
+                         title=(paste0('Share of New Vehicle Registrations')))
+```
+
 
