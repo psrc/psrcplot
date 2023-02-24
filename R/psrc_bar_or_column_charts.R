@@ -53,6 +53,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Estimate type determines the labels for the axis and the format of the value labels
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
+  xtype <- t %>% dplyr::pull(.data[[category_var]]) %>% class()
   
   # Create the Basic Static Chart
   t %<>% dplyr::arrange(.data[[fill]])
@@ -68,8 +69,10 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
   
+  if (xtype=="Date"){
+    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
+  } 
 
-  
   # Add reference lines if they are included 
   if (!(is.null(href))) {
     c <- c + 
