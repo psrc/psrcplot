@@ -53,8 +53,10 @@ generic_line <- function(t, x, y, fill,
   if (xtype=="Date"){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
   }else{
-    c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]])) +	
-      ggplot2::scale_x_discrete(breaks=breaks)
+    c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]]))
+    if(!is.null(breaks)){
+      c <- c + ggplot2::scale_x_discrete(breaks=breaks)
+    }  
   }
   
   # Make interactive

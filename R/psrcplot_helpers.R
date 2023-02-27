@@ -71,17 +71,17 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
   if(!(is.null(title)) & !(is.null(subtitle))) {                                                   # If there is both title and subtitle
     
     p <- plotly::layout(p, 
-                        annotations = list(x= 0 , y = vlift + 0.05, text = title,                              # -- add the title, located high enough for room for subtitle
+                        annotations = list(x= 0 , y = vlift + 0.05, text = title,                  # -- add the title, located high enough for room for subtitle
                                            xref='paper', yref='paper', showarrow = FALSE, 
                                            font = list(family="Poppins Black",size=14, color="#4C4C4C")))
     p <- plotly::layout(p, 
-                        annotations = list(x= 0, y = vlift, text = subtitle,                                   # -- then add the subtitle 
+                        annotations = list(x= 0, y = vlift, text = subtitle,                       # -- then add the subtitle 
                                            showarrow = FALSE, xref='paper', yref='paper', 
                                            font=list(family="Poppins",size=12, color="#4C4C4C")))
   }else if(!(is.null(title)) & is.null(subtitle)) {                                                # If there is no Subtitle
     
     p <- plotly::layout(p, 
-                        annotations = list(x= 0, y = vlift, text = title,                                      # -- just add the title
+                        annotations = list(x= 0, y = vlift, text = title,                          # -- just add the title
                                            xref='paper', yref='paper', showarrow = FALSE,
                                            font = list(family="Poppins Black",size=14, color="#4C4C4C")))
   }
@@ -93,7 +93,7 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
 #' @param p plotly object
 #' @param source Source reference as character string
 add_citation <- function(p, source){
-  if("plotly" %in% class(p) & !is.character(source)){
+  if("plotly" %in% class(p) & is.character(source)){
     p <- plotly::layout(p, 
                         annotations = list(x= -0.04, y= -0.2, text=source,
                                            xref='paper', yref='paper', showarrow=FALSE, 
