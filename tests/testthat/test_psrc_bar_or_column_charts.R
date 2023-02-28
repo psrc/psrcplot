@@ -22,9 +22,53 @@ test_that("static charts look correct", {
                                   source=paste("Source: ACS 5-Year Estimates, table B3002",
                                                "for King, Kitsap, Pierce and Snohomish counties.",
                                                sep = "\n"),
-                                  color="psrc_dark")
+                                  color="pgnobgy_10",
+                                  dec = 0,
+                                  xlabel = 'Mode to Work')
   
   expect_doppelganger('example-mode-shares-column-chart', modes_chart)
   
+  modes_column_chart_moe <- static_column_chart(t=mode_shares, x="Mode",y="count", fill="Year",
+                                                alt="Chart of Workers by Mode",
+                                                source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
+                                                             "for King, Kitsap, Pierce and Snohomish counties.",
+                                                             sep = "\n"),
+                                                color="pognbgy_5",
+                                                est = "number",
+                                                moe = "count_moe",
+                                                xlabel = "Mode to Work",
+                                                ylabel = "Total Workers")
+  
+  expect_doppelganger('static-modes-column-chart-with-moe', modes_column_chart_moe)
+  
+  modes_bar_chart_moe <- static_bar_chart(t=mode_shares, x="share", y="Mode", fill="Year",
+                                          alt="Chart of Work Mode Shares",
+                                          source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
+                                                       "for King, Kitsap, Pierce and Snohomish counties.",
+                                                       sep = "\n"),
+                                          color="obgnpgy_5",
+                                          moe = "share_moe",
+                                          xlabel = "Share of Workers",
+                                          ylabel = "Mode to Work")
+  
+  expect_doppelganger('static-modes-bar-chart-with-moe', modes_bar_chart_moe)
+  
+})
+
+test_that('rtp charts look correct', {
+  rtp_data<- read.csv(file='../rtp-dashboard-data.csv')
+  rtp_data <- rtp_data %>%
+    mutate(data_year = as.character(lubridate::year(date))) %>% 
+    filter(metric=="1yr Fatality Rate" & geography_type=="PSRC Region" & variable%in%c("Fatal Collisions") & data_year >= 2015)
+  
+  rtp_static_facet_column_chart <- static_facet_column_chart(t=rtp_data, 
+                            x="data_year", y="estimate", 
+                            fill="data_year", facet="geography", 
+                            est = "number",
+                            color = "pgnobgy_10",
+                            title="Fatal Collisions by County: 2015 to 2020",
+                            ncol=2, scales="fixed")
+  
+  expect_doppelganger('static-rtp-facet-column-chart',rtp_static_facet_column_chart)
 })
 
