@@ -24,6 +24,7 @@ Suggests:
     knitr,
     htmlwidgets,
     testthat (>= 3.0.0)
+    vdiffr
 Imports: 
     magrittr,
     dplyr,
