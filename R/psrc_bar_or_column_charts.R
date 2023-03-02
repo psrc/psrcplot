@@ -129,8 +129,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                       y=.data[[numeric_var]], 
                       label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
-                                position = ggplot2::position_dodge(0.8),
-                                hjust = -0.20,
+                                position = ggplot2::position_stack(vjust = 0.5),
                                 size = 11*0.32,
                                 family="Poppins")
     c<- c+
