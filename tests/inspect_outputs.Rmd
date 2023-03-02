@@ -15,6 +15,7 @@ library(ggplot2)
 library(plotly)
 library(psrcplot)
 
+
 initial_test_data<-read.csv(file='example_data.csv')
 rtp_data<- read.csv(file='rtp-dashboard-data.csv')
 ```
@@ -225,7 +226,18 @@ modes_bar_chart_moe <- static_bar_chart(t=mode_shares, x="share", y="Mode", fill
 
 modes_bar_chart_moe
 ```
+```{r}
+modes_bar_chart_stack <- static_bar_chart(t=mode_shares, x="share", y="Year", fill="Mode",
+                                        alt="Chart of Work Mode Shares",
+                                        source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
+                                                     "for King, Kitsap, Pierce and Snohomish counties.",
+                                                     sep = "\n"),
+                                        color="obgnpgy_5",
+                                        xlabel = "share",
+                                        ylabel = "year", pos='stack')
 
+modes_bar_chart_stack
+```
 ```{r}
 interactive_modes_bar_chart <- interactive_bar_chart(t=mode_shares, 
                                                      x="share", y="Mode", fill="Year",
