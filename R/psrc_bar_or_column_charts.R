@@ -120,23 +120,39 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                      axis.line.x = ggplot2::element_line(color="#cbcbcb"))  
                               
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
-  }else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
+  }else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar' & pos == 'dodge'){
     c<- c +                       
       ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
                      panel.grid.major.y = ggplot2::element_blank())
     
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
-                      y=.data[[numeric_var]], 
-                      label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                                             y=.data[[numeric_var]], 
+                                             label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
-                                position = ggplot2::position_stack(vjust = 0.5),
-                                size = 11*0.32,
+                                position = ggplot2::position_dodge(0.8),
+                                hjust = -0.20,
                                 family="Poppins")
     c<- c+
       # need to add some buffer around the axis because of the labels
       ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                      axis.line.y = ggplot2::element_line(color="#cbcbcb"))  
     
+  } else if (is.null(moe) & interactive==FALSE & column_vs_bar =='bar' & pos == 'stack') {
+    c<- c +                       
+      ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
+                     panel.grid.major.y = ggplot2::element_blank())
+    
+    c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
+                                             y=.data[[numeric_var]], 
+                                             label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                                check_overlap = TRUE,
+                                position = ggplot2::position_stack(vjust = .5),
+                                size = 11*0.32,
+                                family="Poppins")
+    c<- c+
+      # need to add some buffer around the axis because of the labels
+      ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+                     axis.line.y = ggplot2::element_line(color="#cbcbcb")) 
   }
   
   # Remove legend if unneccesary
@@ -146,7 +162,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # only wrap for column charts
   if(column_vs_bar=="column"){
-    # Smaller font size and wrap/angle labels if there's a lot of x categories ----
+    # Smaller font size and wrap/angle labels if there's a lot of x categories
     x.vals <- length(unique(c$data[[category_var]]))
   
     if(category_var != fill & x.vals > 5) {
