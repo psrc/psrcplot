@@ -131,6 +131,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                 check_overlap = TRUE,
                                 position = ggplot2::position_dodge(0.8),
                                 hjust = -0.20,
+                                size = 11*0.32,
                                 family="Poppins")
     c<- c+
       # need to add some buffer around the axis because of the labels
