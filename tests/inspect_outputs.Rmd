@@ -20,8 +20,9 @@ initial_test_data<-read.csv(file='example_data.csv')
 rtp_data<- read.csv(file='rtp-dashboard-data.csv')
 ```
 
+
 These helper functions are needed for changes to the main plot code; you can test changes for them here if you need. Otherwise use them to test the plot changes.
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 
 
 `%not_in%` <- Negate(`%in%`)
