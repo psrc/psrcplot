@@ -102,56 +102,55 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Handling static charts with no MOE: they have value labels but no numeric axis labels and no grid lines
   # Add value labels if there is no error bar or moe and remove the category-variable axis since we have the labels
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
-  if(is.null(moe) & interactive==FALSE & column_vs_bar =='column'){
-    c<- c +                       
+  if(is.null(moe) & interactive==FALSE & pos == 'dodge'){
+    # adjust vjust or hjust depending on chart type
+    if(column_vs_bar =='column') {
+      t <- ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
+                                           y=.data[[numeric_var]],
+                                           label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                              check_overlap = TRUE,
+                              position = ggplot2::position_dodge(0.8),
+                              vjust = -0.20,
+                              size = 11*0.32,
+                              family="Poppins")
+    } else if(column_vs_bar =='bar') {
+      t <- ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
+                                           y=.data[[numeric_var]],
+                                           label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                              check_overlap = TRUE,
+                              position = ggplot2::position_dodge(0.8),
+                              hjust = -0.20,
+                              size = 11*0.32,
+                              family="Poppins")
+    }
+    c <- c +
+      ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
+                     panel.grid.major.y = ggplot2::element_blank())
+    
+    c <- c + t
+    
+  } else if(is.null(moe) & interactive==FALSE & pos == 'stack') {
+    c<- c +
       ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
                      panel.grid.major.y = ggplot2::element_blank())
     
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
-                      y=.data[[numeric_var]], 
-                      label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
-                                check_overlap = TRUE,
-                                position = ggplot2::position_dodge(0.8),
-                                vjust = -0.20,
-                                size = 11*0.32,
-                                family="Poppins")
-    c<- c+
-      ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                     axis.line.x = ggplot2::element_line(color="#cbcbcb"))  
-                              
-  # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
-  }else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar' & pos == 'dodge'){
-    c<- c +                       
-      ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
-                     panel.grid.major.y = ggplot2::element_blank())
-    
-    c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
-                                             y=.data[[numeric_var]], 
-                                             label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
-                                check_overlap = TRUE,
-                                position = ggplot2::position_dodge(0.8),
-                                hjust = -0.20,
-                                size = 11*0.32,
-                                family="Poppins")
-    c<- c+
-      # need to add some buffer around the axis because of the labels
-      ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))  
-    
-  } else if (is.null(moe) & interactive==FALSE & column_vs_bar =='bar' & pos == 'stack') {
-    c<- c +                       
-      ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
-                     panel.grid.major.y = ggplot2::element_blank())
-    
-    c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
-                                             y=.data[[numeric_var]], 
+                                             y=.data[[numeric_var]],
                                              label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_stack(vjust = .5),
                                 size = 11*0.32,
                                 family="Poppins")
-    c<- c+
-      # need to add some buffer around the axis because of the labels
+  } 
+  
+  # need to add some buffer around the axis because of the labels
+  if(is.null(moe) & interactive==FALSE & column_vs_bar =='column') {
+    c <- c +
+      ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                     axis.line.x = ggplot2::element_line(color="#cbcbcb")) 
+    
+  } else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar') {
+    c <- c +
       ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                      axis.line.y = ggplot2::element_line(color="#cbcbcb")) 
   }
