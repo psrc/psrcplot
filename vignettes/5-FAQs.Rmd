@@ -1,11 +1,12 @@
 ---
-title: "psrcplot Frequently Asked Questions"
+title: "Frequently Asked Questions"
 description:  FAQs for doing tricky tasks
 output: html_vignette
 vignette: >
-  %\VignetteIndexEntry{psrcplot Frequently Asked Questions}
+  %\VignetteIndexEntry{Frequently Asked Questions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  rmarkdown.html_vignette.check_title = FALSE
 ---
 
 ```{r setup, include=FALSE}
@@ -131,44 +132,27 @@ income.chart.custom
 ```
 
 
-## How can I wrap the text on a column chart x axis- it's looking messy!
+## Further text wrapping for axis labels
 
-It does look messy when you don't wrap the text on the x-axis often on a column chart - like this:
+By default, **psrcplot** wraps lengthy column labels and leaves horizontal bar labels alone. If you want text wrapping, however, you can add it wherever it is necessary using **ggplot2** and **stringr**. You may need to tinker with the wrap length to achieve what you want.
 
-```{r messy_labels, message=FALSE}
+```{r wrap_labels, message=FALSE}
 
-income.column.messy <- static_column_chart(
+income.bar <- static_bar_chart(
       t=hhinc19_custom, 
       x="HRACE", 
       y="HINCP_median",
       fill="DATE",
       moe='HINCP_median_moe',
-      est='currency',
-      title= "Regional Household Median Income by Race, lookin messy")
+      est='currency')
 
-income.column.messy
+income.bar
 
-```
-
-We can fix these ugly labels using a **ggplot2** command and text wrapping via the **stringr** package. You might need to play around with the `str_wrap()` parameter to get the breaks looking nice. This leaves the category variable in the data alone (since `str_wrap` would otherwise convert the type to character and lose factor level ordering, etc).
-
-```{r wrapped_labels, message=FALSE}
-
-xlabs <- levels(hhinc19_custom$HRACE_custom) %>% stringr::str_wrap(12)
-
-income.column.wrapped <- static_column_chart(
-      t=hhinc19_custom, 
-      x="HRACE_custom", y="HINCP_median",
-      f="DATE",
-      moe='HINCP_median_moe',
-      est='currency',
-      title= "Regional Household Median Income by Race, wrapped x- axis label") +
-  ggplot2::scale_x_discrete(labels=xlabs)
+income.column.wrapped <- income.column + 
+  ggplot2::scale_y_discrete(labels=function(x) stringr::str_wrap(x, width=18))
 
 income.column.wrapped
 
 ```
 
-## X & Y axes for bar charts vs. column charts
-
-Bars are horizontal and columns are vertical. For a column chart, the numeric value should be assigned the y-axis, but for a bar chart, the numeric value should be assigned to the x-axis, as displayed.
+By inserting the expression in the label rather than altering the object beforehand, this leaves the category variable in the data alone (`str_wrap` would otherwise convert the type to character and lose factor level ordering, etc).

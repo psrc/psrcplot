@@ -1,0 +1,58 @@
+---
+title: "Make a static plot"
+description: >
+  Use the primary functions of psrcplot to create a static bar plot.
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Make a static plot}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+As mentioned in the introduction, psrcplot has static versions of bar, column, line, bubble, and treemap plots. Here we illustrate using a simple bar plot, with American Community Survey (ACS) data from the Census Bureau.
+
+# Prepare & examine the underlying data
+
+The example data measure mode share by race for the PSRC region:
+
+```{r mode_data, message=FALSE}
+library(psrcplot)
+library(dplyr)
+library(ggplot2)
+
+mode_shares <- mode_share_example_data %>% 
+ filter(Category=="Mode to Work by Race" & Geography=="Region" & Race=="Total") %>%
+ select(-c(Category, Geography, Race)) %>% mutate(Year = as.character(Year))
+
+head(mode_shares)
+```
+
+## Using psrccensus `static_??_chart()` functions
+
+To create a bar plot, call the function `static_bar_chart()`, specifying **`t`** as the underlying table. Note that for bar charts the **x** variable should be numeric (as quantities are represented on the x axis) and the **y** variable should be discrete/categorical.
+
+```{r static_plot_modes, message=FALSE}
+modes_chart <- static_bar_chart(
+                    t=mode_shares, y="Mode",x="share", fill="Year",
+                    title="Mode Share to Work",
+                    alt="Chart of Work Mode Shares",
+                    source=paste("Source: ACS 5-Year Estimates, table B3002",
+                                 "for King, Kitsap, Pierce and Snohomish counties.",
+                                 sep = "\n"),
+                    color="pgnobgy_5")
+
+modes_chart
+```
+
+
+## Exporting a static chart
+
+To save a static chart programmatically, use the **[`ggplot2::ggsave()`](https://ggplot2.tidyverse.org/reference/ggsave.html)** function. You can also use the Plots->Export menu or right-click -> "Save as" in RStudio.
+```{r}
+ggsave(filename='modes_bar_chart.png', plot=modes_chart, device='png')
+
+```

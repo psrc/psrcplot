@@ -53,6 +53,8 @@ est_label_formats <- function(est){
 #' @param p ggplot object
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' 
+#' @export
 make_interactive <- function(p, title=NULL, subtitle=NULL){
   x.vals <- length(ggplot2::layer_scales(p)$x$range$range)                                         # Number of x categories in ggplot object
   x.pos <- ggplot2::layer_scales(p)$x$position                                                     # Left or bottom (i.e. bar or column chart)

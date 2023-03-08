@@ -1,0 +1,49 @@
+---
+title: "Make an interactive plot"
+description:  Use psrcplot to make an interactive plot.
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Make an interactive plot}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Make an interactive column chart of travel survey data
+
+This example uses data from PSRC's household travel survey, on how respondents reached public transit:
+
+```{r transit_access_data, message=FALSE}
+library(ggplot2)
+library(psrcplot)
+library(dplyr)
+
+transit_access <- transit_access_example_data %>% select(-c("survey","sample_size"))
+
+head(transit_access)
+```
+
+To create a interactive column plot, call the function `interactive_column_chart()`, specifying **`t`** as the underlying table. Note that for column charts the **x** variable should be discrete/categorical and the **y** variable should be numeric (as quantities are represented on the y axis).
+
+```{r interactive_plot_transit_access, message=FALSE}
+transit_access_chart <- interactive_column_chart(
+                            t=transit_access, 
+                            x='mode_acc_walk', y='share', fill='year', 
+                            moe='share_moe', est='percent',
+                            color="psrc_light", title='Transit Access Mode')
+transit_access_chart
+```
+
+To make interactive plots, **psrcplot** converts **ggplot2** objects into **plotly** objects. The result can be altered via [**plotly** commands](https://plotly.com/r/styling-figures/). In some cases, due to **plotly** limitations, modifications may require you alter the underlying **ggplot2** object first, as detailed [here](4-customization.html). 
+
+## Exporting an interactive html chart
+
+You can save the interactive bar chart programmatically using the **[`htmlwidgets::saveWidget()`](https://plotly-r.com/saving.html)** command. Once you have an html version of the file it can be embedded in any webpage.
+
+```{r}
+htmlwidgets::saveWidget(transit_access_chart, file=('transit_access.html'))
+
+```
