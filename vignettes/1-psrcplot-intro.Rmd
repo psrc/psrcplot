@@ -20,17 +20,18 @@ Data visualizations can be deceptively complex to get 'just right'. The **psrcpl
 
 ## Visualization menu
 
-Currently, these are the plot types you can create with psrcplot commands:
+Currently, the plot types you can create with psrcplot commands include:
 
-* Static Bar
-* Static Column
-* Static Line
+* Bar
+* Column
+* Faceted Column (i.e. multiple charts in a matrix with matching scales)
+* Line
 * Bubble
 * Treemap
 
-[Static plots](2-static-plots.html) such as these are **ggplot** objects and can be edited using [**ggplot2** commands](https://ggplot2.tidyverse.org/reference/gg-add.html).
+These exist as [static plots](2-static-plots.html) in **ggplot** format and can be edited using [**ggplot2** commands](https://ggplot2.tidyverse.org/reference/gg-add.html).
 
-Additionally, the bar, column and line plot functions each have an [interactive version](3-interactive-plots.html) that adds features such as  tooltips or hovertext (appearing with cursor movement). The result are **plotly** objects, which can be edited using [**plotly** commands](https://plotly.com/r/styling-figures/).
+Additionally, the bar, column and line plot functions each have an [interactive version](3-interactive-plots.html) that adds features such as  tooltips or hovertext (appearing with cursor movement) and exist as **plotly** objects, which can be edited using [**plotly** commands](https://plotly.com/r/styling-figures/).
 
 You can find out more about any of the functions by typing ?function_name in the console, e.g.
 
@@ -51,6 +52,7 @@ There are also several standard but optional arguments:
 * **source** citation text to appear in smaller font below the plot
 * **est** can be specified to adjust the display of the numeric variable listed above (e.g. "currency" will display dollar signs, versus "percent" or "number"); **dec** controls decimal places displayed on the label.
 * The **color** argument determines which palette is applied to the fill variable. You can view the standard PSRC alternatives with the function [**`print_psrc_palette()`**](library/prsrplot/html/print_psrc_palette.html).
+
 ```{r}
 library(psrcplot)
 

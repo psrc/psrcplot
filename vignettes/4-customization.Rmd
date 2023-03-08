@@ -20,7 +20,7 @@ Despite our best efforts, **psrcplot** cannot be all things to all people. ¯\\_
 
 Luckily, as **ggplot2** objects, static charts can be extensively tinkered with through [**ggplot2**'s **`+`** syntax](https://ggplot2.tidyverse.org/reference/gg-add.html). Even interactive plots can benefit from this treatment--if done on a static **ggplot2** object (and made into interactive **plotly** objects afterwards).
 
-There are also times where you'll want to handle things like plot titles or captions in the surrounding document rather than as elements of the plot itself. We've found this particularly true of interactive plots, as the alignment options in **plotly** are fairly limited. In such cases, you can simply leave the title and subtitle arguments out.
+There are also times where you'll want to handle things like plot titles or captions in the surrounding document rather than as elements of the plot itself. We've found this particularly true of interactive plots, as the alignment options in **plotly** are limited, and the titles may display as clipped (sometimes completely out of frame) depending on relative frame dimensions. In such cases, it may be easier to simply leave the title and subtitle arguments out.
 
 
 ## Adding or revising static plots with ggplot2
@@ -36,7 +36,7 @@ passenger_volume <- enplanement_example_data %>%
                        mutate(data_year=as.character(data_year))
 
 static_plot <- static_line_chart(t=passenger_volume, 
-                       x='data_year', y='enplanements', fill='airport_name', 
+                       x='data_year', y='enplanements', fill='airport_name',
                        title="Sea-Tac passengers (annual total)",
                        lwidth = 1.5,
                        breaks = seq(2006, 2018, 4))

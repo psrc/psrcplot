@@ -138,18 +138,9 @@ By default, **psrcplot** wraps lengthy column labels and leaves horizontal bar l
 
 ```{r wrap_labels, message=FALSE}
 
-income.bar <- static_bar_chart(
-      t=hhinc19_custom, 
-      x="HRACE", 
-      y="HINCP_median",
-      fill="DATE",
-      moe='HINCP_median_moe',
-      est='currency')
-
-income.bar
-
-income.column.wrapped <- income.column + 
-  ggplot2::scale_y_discrete(labels=function(x) stringr::str_wrap(x, width=18))
+income.column.wrapped <- income.chart.custom + 
+  ggplot2::scale_x_discrete(labels=function(x) stringr::str_wrap(x, width=25)) +
+  ggplot2::ggtitle("Regional Household Median Income by Race - wrapped label")
 
 income.column.wrapped
 

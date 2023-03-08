@@ -4,16 +4,22 @@
     <loc>https://psrc.github.io/psrcplot/404.html</loc>
   </url>
   <url>
-    <loc>https://psrc.github.io/psrcplot/articles/frequently-asked-questions.html</loc>
+    <loc>https://psrc.github.io/psrcplot/articles/1-psrcplot-intro.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/articles/2-static-plots.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/articles/3-interactive-plots.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/articles/4-customization.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/articles/5-FAQs.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://psrc.github.io/psrcplot/articles/make-plots-interactive.html</loc>
-  </url>
-  <url>
-    <loc>https://psrc.github.io/psrcplot/articles/make-plots.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/articles/transit_access.html</loc>
@@ -44,6 +50,9 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/est_number_formats.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/est_type_default.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/generic_column_bar.html</loc>

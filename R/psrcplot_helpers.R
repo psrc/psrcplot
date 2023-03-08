@@ -18,9 +18,14 @@ NULL
 #' 
 #' @param x numeric vector or dataframe column
 est_type_default <- function(x){
-  xmin <- min(x)
-  xmax <- max(x)
-  est <- dplyr::case_when(xmin>=0 & xmax<=1 ~"percent", TRUE ~"number")
+  est <- "number"
+  if(is.numeric(x)){
+    xmin <- min(x)
+    xmax <- max(x)
+    if(xmin>=0 & xmax<=1){
+      est <- "percent"
+      }
+  }
   return(est)
 }
 
