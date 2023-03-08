@@ -63,7 +63,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     y=.data[[numeric_var]],
                                     text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(round(.data[[numeric_var]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
                                     fill=.data[[fill]],
-                                    group=.data[[fill]])) +
+                                    group=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[fill]])}else{.data[[fill]]})) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols) +
     ggplot2::scale_y_continuous(labels=lab, expand = ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
