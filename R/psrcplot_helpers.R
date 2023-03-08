@@ -14,6 +14,16 @@ NULL
 #' @name shared_params
 NULL
 
+#' Helper - return estimate type if null
+#' 
+#' @param x numeric vector or dataframe column
+est_type_default <- function(x){
+  xmin <- min(x)
+  xmax <- max(x)
+  est <- dplyr::case_when(xmin>=0 & xmax<=1 ~"percent", TRUE ~"number")
+  return(est)
+}
+
 #' Helper - return number formatting to match estimate type
 #' 
 #' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"

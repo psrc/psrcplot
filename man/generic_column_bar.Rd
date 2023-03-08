@@ -10,7 +10,7 @@ generic_column_bar(
   numeric_var,
   fill,
   pos = "dodge",
-  est = "percent",
+  est = NULL,
   moe = NULL,
   dform = "\%Y",
   href = NULL,

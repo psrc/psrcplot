@@ -14,7 +14,7 @@ static_facet_column_chart(
   moe = NULL,
   href = NULL,
   hrefcl = NULL,
-  est = "percent",
+  est = NULL,
   ncol = 3,
   scales = "free",
   dec = 0,

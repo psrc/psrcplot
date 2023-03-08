@@ -25,7 +25,7 @@ NULL
 #' @return static or interactive column or bar chart
 
 generic_column_bar <- function(t, category_var, numeric_var, fill,
-                               pos="dodge", est="percent", moe=NULL, dform="%Y",
+                               pos="dodge", est=NULL, moe=NULL, dform="%Y",
                                href=NULL, hrefnm=NULL, hrefcl=NULL,
                                title=NULL, subtitle=NULL, source="", alt=NULL,
                                category_label=NULL, numeric_label=NULL, 
@@ -51,6 +51,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   href_label_location <- ceiling(num_cat_items/2)
   
   # Estimate type determines the labels for the axis and the format of the value labels
+  est <- t %>% dplyr::pull(.data[[numeric_var]]) %>% est_type_default()
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
   xtype <- t %>% dplyr::pull(.data[[category_var]]) %>% class()
@@ -338,7 +339,7 @@ static_facet_column_chart <- function(t,
                                       moe = NULL,
                                       href = NULL,
                                       hrefcl = NULL,
-                                      est = "percent",
+                                      est = NULL,
                                       ncol = 3,
                                       scales = "free", 
                                       dec = 0, 
@@ -364,6 +365,7 @@ static_facet_column_chart <- function(t,
   
   
   # Estimate type determines the labels for the axis and the format of the value labels
+  est <- t %>% dplyr::pull(.data[[y]]) %>% est_type_default()
   valfrmt <- est_number_formats(est)
   label <- est_label_formats(est)
   
