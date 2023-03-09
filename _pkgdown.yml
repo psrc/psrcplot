@@ -9,13 +9,13 @@ navbar:
     - text: Intro
       href: articles/psrcplot-intro-1.html
     - text: Static Plots
-      href: articles/static-plot-2
+      href: articles/static-plot-2.html
     - text: Interactive Plots
-      href: articles/interactive-plot-3
+      href: articles/interactive-plot-3.html
     - text: Customization
-      href: articles/customization-4
+      href: articles/customization-4.html
     - text: FAQs
-      href: articles/FAQs-5
+      href: articles/FAQs-5.html
 
 
 
