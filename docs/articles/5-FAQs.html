@@ -90,8 +90,7 @@ yourself using the <strong>psrccensus</strong> package:</p>
 <span><span class="co">#   hhinc19_x_race &lt;- psrc_pums_median(</span></span>
 <span><span class="co">#                           z_2019, </span></span>
 <span><span class="co">#                           stat_var="HINCP",</span></span>
-<span><span class="co">#                           group_vars="HRACE") %&gt;%</span></span>
-<span><span class="co">#     filter(HRACE !="Total") %&gt;% mutate(DATE=as.character(DATA_YEAR))</span></span></code></pre></div>
+<span><span class="co">#                           group_vars="HRACE")</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="category-display-order">Category display order<a class="anchor" aria-label="anchor" href="#category-display-order"></a>
 </h2>
@@ -105,7 +104,8 @@ but still with alphabetical default ordering.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrcplot/">psrcplot</a></span><span class="op">)</span></span>
 <span>  </span>
-<span><span class="va">hhinc19_x_race</span> <span class="op">&lt;-</span> <span class="fu">psrcplot</span><span class="fu">::</span><span class="va"><a href="../reference/summary_pums_example_data.html">summary_pums_example_data</a></span></span>
+<span><span class="va">hhinc19_x_race</span> <span class="op">&lt;-</span> <span class="fu">psrcplot</span><span class="fu">::</span><span class="va"><a href="../reference/summary_pums_example_data.html">summary_pums_example_data</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">HRACE</span> <span class="op">!=</span><span class="st">"Total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>DATE<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">DATA_YEAR</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create chart -- default category ordering   </span></span>
 <span><span class="va">income.chart.default</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/column_bar_charts.html">static_bar_chart</a></span><span class="op">(</span></span>
@@ -211,6 +211,37 @@ length to achieve what you want.</p>
 object beforehand, this leaves the category variable in the data alone
 (<code>str_wrap</code> would otherwise convert the type to character and
 lose factor level ordering, etc).</p>
+<p>Notice bar charts use <code><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">ggplot2::scale_x_discrete()</a></code> the
+same as do column charts (not <code><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">scale_x_discrete()</a></code>). This is
+a byproduct of their construction column charts with flipped axes.</p>
+</div>
+<div class="section level2">
+<h2 id="add-a-reference-line">Add a reference line<a class="anchor" aria-label="anchor" href="#add-a-reference-line"></a>
+</h2>
+<p>Along with a lot of formatting options, the key argument here is to
+know the intercept value.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ref_val</span> <span class="op">&lt;-</span> <span class="va">summary_pums_example_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">HRACE</span><span class="op">==</span><span class="st">"Total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">HINCP_median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">income.column.refline</span> <span class="op">&lt;-</span> <span class="va">income.column.wrapped</span> <span class="op">+</span></span>
+<span>                          <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept<span class="op">=</span> <span class="va">ref_val</span>, </span>
+<span>                                              linetype<span class="op">=</span><span class="st">'dotdash'</span>, </span>
+<span>                                              linewidth<span class="op">=</span><span class="fl">1</span>, </span>
+<span>                                              show.legend <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                                              color<span class="op">=</span><span class="st">'#00716c'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>                          <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, </span>
+<span>                                            y<span class="op">=</span><span class="va">ref_val</span><span class="op">+</span><span class="fl">5000</span>, </span>
+<span>                                            x<span class="op">=</span><span class="fl">6</span>, </span>
+<span>                                            label<span class="op">=</span><span class="st">"Region"</span>,</span>
+<span>                                            angle<span class="op">=</span><span class="st">'270'</span>, </span>
+<span>                                            color<span class="op">=</span><span class="st">'#00716c'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">income.column.refline</span></span></code></pre></div>
+<p><img src="5-FAQs_files/figure-html/reference_line-1.png" width="700">
+Notice that reference lines always use
+<code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">ggplot2::geom_hline()</a></code> rather than
+<code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline()</a></code>; as with the previous example, this stems from
+bar charts’ construction as column charts with flipped axes.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
