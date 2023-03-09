@@ -9,9 +9,9 @@ navbar:
     - text: Intro
       href: articles/psrcplot-intro-1.html
     - text: Static Plots
-      href: articles/static-plot-2.html
+      href: articles/static-plots-2.html
     - text: Interactive Plots
-      href: articles/interactive-plot-3.html
+      href: articles/interactive-plots-3.html
     - text: Customization
       href: articles/customization-4.html
     - text: FAQs
