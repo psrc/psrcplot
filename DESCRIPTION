@@ -1,7 +1,7 @@
 Package: psrcplot
 Type: Package
 Title: Create PSRC consistent Data Visualization
-Version: 1.2.0
+Version: 1.1.0
 Authors@R: c(
     person("Craig", "Helmann", email = "chelmann@psrc.org", role = "cre"),
     person("Christy", "Lam", email = "clam@psrc.org", role = "aut"),
