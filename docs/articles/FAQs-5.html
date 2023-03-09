@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">psrcplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,14 +38,14 @@
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-psrcplot-intro.html">Intro: plot types and basic parameters</a>
-    <a class="dropdown-item" href="../articles/2-static-plots.html">Make a static plot</a>
-    <a class="dropdown-item" href="../articles/3-interactive-plots.html">Make an interactive plot</a>
-    <a class="dropdown-item" href="../articles/4-customization.html">Customization</a>
-    <a class="dropdown-item" href="../articles/5-FAQs.html">Frequently Asked Questions</a>
+    <a class="dropdown-item" href="../articles/psrcplot-intro-1.html">Intro</a>
+    <a class="dropdown-item" href="../articles/static-plot-2">Static Plots</a>
+    <a class="dropdown-item" href="../articles/interactive-plot-3">Interactive Plots</a>
+    <a class="dropdown-item" href="../articles/customization-4">Customization</a>
+    <a class="dropdown-item" href="../articles/FAQs-5">FAQs</a>
   </div>
 </li>
       </ul>
@@ -69,7 +69,7 @@
             
       
       
-      <div class="d-none name"><code>5-FAQs.Rmd</code></div>
+      <div class="d-none name"><code>FAQs-5.Rmd</code></div>
     </div>
 
     
@@ -101,8 +101,10 @@ specified in the sequence you’d like them displayed.</p>
 but still with alphabetical default ordering.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrcplot/">psrcplot</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'dplyr' was built under R version 4.2.2</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrcplot/">psrcplot</a></span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="va">hhinc19_x_race</span> <span class="op">&lt;-</span> <span class="fu">psrcplot</span><span class="fu">::</span><span class="va"><a href="../reference/summary_pums_example_data.html">summary_pums_example_data</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">HRACE</span> <span class="op">!=</span><span class="st">"Total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>DATE<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">DATA_YEAR</span><span class="op">)</span><span class="op">)</span></span>
@@ -117,10 +119,10 @@ but still with alphabetical default ordering.</p>
 <span>     title<span class="op">=</span><span class="st">"Median Household Income by Race - default Race order"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.chart.default</span></span></code></pre></div>
-<p><img src="5-FAQs_files/figure-html/default_ordering-1.png" width="700"></p>
+<p><img src="FAQs-5_files/figure-html/default_ordering-1.png" width="700"></p>
 <p>Factor levels can be reversed using the <code>fct_rev()</code>
 function from the <strong>forcats</strong> package.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hhinc19_rev</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_REV<span class="op">=</span><span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_rev.html" class="external-link">fct_rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">HRACE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -133,7 +135,7 @@ function from the <strong>forcats</strong> package.</p>
 <span>     title<span class="op">=</span><span class="st">"Median Household Income by Race - reverse default"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.chart.reverse</span></span></code></pre></div>
-<p><img src="5-FAQs_files/figure-html/reverse_ordering-1.png" width="700"></p>
+<p><img src="FAQs-5_files/figure-html/reverse_ordering-1.png" width="700"></p>
 <div class="section level3">
 <h3 id="sort-by-value">Sort by value<a class="anchor" aria-label="anchor" href="#sort-by-value"></a>
 </h3>
@@ -141,7 +143,7 @@ function from the <strong>forcats</strong> package.</p>
 This uses another <strong>forcats</strong> function,
 <code>fct_reorder()</code> (more complex multi-variable ordering
 expressions are also possible using this function).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">hhinc19_low_high</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_low_high<span class="op">=</span><span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_reorder.html" class="external-link">fct_reorder</a></span><span class="op">(</span><span class="va">HRACE</span>, <span class="op">-</span><span class="va">HINCP_median</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -155,7 +157,7 @@ expressions are also possible using this function).</p>
 <span>      title<span class="op">=</span><span class="st">"Median Household Income by Race - median income order"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.chart.low_high</span></span></code></pre></div>
-<p><img src="5-FAQs_files/figure-html/data_ordering-1.png" width="700"></p>
+<p><img src="FAQs-5_files/figure-html/data_ordering-1.png" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="sort-by-a-user-specified-order">Sort by a user-specified order<a class="anchor" aria-label="anchor" href="#sort-by-a-user-specified-order"></a>
@@ -165,7 +167,7 @@ numeric rank–for example, setting remainder or combination categories
 last. To do that, you’ll need to order the factor levels manually. Be
 careful that you type the exact factor names, or they will be omitted
 (ugh).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hhinc19_custom</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_custom<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">HRACE</span>, </span>
 <span>       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"American Indian or Alaskan Native Alone"</span>, </span>
@@ -189,7 +191,7 @@ careful that you type the exact factor names, or they will be omitted
 <span>      title<span class="op">=</span> <span class="st">"Regional Household Median Income by Race - custom order"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.chart.custom</span></span></code></pre></div>
-<p><img src="5-FAQs_files/figure-html/custom_ordering-1.png" width="700"></p>
+<p><img src="FAQs-5_files/figure-html/custom_ordering-1.png" width="700"></p>
 </div>
 </div>
 <div class="section level2">
@@ -200,13 +202,13 @@ leaves horizontal bar labels alone. If you want text wrapping, however,
 you can add it wherever it is necessary using <strong>ggplot2</strong>
 and <strong>stringr</strong>. You may need to tinker with the wrap
 length to achieve what you want.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">income.column.wrapped</span> <span class="op">&lt;-</span> <span class="va">income.chart.custom</span> <span class="op">+</span> </span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html" class="external-link">str_wrap</a></span><span class="op">(</span><span class="va">x</span>, width<span class="op">=</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Regional Household Median Income by Race - wrapped label"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.wrapped</span></span></code></pre></div>
-<p><img src="5-FAQs_files/figure-html/wrap_labels-1.png" width="700"></p>
+<p><img src="FAQs-5_files/figure-html/wrap_labels-1.png" width="700"></p>
 <p>By inserting the expression in the label rather than altering the
 object beforehand, this leaves the category variable in the data alone
 (<code>str_wrap</code> would otherwise convert the type to character and
@@ -220,7 +222,7 @@ a byproduct of their construction column charts with flipped axes.</p>
 </h2>
 <p>Along with a lot of formatting options, the key argument here is to
 know the intercept value.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ref_val</span> <span class="op">&lt;-</span> <span class="va">summary_pums_example_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">HRACE</span><span class="op">==</span><span class="st">"Total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">HINCP_median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.refline</span> <span class="op">&lt;-</span> <span class="va">income.column.wrapped</span> <span class="op">+</span></span>
@@ -237,7 +239,7 @@ know the intercept value.</p>
 <span>                                            color<span class="op">=</span><span class="st">'#00716c'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.refline</span></span></code></pre></div>
-<p><img src="5-FAQs_files/figure-html/reference_line-1.png" width="700">
+<p><img src="FAQs-5_files/figure-html/reference_line-1.png" width="700">
 Notice that reference lines always use
 <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">ggplot2::geom_hline()</a></code> rather than
 <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline()</a></code>; as with the previous example, this stems from

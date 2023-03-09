@@ -28,7 +28,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">psrcplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,14 +40,14 @@
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-psrcplot-intro.html">Intro: plot types and basic parameters</a>
-    <a class="dropdown-item" href="../articles/2-static-plots.html">Make a static plot</a>
-    <a class="dropdown-item" href="../articles/3-interactive-plots.html">Make an interactive plot</a>
-    <a class="dropdown-item" href="../articles/4-customization.html">Customization</a>
-    <a class="dropdown-item" href="../articles/5-FAQs.html">Frequently Asked Questions</a>
+    <a class="dropdown-item" href="../articles/psrcplot-intro-1.html">Intro</a>
+    <a class="dropdown-item" href="../articles/static-plot-2">Static Plots</a>
+    <a class="dropdown-item" href="../articles/interactive-plot-3">Interactive Plots</a>
+    <a class="dropdown-item" href="../articles/customization-4">Customization</a>
+    <a class="dropdown-item" href="../articles/FAQs-5">FAQs</a>
   </div>
 </li>
       </ul>
@@ -64,15 +64,15 @@
 
 
 
-<script src="4-customization_files/htmlwidgets-1.6.1/htmlwidgets.js"></script><script src="4-customization_files/plotly-binding-4.10.1/plotly.js"></script><script src="4-customization_files/typedarray-0.1/typedarray.min.js"></script><link href="4-customization_files/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
-<script src="4-customization_files/crosstalk-1.2.0/js/crosstalk.min.js"></script><link href="4-customization_files/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
-<script src="4-customization_files/plotly-main-2.11.1/plotly-latest.min.js"></script><div class="row">
+<script src="customization-4_files/htmlwidgets-1.6.1/htmlwidgets.js"></script><script src="customization-4_files/plotly-binding-4.10.1/plotly.js"></script><script src="customization-4_files/typedarray-0.1/typedarray.min.js"></script><link href="customization-4_files/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+<script src="customization-4_files/crosstalk-1.2.0/js/crosstalk.min.js"></script><link href="customization-4_files/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="customization-4_files/plotly-main-2.11.1/plotly-latest.min.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Customization</h1>
             
       
       
-      <div class="d-none name"><code>4-customization.Rmd</code></div>
+      <div class="d-none name"><code>customization-4.Rmd</code></div>
     </div>
 
     
@@ -108,9 +108,10 @@ axis scale as well as drop the legend (since that information is in the
 title).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrcplot/">psrcplot</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">passenger_volume</span> <span class="op">&lt;-</span> <span class="va">enplanement_example_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'dplyr' was built under R version 4.2.2</span></span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">passenger_volume</span> <span class="op">&lt;-</span> <span class="va">enplanement_example_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>                       <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">loc_id</span><span class="op">==</span><span class="st">"SEA"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>                       <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>data_year<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">data_year</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -121,15 +122,15 @@ title).</p>
 <span>                       breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2006</span>, <span class="fl">2018</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">static_plot</span></span></code></pre></div>
-<p><img src="4-customization_files/figure-html/customize_via_ggplot_example1-1.png" width="700"></p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p><img src="customization-4_files/figure-html/customize_via_ggplot_example1-1.png" width="700"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">static_rev</span> <span class="op">&lt;-</span> <span class="va">static_plot</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span></span>
 <span>                                limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">25e6</span><span class="op">)</span>, </span>
 <span>                                labels<span class="op">=</span><span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/unit_format.html" class="external-link">unit_format</a></span><span class="op">(</span>unit<span class="op">=</span><span class="st">"M"</span>, scale<span class="op">=</span><span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>                            <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">static_rev</span></span></code></pre></div>
-<p><img src="4-customization_files/figure-html/customize_via_ggplot_example2-1.png" width="700"></p>
+<p><img src="customization-4_files/figure-html/customize_via_ggplot_example2-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="applying-psrc-styles-to-ggplot2-objects-created-outside-psrcplot">Applying PSRC styles to <strong>ggplot2</strong> objects created
@@ -147,12 +148,12 @@ to convert a <strong>psrcplot</strong> or <strong>ggplot2</strong>
 object to an interactive <strong>plotly</strong> object with PSRC
 styling. Due to constraints in <strong>plotly</strong>, you must
 currently specify the <code>source</code> argument as well.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interactive_plot</span> <span class="op">&lt;-</span> <span class="va">static_rev</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/make_interactive.html">make_interactive</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">interactive_plot</span></span></code></pre></div>
-<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-4efd9d55f2ac6612ae99" style="width:700px;height:432.632880098888px;"></div>
-<script type="application/json" data-for="htmlwidget-4efd9d55f2ac6612ae99">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13],"y":[14703928,15419116,15839504,15273092,15406243,15971676,16121123,16690295,17888080,20148980,21887110,22639124,24024908],"text":["Seattle-Tacoma International: 14,703,928","Seattle-Tacoma International: 15,419,116","Seattle-Tacoma International: 15,839,504","Seattle-Tacoma International: 15,273,092","Seattle-Tacoma International: 15,406,243","Seattle-Tacoma International: 15,971,676","Seattle-Tacoma International: 16,121,123","Seattle-Tacoma International: 16,690,295","Seattle-Tacoma International: 17,888,080","Seattle-Tacoma International: 20,148,980","Seattle-Tacoma International: 21,887,110","Seattle-Tacoma International: 22,639,124","Seattle-Tacoma International: 24,024,908"],"type":"scatter","mode":"lines+markers","line":{"width":5.66929133858268,"color":"rgba(140,198,62,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(140,198,62,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(140,198,62,1)"}},"frame":null,"hoverlabel":{"font":{"family":"Poppins","size":11,"color":"white"}}}],"layout":{"margin":{"t":45.0932125915102,"r":7.30593607305936,"b":30.0894766014728,"l":40.1826484018265},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"","font":{"color":"rgba(76,76,76,1)","family":"Poppins","size":17.2685761726858},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,13.6],"tickmode":"array","ticktext":["2006","2010","2014","2018"],"tickvals":[1,5,9,13],"categoryorder":"array","categoryarray":["2006","2010","2014","2018"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2f3030","family":"Poppins","size":11},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-1250000,26250000],"tickmode":"array","ticktext":["0 M","5 M","10 M","15 M","20 M","25 M"],"tickvals":[0,5000000,10000000,15000000,20000000,25000000],"categoryorder":"array","categoryarray":["0 M","5 M","10 M","15 M","20 M","25 M"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2f3030","family":"Poppins","size":11},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(203,203,203,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"#2f3030","family":"Poppins","size":11},"title":"","orientation":"h","xanchor":"center","xref":"container","x":0.5,"y":-0.1,"pad":{"b":50,"t":50}},"hovermode":"x","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"208c37344258":{"x":{},"y":{},"text":{},"colour":{},"type":"scatter"},"208c40245eb5":{"x":{},"y":{},"text":{},"colour":{}}},"cur_data":"208c37344258","visdat":{"208c37344258":["function (y) ","x"],"208c40245eb5":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><p>Since we can’t see the future and <strong>plotly</strong> can be a
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9731bf5e2e964c52da71" style="width:700px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-9731bf5e2e964c52da71">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13],"y":[14703928,15419116,15839504,15273092,15406243,15971676,16121123,16690295,17888080,20148980,21887110,22639124,24024908],"text":["Seattle-Tacoma International: 14,703,928","Seattle-Tacoma International: 15,419,116","Seattle-Tacoma International: 15,839,504","Seattle-Tacoma International: 15,273,092","Seattle-Tacoma International: 15,406,243","Seattle-Tacoma International: 15,971,676","Seattle-Tacoma International: 16,121,123","Seattle-Tacoma International: 16,690,295","Seattle-Tacoma International: 17,888,080","Seattle-Tacoma International: 20,148,980","Seattle-Tacoma International: 21,887,110","Seattle-Tacoma International: 22,639,124","Seattle-Tacoma International: 24,024,908"],"type":"scatter","mode":"lines+markers","line":{"width":5.66929133858268,"color":"rgba(140,198,62,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(140,198,62,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(140,198,62,1)"}},"frame":null,"hoverlabel":{"font":{"family":"Poppins","size":11,"color":"white"}}}],"layout":{"margin":{"t":45.0932125915102,"r":7.30593607305936,"b":30.0894766014728,"l":40.1826484018265},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"","font":{"color":"rgba(76,76,76,1)","family":"Poppins","size":17.2685761726858},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,13.6],"tickmode":"array","ticktext":["2006","2010","2014","2018"],"tickvals":[1,5,9,13],"categoryorder":"array","categoryarray":["2006","2010","2014","2018"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2f3030","family":"Poppins","size":11},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-1250000,26250000],"tickmode":"array","ticktext":["0 M","5 M","10 M","15 M","20 M","25 M"],"tickvals":[0,5000000,10000000,15000000,20000000,25000000],"categoryorder":"array","categoryarray":["0 M","5 M","10 M","15 M","20 M","25 M"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"#2f3030","family":"Poppins","size":11},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(203,203,203,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"#2f3030","family":"Poppins","size":11},"title":"","orientation":"h","xanchor":"center","xref":"container","x":0.5,"y":-0.1,"pad":{"b":50,"t":50}},"hovermode":"x","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"467028ac7067":{"x":{},"y":{},"text":{},"colour":{},"type":"scatter"},"467031895e33":{"x":{},"y":{},"text":{},"colour":{}}},"cur_data":"467028ac7067","visdat":{"467028ac7067":["function (y) ","x"],"467031895e33":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><p>Since we can’t see the future and <strong>plotly</strong> can be a
 little eccentric, there are no guarantees this command will by itself
 generate exactly what you want, but it should help. Some further
 tweaking in <strong>plotly</strong> may be required via the <a href="https://plotly.com/r/creating-and-updating-figures/#Updating%20Figures" class="external-link"><code>plotly::style()</code>
