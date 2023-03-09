@@ -5,7 +5,7 @@
 \alias{summary_pums_example_data}
 \title{Summary PUMS example data included in psrcplot}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 9 rows and 6 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 10 rows and 5 columns.
 }
 \usage{
 summary_pums_example_data

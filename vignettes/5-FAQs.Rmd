@@ -30,8 +30,7 @@ These examples each use summarized PUMS data, which you can generate yourself us
 #   hhinc19_x_race <- psrc_pums_median(
 #                           z_2019, 
 #                           stat_var="HINCP",
-#                           group_vars="HRACE") %>%
-#     filter(HRACE !="Total") %>% mutate(DATE=as.character(DATA_YEAR))
+#                           group_vars="HRACE")
 
 ```
 
@@ -46,7 +45,8 @@ library(magrittr)
 library(dplyr)
 library(psrcplot)
   
-hhinc19_x_race <- psrcplot::summary_pums_example_data
+hhinc19_x_race <- psrcplot::summary_pums_example_data %>%
+     filter(HRACE !="Total") %>% mutate(DATE=as.character(DATA_YEAR))
 
 # Create chart -- default category ordering   
 income.chart.default <- static_bar_chart(
@@ -146,4 +146,30 @@ income.column.wrapped
 
 ```
 
-By inserting the expression in the label rather than altering the object beforehand, this leaves the category variable in the data alone (`str_wrap` would otherwise convert the type to character and lose factor level ordering, etc).
+By inserting the expression in the label rather than altering the object beforehand, this leaves the category variable in the data alone (`str_wrap` would otherwise convert the type to character and lose factor level ordering, etc). 
+
+Notice bar charts use `ggplot2::scale_x_discrete()` the same as do column charts (not `scale_x_discrete()`). This is a byproduct of their construction column charts with flipped axes.
+
+## Add a reference line
+
+Along with a lot of formatting options, the key argument here is to know the intercept value. 
+
+```{r reference_line, message=FALSE}
+ref_val <- summary_pums_example_data %>% filter(HRACE=="Total") %>% pull(HINCP_median) %>% round()
+
+income.column.refline <- income.column.wrapped +
+                          ggplot2::geom_hline(yintercept= ref_val, 
+                                              linetype='dotdash', 
+                                              linewidth=1, 
+                                              show.legend = FALSE, 
+                                              color='#00716c') +
+                          ggplot2::annotate("text", 
+                                            y=ref_val+5000, 
+                                            x=6, 
+                                            label="Region",
+                                            angle='270', 
+                                            color='#00716c')
+
+income.column.refline
+```
+Notice that reference lines always use `ggplot2::geom_hline()` rather than `geom_vline()`; as with the previous example, this stems from bar charts' construction as column charts with flipped axes.

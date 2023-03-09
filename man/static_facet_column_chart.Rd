@@ -12,8 +12,6 @@ static_facet_column_chart(
   pos = "dodge",
   facet,
   moe = NULL,
-  href = NULL,
-  hrefcl = NULL,
   est = NULL,
   ncol = 3,
   scales = "free",
@@ -39,10 +37,6 @@ static_facet_column_chart(
 \item{facet}{The name of the variable to be the facets}
 
 \item{moe}{The name of the variable to be used for error bars, if desired - default to "NULL"}
-
-\item{href}{A value to be used for a horizontal reference line - default is "NULL"}
-
-\item{hrefcl}{A color to be used for horizontal reference lines - default is "NULL"}
 
 \item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
@@ -82,8 +76,6 @@ my_facet <- static_facet_column_chart(t = df,
                 fill = "Geography",
                 facet = "Race",
                 moe = 'share_moe',
-                href = 'Region',
-                hrefcl = 'black',
                 ncol = 4,
                 scales = "fixed",
                 color = "pgnobgy_5",

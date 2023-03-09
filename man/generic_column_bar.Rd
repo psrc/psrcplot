@@ -13,9 +13,6 @@ generic_column_bar(
   est = NULL,
   moe = NULL,
   dform = "\%Y",
-  href = NULL,
-  hrefnm = NULL,
-  hrefcl = NULL,
   title = NULL,
   subtitle = NULL,
   source = "",
@@ -44,12 +41,6 @@ generic_column_bar(
 \item{moe}{The name of the variable to be used for error bars, if desired - default is "NULL"}
 
 \item{dform}{Format for Date values}
-
-\item{href}{A list of values to be used for any horizontal reference lines - default is "NULL"}
-
-\item{hrefnm}{A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"}
-
-\item{hrefcl}{A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
