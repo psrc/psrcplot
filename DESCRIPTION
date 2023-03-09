@@ -1,7 +1,7 @@
 Package: psrcplot
 Type: Package
 Title: Create PSRC consistent Data Visualization
-Version: 0.1.0
+Version: 1.2.0
 Authors@R: c(
     person("Craig", "Helmann", email = "chelmann@psrc.org", role = "cre"),
     person("Christy", "Lam", email = "clam@psrc.org", role = "aut"),
@@ -23,7 +23,8 @@ Suggests:
     psrccensus,
     knitr,
     htmlwidgets,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    vdiffr
 Imports: 
     magrittr,
     dplyr,

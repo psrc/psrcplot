@@ -1,11 +1,13 @@
 pandoc: 2.19.2
-pkgdown: 2.0.6
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  frequently-asked-questions: frequently-asked-questions.html
-  make-plots-interactive: make-plots-interactive.html
-  make-plots: make-plots.html
-last_built: 2023-02-09T18:22Z
+  customization-4: customization-4.html
+  FAQs-5: FAQs-5.html
+  interactive-plots-3: interactive-plots-3.html
+  psrcplot-intro-1: psrcplot-intro-1.html
+  static-plots-2: static-plots-2.html
+last_built: 2023-03-09T19:08Z
 urls:
   reference: https://psrc.github.io/psrcplot/reference
   article: https://psrc.github.io/psrcplot/articles

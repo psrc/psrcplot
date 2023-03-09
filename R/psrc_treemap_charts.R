@@ -28,11 +28,12 @@ NULL
 #' @export
 #'
 
-create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est="percent", dec=0, color="psrc_light") {
+create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est=NULL, dec=0, color="psrc_light") {
   
   confirm_fonts() 
-  
-  tot <- t %>% select(all_of(s)) %>% dplyr::pull() %>% sum()
+  s_vctr <- t %>% select(all_of(s)) %>% dplyr::pull()
+  est <- est_type_default(s)
+  tot <- sum(s_vctr)
   t <- t %>% dplyr::mutate(total_share = .data[[s]]/tot)
   
   # Estimate type determines the labels

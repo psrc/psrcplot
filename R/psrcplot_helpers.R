@@ -14,6 +14,21 @@ NULL
 #' @name shared_params
 NULL
 
+#' Helper - return estimate type if null
+#' 
+#' @param x numeric vector or dataframe column
+est_type_default <- function(x){
+  est <- "number"
+  if(is.numeric(x)){
+    xmin <- min(x)
+    xmax <- max(x)
+    if(xmin>=0 & xmax<=1){
+      est <- "percent"
+      }
+  }
+  return(est)
+}
+
 #' Helper - return number formatting to match estimate type
 #' 
 #' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
@@ -43,6 +58,8 @@ est_label_formats <- function(est){
 #' @param p ggplot object
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' 
+#' @export
 make_interactive <- function(p, title=NULL, subtitle=NULL){
   x.vals <- length(ggplot2::layer_scales(p)$x$range$range)                                         # Number of x categories in ggplot object
   x.pos <- ggplot2::layer_scales(p)$x$position                                                     # Left or bottom (i.e. bar or column chart)

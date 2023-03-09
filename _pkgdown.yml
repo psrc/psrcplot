@@ -1,4 +1,23 @@
 url:  https://psrc.github.io/psrcplot/
 template:
   bootstrap: 5
+navbar:
+ components:
+   articles:
+    text: Articles
+    menu:
+    - text: Intro
+      href: articles/psrcplot-intro-1.html
+    - text: Static Plots
+      href: articles/static-plot-2
+    - text: Interactive Plots
+      href: articles/interactive-plot-3
+    - text: Customization
+      href: articles/customization-4
+    - text: FAQs
+      href: articles/FAQs-5
+
+
+
+
 

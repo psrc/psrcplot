@@ -9,7 +9,7 @@ generic_line(
   x,
   y,
   fill,
-  est = "percent",
+  est = NULL,
   dec = 0,
   dform = "\%b-\%Y",
   breaks = NULL,

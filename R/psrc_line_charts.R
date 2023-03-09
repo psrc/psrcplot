@@ -19,7 +19,7 @@ NULL
 #' @return line chart
 #' 
 generic_line <- function(t, x, y, fill, 
-                         est="percent", dec=0, dform="%b-%Y",  
+                         est=NULL, dec=0, dform="%b-%Y",  
                          breaks=NULL, lwidth=1, color="gnbopgy_5",
                          title=NULL, subtitle=NULL, source="",
                          alt=NULL, xlabel=NULL, ylabel=NULL,
@@ -35,6 +35,7 @@ generic_line <- function(t, x, y, fill,
   cols <- stats::setNames(l.colors, grps)
   
   # Estimate type determines the labels for the axis and the format of the value labels
+  est <- t %>% dplyr::pull(.data[[x]]) %>% est_type_default()
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
   xtype <- t %>% dplyr::pull(.data[[x]]) %>% class()

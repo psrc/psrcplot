@@ -14,9 +14,6 @@ NULL
 #' @param pos Determines if the bars are side-by-side(dodge) or stacked(stack) - defaults to "dodge"
 #' @param moe The name of the variable to be used for error bars, if desired - default is "NULL"
 #' @param dform Format for Date values 
-#' @param href A list of values to be used for any horizontal reference lines - default is "NULL"
-#' @param hrefnm A list of names to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
-#' @param hrefcl A list of colors to be used for any horizontal reference lines that is equal length to the number of lines - default is "NULL"
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
 #' @param category_label category-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param numeric_label numeric-axis title to be used for chart, if desired - defaults to "NULL"
@@ -25,8 +22,7 @@ NULL
 #' @return static or interactive column or bar chart
 
 generic_column_bar <- function(t, category_var, numeric_var, fill,
-                               pos="dodge", est="percent", moe=NULL, dform="%Y",
-                               href=NULL, hrefnm=NULL, hrefcl=NULL,
+                               pos="dodge", est=NULL, moe=NULL, dform="%Y",
                                title=NULL, subtitle=NULL, source="", alt=NULL,
                                category_label=NULL, numeric_label=NULL, 
                                column_vs_bar="column",
@@ -45,12 +41,9 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   l.colors <- unlist(psrcplot::psrc_colors[color])
   l.colors <- l.colors[1:num.grps]
   cols <- stats::setNames(l.colors, grps)
-  
-  # Figure out how many items are plotted on the category axis for use in Reference Line Titles
-  num_cat_items <- t %>% select(all_of(category_var)) %>% dplyr::distinct() %>% dplyr::pull() %>% length()
-  href_label_location <- ceiling(num_cat_items/2)
-  
+
   # Estimate type determines the labels for the axis and the format of the value labels
+  est <- t %>% dplyr::pull(.data[[numeric_var]]) %>% est_type_default()
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
   xtype <- t %>% dplyr::pull(.data[[category_var]]) %>% class()
@@ -62,7 +55,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     y=.data[[numeric_var]],
                                     text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(round(.data[[numeric_var]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
                                     fill=.data[[fill]],
-                                    group=.data[[fill]])) +
+                                    group=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[fill]])}else{.data[[fill]]})) +
     ggplot2::geom_bar(position=pos, stat="identity") +
     ggplot2::scale_fill_manual(values=cols) +
     ggplot2::scale_y_continuous(labels=lab, expand = ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
@@ -71,13 +64,6 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   if (xtype=="Date"){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
-  } 
-
-  # Add reference lines if they are included 
-  if (!(is.null(href))) {
-    c <- c + 
-      ggplot2::geom_hline(yintercept = href, color=hrefcl, linetype='solid', linewidth=1, show.legend = FALSE) +
-      ggplot2::annotate("text", x = href_label_location, y = href + valfrmt$annot, label = hrefnm, color=hrefcl)
   }
   
   # If there are margins of error, add error bars
@@ -86,7 +72,6 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                           ymax=.data[[numeric_var]]+.data[[moe]]), 
                                     width=0.2, position = ggplot2::position_dodge(0.9))
   }
-
   
   # Pivot for bar chart
   # Also make the lines for the numeric values flip
@@ -96,48 +81,61 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
       ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(), 
                      panel.grid.major.x = ggplot2::element_line(color="#cbcbcb"))
   }
-  
-
  
   # Handling static charts with no MOE: they have value labels but no numeric axis labels and no grid lines
   # Add value labels if there is no error bar or moe and remove the category-variable axis since we have the labels
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
-  if(is.null(moe) & interactive==FALSE & column_vs_bar =='column'){
-    c<- c +                       
+  if(is.null(moe) & interactive==FALSE & pos == 'dodge'){
+    # adjust vjust or hjust depending on chart type
+    if(column_vs_bar =='column') {
+      t <- ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
+                                           y=.data[[numeric_var]],
+                                           label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                              check_overlap = TRUE,
+                              position = ggplot2::position_dodge(0.8),
+                              vjust = -0.20,
+                              size = 11*0.32,
+                              family="Poppins")
+    } else if(column_vs_bar =='bar') {
+      t <- ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
+                                           y=.data[[numeric_var]],
+                                           label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                              check_overlap = TRUE,
+                              position = ggplot2::position_dodge(0.8),
+                              hjust = -0.20,
+                              size = 11*0.32,
+                              family="Poppins")
+    }
+    c <- c +
+      ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
+                     panel.grid.major.y = ggplot2::element_blank())
+    
+    c <- c + t
+    
+  } else if(is.null(moe) & interactive==FALSE & pos == 'stack') {
+    c<- c +
       ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
                      panel.grid.major.y = ggplot2::element_blank())
     
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
-                      y=.data[[numeric_var]], 
-                      label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
+                                             y=.data[[numeric_var]],
+                                             label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
-                                position = ggplot2::position_dodge(0.8),
-                                vjust = -0.20,
+                                position = ggplot2::position_stack(vjust = .5),
                                 size = 11*0.32,
                                 family="Poppins")
-    c<- c+
+  } 
+  
+  # need to add some buffer around the axis because of the labels
+  if(is.null(moe) & interactive==FALSE & column_vs_bar =='column') {
+    c <- c +
       ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                     axis.line.x = ggplot2::element_line(color="#cbcbcb"))  
-                              
-  # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
-  }else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar'){
-    c<- c +                       
-      ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
-                     panel.grid.major.y = ggplot2::element_blank())
+                     axis.line.x = ggplot2::element_line(color="#cbcbcb")) 
     
-    c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
-                      y=.data[[numeric_var]], 
-                      label=paste0(valfrmt$pfx, prettyNum(round(.data[[numeric_var]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx)),
-                                check_overlap = TRUE,
-                                position = ggplot2::position_dodge(0.8),
-                                hjust = -0.20,
-                                size = 11*0.32,
-                                family="Poppins")
-    c<- c+
-      # need to add some buffer around the axis because of the labels
+  } else if(is.null(moe) & interactive==FALSE & column_vs_bar =='bar') {
+    c <- c +
       ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                     axis.line.y = ggplot2::element_line(color="#cbcbcb"))  
-    
+                     axis.line.y = ggplot2::element_line(color="#cbcbcb")) 
   }
   
   # Remove legend if unneccesary
@@ -147,7 +145,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # only wrap for column charts
   if(column_vs_bar=="column"){
-    # Smaller font size and wrap/angle labels if there's a lot of x categories ----
+    # Smaller font size and wrap/angle labels if there's a lot of x categories
     x.vals <- length(unique(c$data[[category_var]]))
   
     if(category_var != fill & x.vals > 5) {
@@ -240,8 +238,6 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
 #' @param ncol Value for the number of columns in your facet - defaults to 3
 #' @param moe The name of the variable to be used for error bars, if desired - default to "NULL"
-#' @param href A value to be used for a horizontal reference line - default is "NULL"
-#' @param hrefcl A color to be used for horizontal reference lines - default is "NULL"
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
 #' @return A static facet column (vertical bar) chart; based on facet_wrap()
 #' 
@@ -263,8 +259,6 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'                 fill = "Geography",
 #'                 facet = "Race",
 #'                 moe = 'share_moe',
-#'                 href = 'Region',
-#'                 hrefcl = 'black',
 #'                 ncol = 4,
 #'                 scales = "fixed",
 #'                 color = "pgnobgy_5",
@@ -321,9 +315,7 @@ static_facet_column_chart <- function(t,
                                       pos = "dodge",
                                       facet, 
                                       moe = NULL,
-                                      href = NULL,
-                                      hrefcl = NULL,
-                                      est = "percent",
+                                      est = NULL,
                                       ncol = 3,
                                       scales = "free", 
                                       dec = 0, 
@@ -349,38 +341,16 @@ static_facet_column_chart <- function(t,
   
   
   # Estimate type determines the labels for the axis and the format of the value labels
+  est <- t %>% dplyr::pull(.data[[y]]) %>% est_type_default()
   valfrmt <- est_number_formats(est)
   label <- est_label_formats(est)
   
-  if(!(is.null(href))) {
-    # separate column data from hline data
-    tcol <- t %>% 
-      filter(.data[[x]] != eval(href))
-    
-    thline <- t %>% 
-      filter(.data[[x]] == eval(href))
-    
-    p <- ggplot2::ggplot(data = tcol,
-                         ggplot2::aes(x = .data[[x]],
-                                      y = .data[[y]],
-                                      fill = .data[[fill]],
-                                      group = .data[[fill]])) +
-      ggplot2::geom_col(position = pos) +
-      ggplot2::geom_hline(data = thline, 
-                          ggplot2::aes(yintercept = .data[[y]], color = .data[[x]]),
-                          alpha = .3,
-                          linetype = 'solid', 
-                          linewidth = 1)  +
-      ggplot2::scale_color_manual(values = c('black'))
-  } else {
-    # no horizontal reference line
-    p <- ggplot2::ggplot(data = t,
-                         ggplot2::aes(x = .data[[x]],
-                                      y = .data[[y]],
-                                      fill = .data[[fill]],
-                                      group = .data[[fill]])) +
-      ggplot2::geom_col(position = pos)
-  }
+  p <- ggplot2::ggplot(data = t,
+                       ggplot2::aes(x = .data[[x]],
+                                    y = .data[[y]],
+                                    fill = .data[[fill]],
+                                    group = .data[[fill]])) +
+       ggplot2::geom_col(position = pos)
   
   # add labels
   p <- p +
