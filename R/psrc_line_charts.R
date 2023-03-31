@@ -35,7 +35,7 @@ generic_line <- function(t, x, y, fill,
   cols <- stats::setNames(l.colors, grps)
   
   # Estimate type determines the labels for the axis and the format of the value labels
-  if(is.null(est)){est <- t %>% dplyr::pull(.data[[numeric_var]]) %>% est_type_default()}
+  if(is.null(est)){est <- t %>% dplyr::pull(.data[[y]]) %>% est_type_default()}
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
   xtype <- t %>% dplyr::pull(.data[[x]]) %>% class()
