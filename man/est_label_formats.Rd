@@ -7,7 +7,7 @@
 est_label_formats(est)
 }
 \arguments{
-\item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
+\item{est}{Type for the numeric values - enter "percent", "currency" or "number"}
 }
 \description{
 Helper - return label format function to match estimate type

@@ -43,7 +43,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   cols <- stats::setNames(l.colors, grps)
 
   # Estimate type determines the labels for the axis and the format of the value labels
-  est <- t %>% dplyr::pull(.data[[numeric_var]]) %>% est_type_default()
+  if(is.null(est)){est <- t %>% dplyr::pull(.data[[numeric_var]]) %>% est_type_default()}
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
   xtype <- t %>% dplyr::pull(.data[[category_var]]) %>% class()

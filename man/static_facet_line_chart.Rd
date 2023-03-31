@@ -4,28 +4,7 @@
 \alias{static_facet_line_chart}
 \title{Facet Line Chart}
 \usage{
-static_facet_line_chart(
-  t,
-  x,
-  y,
-  fill,
-  facet,
-  scales = "free",
-  ncol = 3,
-  est = NULL,
-  dec = 0,
-  dform = "\%b-\%Y",
-  breaks = NULL,
-  lwidth = 1,
-  color = "gnbopgy_5",
-  title = NULL,
-  subtitle = NULL,
-  source = "",
-  alt = NULL,
-  xlabel = NULL,
-  ylabel = NULL,
-  interactive = FALSE
-)
+static_facet_line_chart(t, x, y, fill, facet, scales = "free", ncol = 3, ...)
 }
 \arguments{
 \item{t}{A tibble or dataframe in long form for plotting}
@@ -42,29 +21,7 @@ static_facet_line_chart(
 
 \item{ncol}{Value for the number of columns in your facet - defaults to 3}
 
-\item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
-
-\item{dec}{Number of decimal points in labels - defaults to 0}
-
-\item{dform}{Format for Date values}
-
-\item{breaks}{Break points to use if using a continuous scale, defaults to NULL}
-
-\item{lwidth}{Width of lines, defaults to 1}
-
-\item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
-
-\item{title}{Title to be used for chart, if desired - defaults to "NULL"}
-
-\item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
-
-\item{source}{Source reference as character string, if desired - defaults to blank}
-
-\item{alt}{Text to be used for alt-text, if desired - defaults to "NULL"}
-
-\item{xlabel}{category-axis title to be used for chart, if desired - defaults to "NULL"}
-
-\item{ylabel}{numeric-axis title to be used for chart, if desired - defaults to "NULL"}
+\item{...}{additional arguments passed to  \code{\link{generic_line}}}
 
 \item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 }

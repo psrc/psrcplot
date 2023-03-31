@@ -31,7 +31,7 @@ est_type_default <- function(x){
 
 #' Helper - return number formatting to match estimate type
 #' 
-#' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param est Type for the numeric values - enter "percent", "currency" or "number"
 est_number_formats <- function(est){
   x<- data.frame(row.names=c("percent","currency","number"),
                  fac=c(100,1,1),
@@ -44,9 +44,9 @@ est_number_formats <- function(est){
 
 #' Helper - return label format function to match estimate type
 #'
-#' @param est Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"
+#' @param est Type for the numeric values - enter "percent", "currency" or "number"
 est_label_formats <- function(est){
-  lab <-    if(est=="percent") {scales::label_percent()
+  lab <- if(est=="percent"){scales::label_percent()
   }else if(est=="currency"){scales::label_dollar()
   }else if(est=="number")  {scales::label_comma()
   }

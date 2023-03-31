@@ -35,7 +35,7 @@ generic_line <- function(t, x, y, fill,
   cols <- stats::setNames(l.colors, grps)
   
   # Estimate type determines the labels for the axis and the format of the value labels
-  est <- t %>% dplyr::pull(.data[[x]]) %>% est_type_default()
+  if(is.null(est)){est <- t %>% dplyr::pull(.data[[numeric_var]]) %>% est_type_default()}
   valfrmt <- est_number_formats(est)
   lab <- est_label_formats(est)
   xtype <- t %>% dplyr::pull(.data[[x]]) %>% class()
@@ -46,8 +46,8 @@ generic_line <- function(t, x, y, fill,
                                     text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(round(.data[[y]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
                                     group=.data[[fill]]))  + 
     ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round") +
-    ggplot2::scale_y_continuous(labels = lab) +
     ggplot2::scale_color_manual(values=cols)  +
+    ggplot2::scale_y_continuous(labels=lab, expand=ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
     ggplot2::labs(title=title, subtitle=subtitle, caption=source, alt=alt, x=xlabel, y=ylabel) +
     psrc_style()
   
@@ -109,12 +109,7 @@ interactive_line_chart <- function(t, x, y, fill, ...){
 #' @param facet The name of the variable to be the facets 
 #' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
 #' @param ncol Value for the number of columns in your facet - defaults to 3
-#' @param dform Format for Date values 
-#' @param breaks Break points to use if using a continuous scale, defaults to NULL
-#' @param lwidth Width of lines, defaults to 1
-#' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
-#' @param xlabel category-axis title to be used for chart, if desired - defaults to "NULL"
-#' @param ylabel numeric-axis title to be used for chart, if desired - defaults to "NULL"
+#' @param ... additional arguments passed to  \code{\link{generic_line}}
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #'
 #' @return A static facet line chart; based on facet_wrap()
@@ -125,20 +120,21 @@ interactive_line_chart <- function(t, x, y, fill, ...){
 #' 
 #' @export
 static_facet_line_chart <- function(t, x, y, fill, 
-                                    facet, scales = "free", ncol = 3, 
-                                    est = NULL, dec = 0, dform="%b-%Y",  
-                                    breaks=NULL, lwidth=1, color="gnbopgy_5",
-                                    title=NULL, subtitle=NULL, source="",
-                                    alt=NULL, xlabel=NULL, ylabel=NULL,
-                                    interactive=FALSE){
+                                    facet, scales="free", ncol=3,
+                                    ...){
+  
+  function(t, x, y, fill, 
+           est=NULL, dec=0, dform="%b-%Y",  
+           breaks=NULL, lwidth=1, color="gnbopgy_5",
+           title=NULL, subtitle=NULL, source="",
+           alt=NULL, xlabel=NULL, ylabel=NULL,
+           interactive=FALSE)
   
   confirm_fonts()
   
   l.clr <- "#4C4C4C"
   
-  p <- generic_line(t=t, x=x, y=y, fill=fill, est=est, dec=dec, dform=dform, 
-                    breaks=breaks, lwidth=lwidth, color=color, title=title, subtitle=subtitle, 
-                    source=source, alt=alt, xlabel=xlabel, ylabel=ylabel, interactive=FALSE)
+  p <- static_line_chart(t=t, x=x, y=y, fill=fill, ...)
   
   x.vals <- length(unique(p$data[[x]]))
   # display x-axis tick values if another variable is introduced
