@@ -99,3 +99,72 @@ interactive_line_chart <- function(t, x, y, fill, ...){
   c <- generic_line(t=t, x=x, y=y, fill=fill, interactive=TRUE, ...)
   return(c)
 }
+
+#' Facet Line Chart
+#' 
+#' @inheritParams shared_params
+#' @param t A tibble or dataframe in long form for plotting
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param facet The name of the variable to be the facets 
+#' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
+#' @param ncol Value for the number of columns in your facet - defaults to 3
+#' @param dform Format for Date values 
+#' @param breaks Break points to use if using a continuous scale, defaults to NULL
+#' @param lwidth Width of lines, defaults to 1
+#' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
+#' @param xlabel category-axis title to be used for chart, if desired - defaults to "NULL"
+#' @param ylabel numeric-axis title to be used for chart, if desired - defaults to "NULL"
+#' @param interactive Enable hover text and other interactive features - defaults to FALSE
+#'
+#' @return A static facet line chart; based on facet_wrap()
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+#' @importFrom dplyr filter
+#' 
+#' @export
+static_facet_line_chart <- function(t, x, y, fill, 
+                                    facet, scales = "free", ncol = 3, 
+                                    est = NULL, dec = 0, dform="%b-%Y",  
+                                    breaks=NULL, lwidth=1, color="gnbopgy_5",
+                                    title=NULL, subtitle=NULL, source="",
+                                    alt=NULL, xlabel=NULL, ylabel=NULL,
+                                    interactive=FALSE){
+  
+  confirm_fonts()
+  
+  l.clr <- "#4C4C4C"
+  
+  p <- generic_line(t=t, x=x, y=y, fill=fill, est=est, dec=dec, dform=dform, 
+                    breaks=breaks, lwidth=lwidth, color=color, title=title, subtitle=subtitle, 
+                    source=source, alt=alt, xlabel=xlabel, ylabel=ylabel, interactive=FALSE)
+  
+  x.vals <- length(unique(p$data[[x]]))
+  # display x-axis tick values if another variable is introduced
+  if(x != fill) {
+    if(x.vals > 5) {
+      # smaller font size and wrap/angle labels if there's a lot of x categories
+      p <- p +
+        ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
+      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
+    } else {
+      axis.text.x.value <- ggplot2::element_text(size = 7)
+    }
+  }
+  
+  # add facet and theme
+  p <- p +
+    ggplot2::facet_wrap(ggplot2::vars(.data[[facet]]), 
+                        labeller = ggplot2::label_wrap_gen(),
+                        scales = scales, 
+                        ncol = ncol) +
+    psrc_style() +
+    ggplot2::theme(axis.text.x = axis.text.x.value,
+                   axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
+                   strip.text = ggplot2::element_text(family = 'Poppins', size = 10),
+                   panel.grid.major.y = ggplot2::element_blank()
+    ) 
+  
+  return(p)
+}
