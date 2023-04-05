@@ -22,8 +22,6 @@ static_facet_line_chart(t, x, y, fill, facet, scales = "free", ncol = 3, ...)
 \item{ncol}{Value for the number of columns in your facet - defaults to 3}
 
 \item{...}{additional arguments passed to  \code{\link{generic_line}}}
-
-\item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 }
 \value{
 A static facet line chart; based on facet_wrap()
