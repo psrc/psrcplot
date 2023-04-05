@@ -42,8 +42,8 @@ generic_line <- function(t, x, y, fill,
   
   c <- ggplot2::ggplot(data=t, 
                        ggplot2::aes(x=.data[[x]],
-                                    y=.data[[y]],
-                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(round(.data[[y]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
+                                    y=formattable::digits(.data[[y]], digits=dec),
+                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(.data[[y]] * valfrmt$fac, digits=dec), big.mark = ","), valfrmt$sfx),
                                     group=.data[[fill]]))  + 
     ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round") +
     ggplot2::scale_color_manual(values=cols)  +
@@ -110,7 +110,6 @@ interactive_line_chart <- function(t, x, y, fill, ...){
 #' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
 #' @param ncol Value for the number of columns in your facet - defaults to 3
 #' @param ... additional arguments passed to  \code{\link{generic_line}}
-#' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #'
 #' @return A static facet line chart; based on facet_wrap()
 #' 
@@ -122,13 +121,6 @@ interactive_line_chart <- function(t, x, y, fill, ...){
 static_facet_line_chart <- function(t, x, y, fill, 
                                     facet, scales="free", ncol=3,
                                     ...){
-  
-  function(t, x, y, fill, 
-           est=NULL, dec=0, dform="%b-%Y",  
-           breaks=NULL, lwidth=1, color="gnbopgy_5",
-           title=NULL, subtitle=NULL, source="",
-           alt=NULL, xlabel=NULL, ylabel=NULL,
-           interactive=FALSE)
   
   confirm_fonts()
   

@@ -44,14 +44,14 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est=NULL
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
-                                                    paste0(valfrmt$pfx, prettyNum(round(.data[[s]]* valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
+                                                    paste0(valfrmt$pfx, prettyNum(formattable::digits(.data[[s]] * valfrmt$fac, digits=dec), big.mark = ","), valfrmt$sfx),
                                                     sep = "\n")))
   } else {
     c <- ggplot2::ggplot(t,
                          ggplot2::aes(area = .data[[s]],
                                       fill = .data[[fill]], 
                                       label = paste(.data[[fill]], 
-                                                    paste0(valfrmt$pfx, prettyNum(round(.data[[s]] * valfrmt$fac, dec), big.mark = ","), valfrmt$sfx),
+                                                    paste0(valfrmt$pfx, prettyNum(formattable::digits(.data[[s]] * valfrmt$fac, digits=dec), big.mark = ","), valfrmt$sfx),
                                                     paste0(prettyNum(round(.data$total_share * 100,0), big.mark = ","), "%"), 
                                                     sep = "\n")))
   }
