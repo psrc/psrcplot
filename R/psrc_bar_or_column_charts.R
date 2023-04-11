@@ -345,6 +345,8 @@ static_facet_column_chart <- function(t,
   valfrmt <- est_number_formats(est)
   label <- est_label_formats(est)
   
+  t %<>% dplyr::arrange(.data[[fill]]) # Factor ordering
+  
   p <- ggplot2::ggplot(data = t,
                        ggplot2::aes(x = .data[[x]],
                                     y = formattable::digits(.data[[y]], digits=dec),

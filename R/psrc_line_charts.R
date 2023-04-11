@@ -40,6 +40,8 @@ generic_line <- function(t, x, y, fill,
   lab <- est_label_formats(est)
   xtype <- t %>% dplyr::pull(.data[[x]]) %>% class()
   
+  t %<>% dplyr::arrange(.data[[fill]]) # Factor ordering
+  
   c <- ggplot2::ggplot(data=t, 
                        ggplot2::aes(x=.data[[x]],
                                     y=formattable::digits(.data[[y]], digits=dec),

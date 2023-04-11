@@ -29,6 +29,8 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
   l.colors <- l.colors[1:num.grps]
   cols <- stats::setNames(l.colors, grps)
   
+  t %<>% dplyr::arrange(.data[[fill]]) # Factor ordering
+  
   p <- ggplot2::ggplot(data=t, ggplot2::aes(x = .data[[x]], y = .data[[y]])) + 
     ggplot2::geom_point(ggplot2::aes(color = .data[[fill]], size = .data[[s]]), alpha = 1.0) +
     ggplot2::scale_size(range = c(0.5, 12)) +
