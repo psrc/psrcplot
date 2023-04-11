@@ -128,6 +128,7 @@ static_facet_line_chart <- function(t, x, y, fill,
   
   l.clr <- "#4C4C4C"
   
+  t %<>% dplyr::arrange(.data[[fill]]) # Factor ordering
   p <- static_line_chart(t=t, x=x, y=y, fill=fill, ...)
   
   x.vals <- length(unique(p$data[[x]]))
