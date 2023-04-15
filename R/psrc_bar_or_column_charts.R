@@ -341,7 +341,7 @@ static_facet_column_chart <- function(t,
   
   
   # Estimate type determines the labels for the axis and the format of the value labels
-  est <- t %>% dplyr::pull(.data[[y]]) %>% est_type_default()
+  if(is.null(est)){est <- t %>% dplyr::pull(.data[[y]]) %>% est_type_default()}
   valfrmt <- est_number_formats(est)
   label <- est_label_formats(est)
   
