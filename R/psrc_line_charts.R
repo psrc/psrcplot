@@ -159,3 +159,67 @@ static_facet_line_chart <- function(t, x, y, fill,
   
   return(p)
 }
+
+#' Cleveland Dot Chart
+#' 
+#' Creates lines showing range by category, with dot endpoints
+#' 
+#' @inheritParams shared_params
+#' @param t A tibble or dataframe in long form for plotting
+#' @param x The name of the variable you want plotted on the X-Axis (categorical)
+#' @param y The name of the variable you want plotted on the Y-Axis (numeric)
+#' @param fill The name of the variable supplying line endpoints (e.g. time points)
+#'
+#' @return A Cleveland line chart
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+#' @importFrom dplyr filter
+#' @import ggplot2
+#' 
+#' @export
+cleveland_dot_chart <- function(t, x, y, fill, 
+                                est=NULL, dec=0, dform="%b-%Y",  
+                                lwidth=1, color="gnbopgy_5",
+                                title=NULL, subtitle=NULL, source="",
+                                xlabel=NULL, ylabel=NULL){
+  
+  confirm_fonts()
+  
+  # Estimate type determines the labels for the axis and the format of the value labels
+  x_series <- t %>% dplyr::pull(.data[[x]])
+  if(is.null(est)){est <- x_series %>% est_type_default()}
+  lab <- est_label_formats(est)
+  if(max(x_series)>1e6){lab <- scales::unit_format(unit = "M", scale = 1e-6)
+  }else if(max(x_series)>1e9){lab <- scales::unit_format(unit = "B", scale = 1e-9)
+  }
+  
+  filltype <- t %>% dplyr::pull(.data[[fill]]) %>% class()
+
+  # generate color scale
+  l.colors <- unlist(psrcplot::psrc_colors[color])
+  l.colors <- l.colors[1:2]
+  cols <- stats::setNames(l.colors, 2)
+  
+  # construct the plot
+  c <- dplyr::filter(data, .data[[fill]] %in% c(max(.data[[fill]]), min(.data[[fill]]))) %>% 
+  ggplot(aes(x = .data[[x]], y = .data[[y]])) +
+  geom_line(aes(group = .data[[y]]), linewidth = lwidth) +
+  geom_point(aes(color = as.factor(.data[[fill]]))) + 
+  psrc_style() +
+  theme(axis.title = element_blank(),
+        legend.direction ="vertical",
+        legend.position ="right",
+        text = element_text(family = "Poppins"),
+        plot.title = element_text(size = 20, margin = margin(b = 10)),
+        plot.subtitle = element_text(size = 10, margin = margin(b = 25)),
+        plot.caption = element_text(size = 8, margin = margin(t = 10), color="grey70", hjust = 0)) +
+        scale_x_continuous(labels = lab)  +
+        labs(title = title, subtitle = subtitle, caption = source, alt = alt, x = xlabel, y = ylabel)
+  
+  if (filltype=="Date"){
+    c <- c + scale_color_manual(labels = scales::date_format(dform))
+  }
+  
+  return(c)
+}
