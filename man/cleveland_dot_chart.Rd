@@ -48,4 +48,5 @@ A Cleveland line chart
 }
 \description{
 Creates lines showing range by category, with dot endpoints
+credit https://uc-r.github.io/cleveland-dot-plots
 }

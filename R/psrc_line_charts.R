@@ -163,6 +163,7 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' Cleveland Dot Chart
 #' 
 #' Creates lines showing range by category, with dot endpoints
+#' credit https://uc-r.github.io/cleveland-dot-plots
 #' 
 #' @inheritParams shared_params
 #' @param t A tibble or dataframe in long form for plotting
@@ -174,7 +175,6 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
-#' @importFrom dplyr filter
 #' @import ggplot2
 #' 
 #' @export
@@ -203,13 +203,13 @@ cleveland_dot_chart <- function(t, x, y, fill,
   
   # construct the plot
   c <- dplyr::filter(data, .data[[fill]] %in% c(max(.data[[fill]]), min(.data[[fill]]))) %>% 
-  ggplot(aes(x = .data[[x]], y = .data[[y]])) +
+  ggplot(aes(x = .data[[x]], y = forcats::fct_rev(.data[[y]]))) +
   geom_line(aes(group = .data[[y]]), linewidth = lwidth) +
   geom_point(aes(color = as.factor(.data[[fill]])), size = 2) + 
   psrc_style() +
   theme(axis.title = element_blank(),
-        legend.direction ="vertical",
-        legend.position ="right",
+        legend.direction ="horizontal",
+        legend.position ="top",
         text = element_text(family = "Poppins")) +
   scale_x_continuous(labels = lab) +
   scale_y_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
