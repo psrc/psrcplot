@@ -182,7 +182,7 @@ cleveland_dot_chart <- function(t, x, y, fill,
                                 est=NULL, dec=0, dform="%b-%Y",  
                                 lwidth=1, color="gnbopgy_5",
                                 title=NULL, subtitle=NULL, source="",
-                                xlabel=NULL, ylabel=NULL){
+                                alt=NULL, xlabel=NULL, ylabel=NULL){
   
   confirm_fonts()
   
@@ -205,17 +205,15 @@ cleveland_dot_chart <- function(t, x, y, fill,
   c <- dplyr::filter(data, .data[[fill]] %in% c(max(.data[[fill]]), min(.data[[fill]]))) %>% 
   ggplot(aes(x = .data[[x]], y = .data[[y]])) +
   geom_line(aes(group = .data[[y]]), linewidth = lwidth) +
-  geom_point(aes(color = as.factor(.data[[fill]]))) + 
+  geom_point(aes(color = as.factor(.data[[fill]])), size = 2) + 
   psrc_style() +
   theme(axis.title = element_blank(),
         legend.direction ="vertical",
         legend.position ="right",
-        text = element_text(family = "Poppins"),
-        plot.title = element_text(size = 20, margin = margin(b = 10)),
-        plot.subtitle = element_text(size = 10, margin = margin(b = 25)),
-        plot.caption = element_text(size = 8, margin = margin(t = 10), color="grey70", hjust = 0)) +
-        scale_x_continuous(labels = lab)  +
-        labs(title = title, subtitle = subtitle, caption = source, alt = alt, x = xlabel, y = ylabel)
+        text = element_text(family = "Poppins")) +
+  scale_x_continuous(labels = lab) +
+  scale_y_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
+  labs(title = title, subtitle = subtitle, caption = source, alt = alt, x = xlabel, y = ylabel)
   
   if (filltype=="Date"){
     c <- c + scale_color_manual(labels = scales::date_format(dform))

@@ -17,6 +17,7 @@ cleveland_dot_chart(
   title = NULL,
   subtitle = NULL,
   source = "",
+  alt = NULL,
   xlabel = NULL,
   ylabel = NULL
 )
