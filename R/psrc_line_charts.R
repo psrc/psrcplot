@@ -170,6 +170,8 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' @param x The name of the variable you want plotted on the X-Axis (categorical)
 #' @param y The name of the variable you want plotted on the Y-Axis (numeric)
 #' @param fill The name of the variable supplying line endpoints (e.g. time points)
+#' @param lwidth Width of lines; defaults to 1.5
+#' @param dotsize Defaults to 3
 #'
 #' @return A Cleveland line chart
 #' 
@@ -180,7 +182,7 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' @export
 cleveland_dot_chart <- function(t, x, y, fill, 
                                 est=NULL, dec=0, dform="%b-%Y",  
-                                lwidth=1, color="gnbopgy_5",
+                                lwidth=1.5, dotsize=3, color="gnbopgy_5",
                                 title=NULL, subtitle=NULL, source="",
                                 alt=NULL, xlabel=NULL, ylabel=NULL){
   
@@ -204,8 +206,8 @@ cleveland_dot_chart <- function(t, x, y, fill,
   # construct the plot
   c <- dplyr::filter(data, .data[[fill]] %in% c(max(.data[[fill]]), min(.data[[fill]]))) %>% 
   ggplot(aes(x = .data[[x]], y = forcats::fct_rev(.data[[y]]))) +
-  geom_line(aes(group = .data[[y]]), linewidth = lwidth) +
-  geom_point(aes(color = as.factor(.data[[fill]])), size = 2) + 
+  geom_line(aes(group = .data[[y]]), color = "#999999", linewidth = lwidth) +
+  geom_point(aes(color = as.factor(.data[[fill]])), size = dotsize) + 
   psrc_style() +
   theme(axis.title = element_blank(),
         legend.direction ="horizontal",

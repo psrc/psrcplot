@@ -12,7 +12,8 @@ cleveland_dot_chart(
   est = NULL,
   dec = 0,
   dform = "\%b-\%Y",
-  lwidth = 1,
+  lwidth = 1.5,
+  dotsize = 3,
   color = "gnbopgy_5",
   title = NULL,
   subtitle = NULL,
@@ -34,6 +35,10 @@ cleveland_dot_chart(
 \item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
+
+\item{lwidth}{Width of lines; defaults to 1.5}
+
+\item{dotsize}{Defaults to 3}
 
 \item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
 
