@@ -172,6 +172,8 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' @param fill The name of the variable supplying line endpoints (e.g. time points)
 #' @param lwidth Width of lines; defaults to 1.5
 #' @param dotsize Defaults to 3
+#' @param shape Of dot and legend; can be either value 1:25 or name; defaults to "circle"
+#' see https://ggplot2.tidyverse.org/articles/ggplot2-specs.html?q=shapes#sec:shape-spec
 #'
 #' @return A Cleveland line chart
 #' 
@@ -181,41 +183,43 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' 
 #' @export
 cleveland_dot_chart <- function(t, x, y, fill, 
-                                est=NULL, dec=0, dform="%b-%Y",  
-                                lwidth=1.5, dotsize=3, color="gnbopgy_5",
+                                est=NULL, dec=0, dform="%b-%Y", lwidth=1.5,  
+                                dotsize=3, color="gnbopgy_5", shape="circle",
                                 title=NULL, subtitle=NULL, source="",
                                 alt=NULL, xlabel=NULL, ylabel=NULL){
   
   confirm_fonts()
   
   # Estimate type determines the labels for the axis and the format of the value labels
-  x_series <- t %>% dplyr::pull(.data[[x]])
+  x_series <- t %>% dplyr::pull({{x}})
   if(is.null(est)){est <- x_series %>% est_type_default()}
   lab <- est_label_formats(est)
   if(max(x_series)>1e6){lab <- scales::unit_format(unit = "M", scale = 1e-6)
   }else if(max(x_series)>1e9){lab <- scales::unit_format(unit = "B", scale = 1e-9)
   }
   
-  filltype <- t %>% dplyr::pull(.data[[fill]]) %>% class()
+  # Fill values used for color scale and type check for legend
+  fill_minmax <- t %>% dplyr::pull({{fill}})
+  fill_minmax <- c(min(fill_minmax), max(fill_minmax))
+  filltype <- class(fill_minmax)
+  dot_colors <- unlist(psrcplot::psrc_colors[color]) %>% stats::setNames(fill_minmax)
 
-  # generate color scale
-  l.colors <- unlist(psrcplot::psrc_colors[color])
-  l.colors <- l.colors[1:2]
-  cols <- stats::setNames(l.colors, 2)
-  
   # construct the plot
-  c <- dplyr::filter(data, .data[[fill]] %in% c(max(.data[[fill]]), min(.data[[fill]]))) %>% 
-  ggplot(aes(x = .data[[x]], y = forcats::fct_rev(.data[[y]]))) +
-  geom_line(aes(group = .data[[y]]), color = "#999999", linewidth = lwidth) +
-  geom_point(aes(color = as.factor(.data[[fill]])), size = dotsize) + 
-  psrc_style() +
-  theme(axis.title = element_blank(),
-        legend.direction ="horizontal",
-        legend.position ="top",
-        text = element_text(family = "Poppins")) +
-  scale_x_continuous(labels = lab) +
-  scale_y_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
-  labs(title = title, subtitle = subtitle, caption = source, alt = alt, x = xlabel, y = ylabel)
+  c <- dplyr::filter(data, .data[[fill]] %in% fill_minmax) %>% 
+    ggplot(aes(x = .data[[x]], y = forcats::fct_rev(.data[[y]]))) +
+    geom_line(aes(group = .data[[y]]), color = "#999999", linewidth = lwidth) +
+    scale_color_discrete(type = dot_colors) +
+    geom_point(aes(color = as.factor(.data[[fill]]), shape = shape), size = dotsize) + 
+    scale_shape_identity() +
+    psrc_style() +
+    theme(axis.title = element_blank(),
+          legend.direction ="horizontal",
+          legend.position ="top",
+          text = element_text(family = "Poppins")) +
+    guides(color = guide_legend(override.aes = list(shape = shape))) +
+    scale_x_continuous(labels = lab) +
+    scale_y_discrete(labels = function(x) stringr::str_wrap(x, width = 25)) +
+    labs(title = title, subtitle = subtitle, caption = source, alt = alt, x = xlabel, y = ylabel)
   
   if (filltype=="Date"){
     c <- c + scale_color_manual(labels = scales::date_format(dform))

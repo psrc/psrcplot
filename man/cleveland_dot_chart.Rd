@@ -15,6 +15,7 @@ cleveland_dot_chart(
   lwidth = 1.5,
   dotsize = 3,
   color = "gnbopgy_5",
+  shape = "circle",
   title = NULL,
   subtitle = NULL,
   source = "",
@@ -41,6 +42,9 @@ cleveland_dot_chart(
 \item{dotsize}{Defaults to 3}
 
 \item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
+
+\item{shape}{Of dot and legend; can be either value 1:25 or name; defaults to "circle"
+see https://ggplot2.tidyverse.org/articles/ggplot2-specs.html?q=shapes#sec:shape-spec}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 
