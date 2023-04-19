@@ -101,10 +101,8 @@ specified in the sequence you’d like them displayed.</p>
 but still with alphabetical default ordering.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: package 'dplyr' was built under R version 4.2.2</span></span></code></pre>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrcplot/">psrcplot</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrcplot/">psrcplot</a></span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="va">hhinc19_x_race</span> <span class="op">&lt;-</span> <span class="fu">psrcplot</span><span class="fu">::</span><span class="va"><a href="../reference/summary_pums_example_data.html">summary_pums_example_data</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">HRACE</span> <span class="op">!=</span><span class="st">"Total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>DATE<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">DATA_YEAR</span><span class="op">)</span><span class="op">)</span></span>
@@ -122,7 +120,7 @@ but still with alphabetical default ordering.</p>
 <p><img src="FAQs-5_files/figure-html/default_ordering-1.png" width="700"></p>
 <p>Factor levels can be reversed using the <code>fct_rev()</code>
 function from the <strong>forcats</strong> package.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hhinc19_rev</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_REV<span class="op">=</span><span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_rev.html" class="external-link">fct_rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">HRACE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -143,7 +141,7 @@ function from the <strong>forcats</strong> package.</p>
 This uses another <strong>forcats</strong> function,
 <code>fct_reorder()</code> (more complex multi-variable ordering
 expressions are also possible using this function).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="va">hhinc19_low_high</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_low_high<span class="op">=</span><span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_reorder.html" class="external-link">fct_reorder</a></span><span class="op">(</span><span class="va">HRACE</span>, <span class="op">-</span><span class="va">HINCP_median</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -167,7 +165,7 @@ numeric rank–for example, setting remainder or combination categories
 last. To do that, you’ll need to order the factor levels manually. Be
 careful that you type the exact factor names, or they will be omitted
 (ugh).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hhinc19_custom</span> <span class="op">&lt;-</span> <span class="va">hhinc19_x_race</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>HRACE_custom<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">HRACE</span>, </span>
 <span>       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"American Indian or Alaskan Native Alone"</span>, </span>
@@ -202,7 +200,7 @@ leaves horizontal bar labels alone. If you want text wrapping, however,
 you can add it wherever it is necessary using <strong>ggplot2</strong>
 and <strong>stringr</strong>. You may need to tinker with the wrap
 length to achieve what you want.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">income.column.wrapped</span> <span class="op">&lt;-</span> <span class="va">income.chart.custom</span> <span class="op">+</span> </span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">scale_x_discrete</a></span><span class="op">(</span>labels<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_wrap.html" class="external-link">str_wrap</a></span><span class="op">(</span><span class="va">x</span>, width<span class="op">=</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Regional Household Median Income by Race - wrapped label"</span><span class="op">)</span></span>
@@ -214,7 +212,7 @@ object beforehand, this leaves the category variable in the data alone
 (<code>str_wrap</code> would otherwise convert the type to character and
 lose factor level ordering, etc).</p>
 <p>Notice bar charts use <code><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">ggplot2::scale_x_discrete()</a></code> the
-same as do column charts (not <code><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html" class="external-link">scale_x_discrete()</a></code>). This is
+same as do column charts (not <code>scale_x_discrete()</code>). This is
 a byproduct of their construction column charts with flipped axes.</p>
 </div>
 <div class="section level2">
@@ -222,7 +220,7 @@ a byproduct of their construction column charts with flipped axes.</p>
 </h2>
 <p>Along with a lot of formatting options, the key argument here is to
 know the intercept value.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ref_val</span> <span class="op">&lt;-</span> <span class="va">summary_pums_example_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">HRACE</span><span class="op">==</span><span class="st">"Total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">HINCP_median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">income.column.refline</span> <span class="op">&lt;-</span> <span class="va">income.column.wrapped</span> <span class="op">+</span></span>
@@ -242,7 +240,7 @@ know the intercept value.</p>
 <p><img src="FAQs-5_files/figure-html/reference_line-1.png" width="700">
 Notice that reference lines always use
 <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">ggplot2::geom_hline()</a></code> rather than
-<code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline()</a></code>; as with the previous example, this stems from
+<code>geom_vline()</code>; as with the previous example, this stems from
 bar charts’ construction as column charts with flipped axes.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

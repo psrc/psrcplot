@@ -86,13 +86,10 @@ Census Bureau.</p>
 <p>The example data measure mode share by race for the PSRC region:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://psrc.github.io/psrcplot/">psrcplot</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: package 'dplyr' was built under R version 4.2.2</span></span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: package 'ggplot2' was built under R version 4.2.2</span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mode_shares</span> <span class="op">&lt;-</span> <span class="va">mode_share_example_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mode_shares</span> <span class="op">&lt;-</span> <span class="va">mode_share_example_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Category</span><span class="op">==</span><span class="st">"Mode to Work by Race"</span> <span class="op">&amp;</span> <span class="va">Geography</span><span class="op">==</span><span class="st">"Region"</span> <span class="op">&amp;</span> <span class="va">Race</span><span class="op">==</span><span class="st">"Total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Category</span>, <span class="va">Geography</span>, <span class="va">Race</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">Year</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -113,7 +110,7 @@ Census Bureau.</p>
 bar charts the <strong>x</strong> variable should be numeric (as
 quantities are represented on the x axis) and the <strong>y</strong>
 variable should be discrete/categorical.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">modes_chart</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/column_bar_charts.html">static_bar_chart</a></span><span class="op">(</span></span>
 <span>                    t<span class="op">=</span><span class="va">mode_shares</span>, y<span class="op">=</span><span class="st">"Mode"</span>,x<span class="op">=</span><span class="st">"share"</span>, fill<span class="op">=</span><span class="st">"Year"</span>,</span>
 <span>                    title<span class="op">=</span><span class="st">"Mode Share to Work"</span>,</span>
@@ -132,7 +129,7 @@ variable should be discrete/categorical.</p>
 <p>To save a static chart programmatically, use the <strong><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link"><code>ggplot2::ggsave()</code></a></strong>
 function. You can also use the Plots-&gt;Export menu or right-click
 -&gt; “Save as” in RStudio.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span>filename<span class="op">=</span><span class="st">'modes_bar_chart.png'</span>, plot<span class="op">=</span><span class="va">modes_chart</span>, device<span class="op">=</span><span class="st">'png'</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Saving 7.29 x 4.51 in image</span></span></code></pre>
 </div>

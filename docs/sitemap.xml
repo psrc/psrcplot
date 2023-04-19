@@ -37,6 +37,9 @@
     <loc>https://psrc.github.io/psrcplot/reference/add_citation.html</loc>
   </url>
   <url>
+    <loc>https://psrc.github.io/psrcplot/reference/cleveland_dot_chart.html</loc>
+  </url>
+  <url>
     <loc>https://psrc.github.io/psrcplot/reference/column_bar_charts.html</loc>
   </url>
   <url>
@@ -44,6 +47,9 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/create_treemap_chart.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/enplanement_example_data.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/est_label_formats.html</loc>
@@ -98,6 +104,9 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/static_facet_column_chart.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/static_facet_line_chart.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/summary_pums_example_data.html</loc>
