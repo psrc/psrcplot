@@ -14,6 +14,38 @@ NULL
 #' @name shared_params
 NULL
 
+#' Make similiarly sized multi-line strings from single-line strings
+#' 
+#' @param str_vector string or character vector to insert line breaks
+#' @param wrap_width max string width
+wrap_evenly <- function(str_vector, wrap_width){
+  mini_me <- function(in_string, wrap_width){
+    str_length <- nchar(in_string)
+    if(str_length <= wrap_width){
+      out_string <- in_string
+    }else{
+      lines <- ceiling(str_length / wrap_width)
+      equi_width <- ceiling(str_length / lines)
+      regex <- paste0("\\b(.{", floor(equi_width * 0.75), ",", ceiling(equi_width * 1.25), "} )")
+      out_string <- stringr::str_replace_all(in_string, regex, "\\1\n")
+      if(is.null(out_string)){out_string <- in_string}
+    }
+    return(out_string)
+  }
+  rs <- mapply(mini_me, str_vector, wrap_width)
+}
+
+#' Helper - split labels into similarly sized pieces
+#' 
+#' @param in_string string to be split
+#' @param wrap_width max string width
+wrap_labels_evenly <- function(width) {
+  force(width)
+  function(x) {
+    unlist(lapply(wrap_evenly(x, wrap_width = width), paste0, collapse = "\n"))
+  }
+}
+
 #' Helper - return estimate type if null
 #' 
 #' @param x numeric vector or dataframe column

@@ -183,7 +183,7 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' 
 #' @export
 cleveland_dot_chart <- function(t, x, y, fill, 
-                                est=NULL, dec=0, dform="%b-%Y", lwidth=1.5,  
+                                est=NULL, dec=0, dform="%b-%Y", lwidth=1.5,
                                 dotsize=3, color="gnbopgy_5", shape="circle",
                                 title=NULL, subtitle=NULL, source="",
                                 alt=NULL, xlabel=NULL, ylabel=NULL){
@@ -191,7 +191,7 @@ cleveland_dot_chart <- function(t, x, y, fill,
   confirm_fonts()
   
   # Estimate type determines the labels for the axis and the format of the value labels
-  x_series <- t %>% dplyr::pull({{x}})
+  x_series <- dplyr::pull(t, {{x}})
   if(is.null(est)){est <- x_series %>% est_type_default()}
   lab <- est_label_formats(est)
   if(max(x_series)>1e6){lab <- scales::unit_format(unit = "M", scale = 1e-6)
@@ -199,7 +199,7 @@ cleveland_dot_chart <- function(t, x, y, fill,
   }
   
   # Fill values used for color scale and type check for legend
-  fill_minmax <- t %>% dplyr::pull({{fill}})
+  fill_minmax <- dplyr::pull(t, {{fill}})
   fill_minmax <- c(min(fill_minmax), max(fill_minmax))
   filltype <- class(fill_minmax)
   dot_colors <- unlist(psrcplot::psrc_colors[color]) %>% stats::setNames(fill_minmax)
@@ -218,7 +218,7 @@ cleveland_dot_chart <- function(t, x, y, fill,
           text = element_text(family = "Poppins")) +
     guides(color = guide_legend(override.aes = list(shape = shape))) +
     scale_x_continuous(labels = lab) +
-    scale_y_discrete(labels = function(x) stringr::str_wrap(x, width = 25)) +
+    scale_y_discrete(labels = wrap_labels_evenly(18)) +
     labs(title = title, subtitle = subtitle, caption = source, alt = alt, x = xlabel, y = ylabel)
   
   if (filltype=="Date"){
