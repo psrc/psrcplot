@@ -40,12 +40,12 @@ generic_line <- function(t, x, y, fill,
   lab <- est_label_formats(est)
   xtype <- t %>% dplyr::pull(.data[[x]]) %>% class()
   
-  t %<>% dplyr::arrange(.data[[fill]]) # Factor ordering
+  t %<>% dplyr::arrange(.data[[fill]])  # Factor ordering
   
   c <- ggplot2::ggplot(data=t, 
                        ggplot2::aes(x=.data[[x]],
-                                    y=formattable::digits(.data[[y]], digits=dec),
-                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(.data[[y]] * valfrmt$fac, digits=dec), big.mark = ","), valfrmt$sfx),
+                                    y=.data[[y]], 
+                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(round(.data[[y]] * valfrmt$fac, dec), digits=max(0, dec)), big.mark = ","), valfrmt$sfx),
                                     group=.data[[fill]]))  + 
     ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round") +
     ggplot2::scale_color_manual(values=cols)  +
@@ -167,8 +167,8 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' 
 #' @inheritParams shared_params
 #' @param t A tibble or dataframe in long form for plotting
-#' @param x The name of the variable you want plotted on the X-Axis (categorical)
-#' @param y The name of the variable you want plotted on the Y-Axis (numeric)
+#' @param x The name of the variable you want plotted on the X-Axis (numeric)
+#' @param y The name of the variable you want plotted on the Y-Axis (categorical)
 #' @param fill The name of the variable supplying line endpoints (e.g. time points)
 #' @param lwidth Width of lines; defaults to 1.5
 #' @param dotsize Defaults to 3
@@ -206,7 +206,8 @@ cleveland_dot_chart <- function(t, x, y, fill,
 
   # construct the plot
   c <- dplyr::filter(data, .data[[fill]] %in% fill_minmax) %>% 
-    ggplot(aes(x = .data[[x]], y = forcats::fct_rev(.data[[y]]))) +
+    ggplot(aes(x = formattable::digits(round(.data[[x]], dec), digits = max(0, dec)), 
+               y = forcats::fct_rev(.data[[y]]))) +
     geom_line(aes(group = .data[[y]]), color = "#999999", linewidth = lwidth) +
     scale_color_discrete(type = dot_colors) +
     geom_point(aes(color = as.factor(.data[[fill]]), shape = shape), size = dotsize) + 

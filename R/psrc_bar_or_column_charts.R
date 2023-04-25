@@ -52,8 +52,8 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   t %<>% dplyr::arrange(.data[[fill]])
   c <- ggplot2::ggplot(t,
                        ggplot2::aes(x=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[category_var]])}else{.data[[category_var]]},
-                                    y=formattable::digits(.data[[numeric_var]], digits=dec),
-                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(.data[[numeric_var]] * valfrmt$fac, digits=dec), big.mark = ","), valfrmt$sfx),
+                                    y=.data[[numeric_var]],
+                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(round(.data[[numeric_var]], dec) * valfrmt$fac, digits=max(0, dec)), big.mark = ","), valfrmt$sfx),
                                     fill=.data[[fill]],
                                     group=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[fill]])}else{.data[[fill]]})) +
     ggplot2::geom_bar(position=pos, stat="identity") +
@@ -61,6 +61,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     ggplot2::scale_y_continuous(labels=lab, expand = ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
+                                    
   
   if (xtype=="Date"){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
@@ -90,7 +91,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     if(column_vs_bar =='column') {
       t <- ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                            y=.data[[numeric_var]],
-                                           label=paste0(valfrmt$pfx, prettyNum(formattable::digits(.data[[numeric_var]] * valfrmt$fac, digits=dec), big.mark = ","), valfrmt$sfx)),
+                                           label=paste0(valfrmt$pfx, prettyNum(formattable::digits(round(.data[[numeric_var]] * valfrmt$fac, dec), digits=max(0, dec)), big.mark = ","), valfrmt$sfx)),
                               check_overlap = TRUE,
                               position = ggplot2::position_dodge(0.8),
                               vjust = -0.20,
@@ -99,7 +100,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     } else if(column_vs_bar =='bar') {
       t <- ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                            y=.data[[numeric_var]],
-                                           label=paste0(valfrmt$pfx, prettyNum(formattable::digits(.data[[numeric_var]] * valfrmt$fac, digits=dec), big.mark = ","), valfrmt$sfx)),
+                                           label=paste0(valfrmt$pfx, prettyNum(formattable::digits(round(.data[[numeric_var]] * valfrmt$fac, dec), digits=max(0, dec)), big.mark = ","), valfrmt$sfx)),
                               check_overlap = TRUE,
                               position = ggplot2::position_dodge(0.8),
                               hjust = -0.20,
@@ -119,7 +120,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     
     c <- c + ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
                                              y=.data[[numeric_var]],
-                                             label=paste0(valfrmt$pfx, prettyNum(formattable::digits(.data[[numeric_var]] * valfrmt$fac, digits=dec)), valfrmt$sfx)),
+                                             label=paste0(valfrmt$pfx, prettyNum(formattable::digits(round(.data[[numeric_var]] * valfrmt$fac, dec), digits=max(0, dec)), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_stack(vjust = .5),
                                 size = 11*0.32,
@@ -349,7 +350,7 @@ static_facet_column_chart <- function(t,
   
   p <- ggplot2::ggplot(data = t,
                        ggplot2::aes(x = .data[[x]],
-                                    y = formattable::digits(.data[[y]], digits=dec),
+                                    y = formattable::digits(round(.data[[y]], dec), digits = max(0, dec)),
                                     fill = .data[[fill]],
                                     group = .data[[fill]])) +
        ggplot2::geom_col(position = pos)

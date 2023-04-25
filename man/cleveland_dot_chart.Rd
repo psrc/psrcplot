@@ -27,9 +27,9 @@ cleveland_dot_chart(
 \arguments{
 \item{t}{A tibble or dataframe in long form for plotting}
 
-\item{x}{The name of the variable you want plotted on the X-Axis (categorical)}
+\item{x}{The name of the variable you want plotted on the X-Axis (numeric)}
 
-\item{y}{The name of the variable you want plotted on the Y-Axis (numeric)}
+\item{y}{The name of the variable you want plotted on the Y-Axis (categorical)}
 
 \item{fill}{The name of the variable supplying line endpoints (e.g. time points)}
 
