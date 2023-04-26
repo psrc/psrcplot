@@ -47,7 +47,7 @@ generic_line <- function(t, x, y, fill,
                                     y=.data[[y]], 
                                     text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(round(.data[[y]] * valfrmt$fac, dec), digits=max(0, dec)), big.mark = ","), valfrmt$sfx),
                                     group=.data[[fill]]))  + 
-    ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round") +
+    ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round", na.rm=TRUE) +
     ggplot2::scale_color_manual(values=cols)  +
     ggplot2::scale_y_continuous(labels=lab, expand=ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
     ggplot2::labs(title=title, subtitle=subtitle, caption=source, alt=alt, x=xlabel, y=ylabel) +
@@ -210,7 +210,7 @@ cleveland_dot_chart <- function(t, x, y, fill,
                y = forcats::fct_rev(.data[[y]]))) +
     geom_line(aes(group = .data[[y]]), color = "#999999", linewidth = lwidth) +
     scale_color_discrete(type = dot_colors) +
-    geom_point(aes(color = as.factor(.data[[fill]]), shape = shape), size = dotsize) + 
+    geom_point(aes(color = as.factor(.data[[fill]]), shape = shape), size = dotsize, na.rm = TRUE) + 
     scale_shape_identity() +
     psrc_style() +
     theme(axis.title = element_blank(),

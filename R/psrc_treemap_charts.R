@@ -58,7 +58,8 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est=NULL
   c <- c + treemapify::geom_treemap() +
     treemapify::geom_treemap_text(colour = "white",
                                   place = "centre",
-                                  size = 28) +
+                                  size = 28, 
+                                  na.rm = TRUE) +
     psrc_style() +
     ggplot2::theme(legend.position = "none") +
     scale_fill_discrete_psrc(color) +

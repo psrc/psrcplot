@@ -56,7 +56,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(round(.data[[numeric_var]], dec) * valfrmt$fac, digits=max(0, dec)), big.mark = ","), valfrmt$sfx),
                                     fill=.data[[fill]],
                                     group=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[fill]])}else{.data[[fill]]})) +
-    ggplot2::geom_bar(position=pos, stat="identity") +
+    ggplot2::geom_bar(position=pos, stat="identity", na.rm=TRUE) +
     ggplot2::scale_fill_manual(values=cols) +
     ggplot2::scale_y_continuous(labels=lab, expand = ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
@@ -353,7 +353,7 @@ static_facet_column_chart <- function(t,
                                     y = formattable::digits(round(.data[[y]], dec), digits = max(0, dec)),
                                     fill = .data[[fill]],
                                     group = .data[[fill]])) +
-       ggplot2::geom_col(position = pos)
+       ggplot2::geom_col(position = pos, na.rm = TRUE)
   
   # add labels
   p <- p +
