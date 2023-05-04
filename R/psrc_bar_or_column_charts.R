@@ -53,7 +53,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   c <- ggplot2::ggplot(t,
                        ggplot2::aes(x=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[category_var]])}else{.data[[category_var]]},
                                     y=.data[[numeric_var]],
-                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(round(.data[[numeric_var]], dec) * valfrmt$fac, digits=max(0, dec)), big.mark = ","), valfrmt$sfx),
+                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(round(.data[[numeric_var]] * valfrmt$fac, dec), digits=max(0, dec)), big.mark = ","), valfrmt$sfx),
                                     fill=.data[[fill]],
                                     group=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[fill]])}else{.data[[fill]]})) +
     ggplot2::geom_bar(position=pos, stat="identity", na.rm=TRUE) +
