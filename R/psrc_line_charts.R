@@ -137,7 +137,7 @@ static_facet_line_chart <- function(t, x, y, fill,
     if(x.vals > 5) {
       # smaller font size and wrap/angle labels if there's a lot of x categories
       p <- p +
-        ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
+        ggplot2::scale_x_discrete(labels = wrap_labels_evenly(20))
       axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
     } else {
       axis.text.x.value <- ggplot2::element_text(size = 7)
@@ -147,13 +147,13 @@ static_facet_line_chart <- function(t, x, y, fill,
   # add facet and theme
   p <- p +
     ggplot2::facet_wrap(ggplot2::vars(.data[[facet]]), 
-                        labeller = ggplot2::label_wrap_gen(),
+                        labeller = labeller_wrap_evenly(30),
                         scales = scales, 
                         ncol = ncol) +
     psrc_style() +
     ggplot2::theme(axis.text.x = axis.text.x.value,
                    axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
-                   strip.text = ggplot2::element_text(family = 'Poppins', size = 10),
+                   strip.text = ggplot2::element_text(family = 'Poppins', size = 11),
                    panel.grid.major.y = ggplot2::element_blank()
     ) 
   

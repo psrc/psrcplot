@@ -18,21 +18,23 @@ NULL
 #' 
 #' @param str_vector string or character vector to insert line breaks
 #' @param wrap_width max string width
+#' @import stringr str_trim str_replace_all
 wrap_evenly <- function(str_vector, wrap_width){
   mini_me <- function(in_string, wrap_width){
+    in_string <- str_trim(in_string)
     str_length <- nchar(in_string)
     if(str_length <= wrap_width){
       out_string <- in_string
     }else{
       lines <- ceiling(str_length / wrap_width)
       equi_width <- ceiling(str_length / lines)
-      regex <- paste0("\\b(.{", floor(equi_width * 0.75), ",", ceiling(equi_width * 1.25), "} )")
-      out_string <- stringr::str_replace_all(in_string, regex, "\\1\n")
+      regex <- paste0(" ?\\b(.{", ceiling(equi_width * 0.8), ",", floor(equi_width * 1.2), "}) ")
+      out_string <- str_replace_all(in_string, regex, "\\1\n")
       if(is.null(out_string)){out_string <- in_string}
     }
     return(out_string)
   }
-  rs <- mapply(mini_me, str_vector, wrap_width)
+  rs <- mapply(mini_me, stringr::str_trim(str_vector), wrap_width)
 }
 
 #' Helper - split labels into similarly sized pieces
@@ -42,7 +44,21 @@ wrap_evenly <- function(str_vector, wrap_width){
 wrap_labels_evenly <- function(width) {
   force(width)
   function(x) {
-    unlist(lapply(wrap_evenly(x, wrap_width = width), paste0, collapse = "\n"))
+    unlist(vapply(wrap_evenly(x, wrap_width = width), paste0, character(1), collapse = "\n"))
+  }
+}
+
+#' Helper - provide labeller with labels split into similarly sized pieces
+#' 
+#' @param in_string string to be split
+#' @param wrap_width max string width
+labeller_wrap_evenly <- function(width) {
+  force(width)
+  function(labels) {
+    labelles <- label_value(labels, multi_line = TRUE)
+    lapply(labelles, function(x) {
+      vapply(wrap_evenly(x, wrap_width = width), paste0, character(1), collapse = "\n")
+    })
   }
 }
 

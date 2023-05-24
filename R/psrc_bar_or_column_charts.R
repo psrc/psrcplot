@@ -153,7 +153,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
       axis.text.x.value <- ggplot2::element_text(angle = if(column_vs_bar!="bar"){90}else{0}, 
                                                  size = 9, vjust = 0.5, hjust=1)
       c <- c + 
-        ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 15)) + 
+        ggplot2::scale_x_discrete(labels = wrap_labels_evenly(15)) + 
         ggplot2::theme(axis.text.x = axis.text.x.value)
     } else if(category_var != fill & x.vals <= 5) {
       axis.text.x.value <- ggplot2::element_text(size = 9)
@@ -380,7 +380,7 @@ static_facet_column_chart <- function(t,
     if(x.vals > 5) {
       # smaller font size and wrap/angle labels if there's a lot of x categories
       p <- p +
-        ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20))
+        ggplot2::scale_x_discrete(labels = wrap_labels_evenly(20))
       axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
     } else {
       axis.text.x.value <- ggplot2::element_text(size = 7)
@@ -388,7 +388,7 @@ static_facet_column_chart <- function(t,
   } else if(stringr::str_detect(x, ".*[Y|y]ear.*") & stringr::str_detect(fill, ".*[Y|y]ear.*")) {
     # remove legend but keep x-axis labels for each year
     p <- p +
-      ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 20)) +
+      ggplot2::scale_x_discrete(labels = wrap_labels_evenly(20)) +
       ggplot2::guides(fill = "none")
     axis.text.x.value <- ggplot2::element_text(size = 7)
     if(x.vals > 5) {
@@ -401,7 +401,7 @@ static_facet_column_chart <- function(t,
   # add facet and theme
   p <- p +
     ggplot2::facet_wrap(ggplot2::vars(.data[[facet]]), 
-                        labeller = ggplot2::label_wrap_gen(),
+                        labeller = labeller_wrap_evenly(30),
                         scales = scales, 
                         ncol = ncol) +
     psrc_style() +
