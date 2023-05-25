@@ -18,7 +18,7 @@ NULL
 #' 
 #' @param str_vector string or character vector to insert line breaks
 #' @param wrap_width max string width
-#' @import stringr str_trim str_replace_all
+#' @importFrom stringr str_trim str_replace_all
 wrap_evenly <- function(str_vector, wrap_width){
   mini_me <- function(in_string, wrap_width){
     in_string <- str_trim(in_string)
