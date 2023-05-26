@@ -31,6 +31,8 @@ NULL
 create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est=NULL, dec=0, color="psrc_light") {
   
   confirm_fonts() 
+  
+  total_share<- NULL
   s_vctr <- t %>% select(all_of(s)) %>% dplyr::pull()
   est <- est_type_default(s)
   tot <- sum(s_vctr)

@@ -10,7 +10,7 @@ NULL
 #' @param x The name of the variable you want plotted on the X-Axis
 #' @param y The name of the variable you want plotted on the Y-Axis
 #' @param dform Format for Date values 
-#' @param breaks Break points to use if using a continuous scale, defaults to NULL
+#' @param breaks Break points for a continuous scale or date break description for date scale; default NULL
 #' @param lwidth Width of lines, defaults to 1
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
 #' @param xlabel category-axis title to be used for chart, if desired - defaults to "NULL"
@@ -54,7 +54,8 @@ generic_line <- function(t, x, y, fill,
     psrc_style()
   
   if (xtype=="Date"){
-    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
+    c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform), date_breaks = breaks) + 
+      ggplot2::theme(axis.title.x=ggplot2::element_blank())
   }else{
     c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]]))
     if(!is.null(breaks)){
@@ -170,8 +171,12 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' @param x The name of the variable you want plotted on the X-Axis (numeric)
 #' @param y The name of the variable you want plotted on the Y-Axis (categorical)
 #' @param fill The name of the variable supplying line endpoints (e.g. time points)
+#' @param dform Format for Date values
 #' @param lwidth Width of lines; defaults to 1.5
 #' @param dotsize Defaults to 3
+#' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
+#' @param xlabel category-axis title to be used for chart, if desired - defaults to "NULL"
+#' @param ylabel numeric-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param shape Of dot and legend; can be either value 1:25 or name; defaults to "circle"
 #' see https://ggplot2.tidyverse.org/articles/ggplot2-specs.html?q=shapes#sec:shape-spec
 #'
@@ -205,7 +210,7 @@ cleveland_dot_chart <- function(t, x, y, fill,
   dot_colors <- unlist(psrcplot::psrc_colors[color]) %>% stats::setNames(fill_minmax)
 
   # construct the plot
-  c <- dplyr::filter(data, .data[[fill]] %in% fill_minmax) %>% 
+  c <- t %>% dplyr::filter(.data[[fill]] %in% fill_minmax) %>% 
     ggplot(aes(x = formattable::digits(round(.data[[x]], dec), digits = max(0, dec)), 
                y = forcats::fct_rev(.data[[y]]))) +
     geom_line(aes(group = .data[[y]]), color = "#999999", linewidth = lwidth) +

@@ -18,7 +18,6 @@ LazyData: true
 Suggests:
     forcats,
     lubridate,
-    stringr,
     tidyverse,
     psrctrends,
     psrccensus,
@@ -37,6 +36,7 @@ Imports:
     graphics,
     sysfonts,
     showtext,
+    stringr,
     plotly
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr

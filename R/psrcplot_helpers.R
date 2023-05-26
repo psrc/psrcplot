@@ -39,8 +39,7 @@ wrap_evenly <- function(str_vector, wrap_width){
 
 #' Helper - split labels into similarly sized pieces
 #' 
-#' @param in_string string to be split
-#' @param wrap_width max string width
+#' @param width max string width
 wrap_labels_evenly <- function(width) {
   force(width)
   function(x) {
@@ -50,8 +49,7 @@ wrap_labels_evenly <- function(width) {
 
 #' Helper - provide labeller with labels split into similarly sized pieces
 #' 
-#' @param in_string string to be split
-#' @param wrap_width max string width
+#' @param width max string width
 labeller_wrap_evenly <- function(width) {
   force(width)
   function(labels) {

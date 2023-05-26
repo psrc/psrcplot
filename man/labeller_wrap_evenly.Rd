@@ -7,9 +7,7 @@
 labeller_wrap_evenly(width)
 }
 \arguments{
-\item{in_string}{string to be split}
-
-\item{wrap_width}{max string width}
+\item{width}{max string width}
 }
 \description{
 Helper - provide labeller with labels split into similarly sized pieces

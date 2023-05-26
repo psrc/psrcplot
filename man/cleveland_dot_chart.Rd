@@ -37,6 +37,8 @@ cleveland_dot_chart(
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
+\item{dform}{Format for Date values}
+
 \item{lwidth}{Width of lines; defaults to 1.5}
 
 \item{dotsize}{Defaults to 3}
@@ -51,6 +53,12 @@ see https://ggplot2.tidyverse.org/articles/ggplot2-specs.html?q=shapes#sec:shape
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 
 \item{source}{Source reference as character string, if desired - defaults to blank}
+
+\item{alt}{Text to be used for alt-text, if desired - defaults to "NULL"}
+
+\item{xlabel}{category-axis title to be used for chart, if desired - defaults to "NULL"}
+
+\item{ylabel}{numeric-axis title to be used for chart, if desired - defaults to "NULL"}
 }
 \value{
 A Cleveland line chart
