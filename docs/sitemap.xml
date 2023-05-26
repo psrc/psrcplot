@@ -73,6 +73,9 @@
     <loc>https://psrc.github.io/psrcplot/reference/install_psrc_fonts.html</loc>
   </url>
   <url>
+    <loc>https://psrc.github.io/psrcplot/reference/labeller_wrap_evenly.html</loc>
+  </url>
+  <url>
     <loc>https://psrc.github.io/psrcplot/reference/line_charts.html</loc>
   </url>
   <url>
@@ -113,5 +116,11 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/transit_access_example_data.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/wrap_evenly.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/wrap_labels_evenly.html</loc>
   </url>
 </urlset>
