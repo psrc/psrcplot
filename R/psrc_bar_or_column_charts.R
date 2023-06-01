@@ -20,6 +20,7 @@ NULL
 #' @param column_vs_bar "column": vertical bars or "bar": horizontal bars - defaults to "column" 
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @return static or interactive column or bar chart
+#' @author Craig Helmann, Michael Jensen
 
 generic_column_bar <- function(t, category_var, numeric_var, fill,
                                pos="dodge", est=NULL, moe=NULL, dform="%Y",
@@ -148,8 +149,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   if(column_vs_bar=="column"){
     # Smaller font size and wrap/angle labels if there's a lot of x categories
     x.vals <- length(unique(c$data[[category_var]]))
-  
-    if(category_var != fill & x.vals > 5) {
+    if(category_var != fill & x.vals > 5 & "ScaleDiscrete" %in% class(layer_scales(c)$x)) {
       axis.text.x.value <- ggplot2::element_text(angle = if(column_vs_bar!="bar"){90}else{0}, 
                                                  size = 9, vjust = 0.5, hjust=1)
       c <- c + 
@@ -185,6 +185,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
 #' @param ... additional arguments passed to  \code{\link{generic_column_bar}}
 #' @name column_bar_charts
 #' @return static or interactive column or bar chart
+#' @author Craig Helmann, Michael Jensen
 NULL
 
 #' @rdname column_bar_charts
@@ -240,7 +241,10 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #' @param ncol Value for the number of columns in your facet - defaults to 3
 #' @param moe The name of the variable to be used for error bars, if desired - default to "NULL"
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
+#' @param ... additional arguments passed to  \code{\link{generic_column_bar}}
+#' 
 #' @return A static facet column (vertical bar) chart; based on facet_wrap()
+#' @author Christy Lam
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
@@ -324,7 +328,8 @@ static_facet_column_chart <- function(t,
                                       title = NULL, 
                                       subtitle = NULL,
                                       source = "",
-                                      alt = NULL) {
+                                      alt = NULL,
+                                      ...) {
   
   confirm_fonts()
   
@@ -412,4 +417,66 @@ static_facet_column_chart <- function(t,
     ) 
   
   return(p)
+}
+
+#' Facet Column Chart from generic
+#' 
+#' @inheritParams shared_params
+#' @param t A tibble or dataframe in long form for plotting
+#' @param x The name of the variable you want plotted on the X-Axis
+#' @param y The name of the variable you want plotted on the Y-Axis
+#' @param facet The name of the variable to be the facets 
+#' @param scales Value for axis in facets, either "fixed" or "free" - defaults to "free"
+#' @param ncol Value for the number of columns in your facet - defaults to 3
+#' @param ... additional arguments passed to  \code{\link{generic_column_bar}}
+#'
+#' @return A facet-wrapped set of static column charts
+#' @author Michael Jensen
+#' 
+#' @importFrom magrittr %<>% %>%
+#' @importFrom rlang .data
+#' @importFrom dplyr filter
+#' 
+static_facet_column_chart2 <- function(t, x, y, fill, 
+                                      facet, scales="free", ncol=3,
+                                      ...){
+  confirm_fonts()
+  
+  l.clr <- "#4C4C4C"
+  
+  t %<>% dplyr::arrange(.data[[fill]]) # Factor ordering
+  c <- static_column_chart(t=t, x=x, y=y, fill=fill,  ...)
+  
+  x.vals <- length(unique(c$data[[x]]))
+  # display x-axis tick values if another variable is introduced
+  if(x != fill) {
+    if(x.vals > 5) {
+#   smaller font size and wrap/angle labels if there's a lot of x categories
+      if("ScaleDate" %in% class(layer_scales(c)$x)) {
+        c <- c + ggplot2::scale_x_date(labels = wrap_labels_evenly(20))
+      } else if("ScaleContinuous" %in% class(layer_scales(c)$x)){
+        c <- c + ggplot2::scale_x_continuous(labels = wrap_labels_evenly(20))
+      } else if("ScaleDiscrete" %in% class(layer_scales(c)$x)){
+        c <- c + ggplot2::scale_x_discrete(labels = wrap_labels_evenly(20))
+      }
+      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
+    } else {
+      axis.text.x.value <- ggplot2::element_text(size = 7)
+    }
+  }
+  
+  # add facet and theme
+  c <- c +
+    ggplot2::facet_wrap(ggplot2::vars(.data[[facet]]), 
+                        labeller = labeller_wrap_evenly(30),
+                        scales = scales, 
+                        ncol = ncol) +
+    psrc_style() +
+    ggplot2::theme(axis.text.x = axis.text.x.value,
+                   axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
+                   strip.text = ggplot2::element_text(family = 'Poppins', size = 11),
+                   panel.grid.major.y = ggplot2::element_blank()
+    ) 
+  
+  return(c)
 }

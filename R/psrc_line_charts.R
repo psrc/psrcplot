@@ -17,6 +17,7 @@ NULL
 #' @param ylabel numeric-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @return line chart
+#' @author Craig Helmann, Michael Jensen 
 #' 
 generic_line <- function(t, x, y, fill, 
                          est=NULL, dec=0, dform="%b-%Y",  
@@ -85,6 +86,7 @@ generic_line <- function(t, x, y, fill,
 #' @param ... additional arguments passed to  \code{\link{generic_line}}
 #' @name line_charts
 #' @return static or interactive column or bar chart
+#' @author Craig Helmann, Michael Jensen 
 NULL
 
 #' @rdname line_charts
@@ -115,6 +117,7 @@ interactive_line_chart <- function(t, x, y, fill, ...){
 #' @param ... additional arguments passed to  \code{\link{generic_line}}
 #'
 #' @return A static facet line chart; based on facet_wrap()
+#' @author Craig Helmann, Michael Jensen 
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
@@ -130,15 +133,18 @@ static_facet_line_chart <- function(t, x, y, fill,
   l.clr <- "#4C4C4C"
   
   t %<>% dplyr::arrange(.data[[fill]]) # Factor ordering
-  p <- static_line_chart(t=t, x=x, y=y, fill=fill, ...)
+  c <- static_line_chart(t=t, x=x, y=y, fill=fill, ...)
   
-  x.vals <- length(unique(p$data[[x]]))
+  x.vals <- length(unique(c$data[[x]]))
   # display x-axis tick values if another variable is introduced
   if(x != fill) {
     if(x.vals > 5) {
       # smaller font size and wrap/angle labels if there's a lot of x categories
-      p <- p +
-        ggplot2::scale_x_discrete(labels = wrap_labels_evenly(20))
+      if("ScaleDate" %in% class(layer_scales(c)$x)) {
+        c <- c + ggplot2::scale_x_date(labels = wrap_labels_evenly(20))
+      } else if("ScaleContinuous" %in% class(layer_scales(c)$x)){
+        c <- c + ggplot2::scale_x_continuous(labels = wrap_labels_evenly(20))
+      }
       axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
     } else {
       axis.text.x.value <- ggplot2::element_text(size = 7)
@@ -146,7 +152,7 @@ static_facet_line_chart <- function(t, x, y, fill,
   }
   
   # add facet and theme
-  p <- p +
+  c <- c +
     ggplot2::facet_wrap(ggplot2::vars(.data[[facet]]), 
                         labeller = labeller_wrap_evenly(30),
                         scales = scales, 
@@ -158,7 +164,7 @@ static_facet_line_chart <- function(t, x, y, fill,
                    panel.grid.major.y = ggplot2::element_blank()
     ) 
   
-  return(p)
+  return(c)
 }
 
 #' Cleveland Dot Chart
@@ -181,6 +187,7 @@ static_facet_line_chart <- function(t, x, y, fill,
 #' see https://ggplot2.tidyverse.org/articles/ggplot2-specs.html?q=shapes#sec:shape-spec
 #'
 #' @return A Cleveland line chart
+#' @author Michael Jensen
 #' 
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data

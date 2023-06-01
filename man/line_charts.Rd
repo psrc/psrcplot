@@ -27,3 +27,6 @@ static or interactive column or bar chart
 \description{
 Separate functions for static and interactive line charts
 }
+\author{
+Craig Helmann, Michael Jensen
+}

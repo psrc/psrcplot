@@ -29,3 +29,6 @@ A static facet line chart; based on facet_wrap()
 \description{
 Facet Line Chart
 }
+\author{
+Craig Helmann, Michael Jensen
+}

@@ -15,6 +15,7 @@ NULL
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
 #' @return bubble chart
+#' @author Craig Helmann
 #' 
 #' @export
 #'

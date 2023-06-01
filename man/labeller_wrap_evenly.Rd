@@ -2,7 +2,7 @@
 % Please edit documentation in R/psrcplot_helpers.R
 \name{labeller_wrap_evenly}
 \alias{labeller_wrap_evenly}
-\title{Helper - provide labeller with labels split into similarly sized pieces}
+\title{wrap_evenly function in form to apply to ggplot2 labeller spec}
 \usage{
 labeller_wrap_evenly(width)
 }
@@ -10,5 +10,5 @@ labeller_wrap_evenly(width)
 \item{width}{max string width}
 }
 \description{
-Helper - provide labeller with labels split into similarly sized pieces
+wrap_evenly function in form to apply to ggplot2 labeller spec
 }

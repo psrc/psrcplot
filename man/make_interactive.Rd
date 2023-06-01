@@ -13,6 +13,12 @@ make_interactive(p, title = NULL, subtitle = NULL)
 
 \item{subtitle}{Sub-title to be used for chart, if desired - defaults to "NULL"}
 }
+\value{
+plotly object
+}
 \description{
 Helper - make static ggplot object an interactive plotly object
+}
+\author{
+Craig Helmann, Michael Jensen
 }

@@ -65,3 +65,6 @@ line chart
 \description{
 Used for both static and interactive line functions.
 }
+\author{
+Craig Helmann, Michael Jensen
+}

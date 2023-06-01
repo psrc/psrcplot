@@ -38,3 +38,6 @@ bubble chart
 \description{
 This function allows you to create a bubble charts.
 }
+\author{
+Craig Helmann
+}

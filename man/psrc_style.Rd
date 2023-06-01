@@ -10,3 +10,6 @@ psrc_style()
 \description{
 This function allows you to add the PSRC theme to your ggplot graphics.
 }
+\author{
+Craig Helmann
+}

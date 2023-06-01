@@ -11,6 +11,12 @@ wrap_evenly(str_vector, wrap_width)
 
 \item{wrap_width}{max string width}
 }
+\value{
+identical string or character vector, evenly wrapped
+}
 \description{
 Make similiarly sized multi-line strings from single-line strings
+}
+\author{
+Michael Jensen
 }

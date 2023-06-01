@@ -11,6 +11,12 @@ add_citation(p, source)
 
 \item{source}{Source reference as character string}
 }
+\value{
+plotly object with citation
+}
 \description{
 Helper - add source citation to plotly object
+}
+\author{
+Michael Jensen
 }

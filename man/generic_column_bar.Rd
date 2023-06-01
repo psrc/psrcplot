@@ -68,3 +68,6 @@ static or interactive column or bar chart
 \description{
 Helper function to \code{\link{column_bar_charts}}
 }
+\author{
+Craig Helmann, Michael Jensen
+}

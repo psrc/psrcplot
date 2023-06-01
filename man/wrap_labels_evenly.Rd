@@ -2,13 +2,16 @@
 % Please edit documentation in R/psrcplot_helpers.R
 \name{wrap_labels_evenly}
 \alias{wrap_labels_evenly}
-\title{Helper - split labels into similarly sized pieces}
+\title{wrap_evenly function in form to apply to ggplot2 labels}
 \usage{
 wrap_labels_evenly(width)
 }
 \arguments{
 \item{width}{max string width}
 }
+\value{
+identical string or character vector, evenly wrapped
+}
 \description{
-Helper - split labels into similarly sized pieces
+wrap_evenly function in form to apply to ggplot2 labels
 }

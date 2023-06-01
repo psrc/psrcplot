@@ -18,7 +18,12 @@ NULL
 #' 
 #' @param str_vector string or character vector to insert line breaks
 #' @param wrap_width max string width
+#' @return identical string or character vector, evenly wrapped
+#' @author Michael Jensen
+#' 
 #' @importFrom stringr str_trim str_replace_all
+#' 
+#' @export
 wrap_evenly <- function(str_vector, wrap_width){
   mini_me <- function(in_string, wrap_width){
     in_string <- str_trim(in_string)
@@ -37,9 +42,10 @@ wrap_evenly <- function(str_vector, wrap_width){
   rs <- mapply(mini_me, stringr::str_trim(str_vector), wrap_width)
 }
 
-#' Helper - split labels into similarly sized pieces
+#' wrap_evenly function in form to apply to ggplot2 labels
 #' 
 #' @param width max string width
+#' @return identical string or character vector, evenly wrapped
 wrap_labels_evenly <- function(width) {
   force(width)
   function(x) {
@@ -47,7 +53,7 @@ wrap_labels_evenly <- function(width) {
   }
 }
 
-#' Helper - provide labeller with labels split into similarly sized pieces
+#' wrap_evenly function in form to apply to ggplot2 labeller spec
 #' 
 #' @param width max string width
 labeller_wrap_evenly <- function(width) {
@@ -104,6 +110,8 @@ est_label_formats <- function(est){
 #' @param p ggplot object
 #' @param title Title to be used for chart, if desired - defaults to "NULL"
 #' @param subtitle Sub-title to be used for chart, if desired - defaults to "NULL"
+#' @return plotly object
+#' @author Craig Helmann, Michael Jensen
 #' 
 #' @export
 make_interactive <- function(p, title=NULL, subtitle=NULL){
@@ -155,6 +163,8 @@ make_interactive <- function(p, title=NULL, subtitle=NULL){
 #' 
 #' @param p plotly object
 #' @param source Source reference as character string
+#' @return plotly object with citation
+#' @author Michael Jensen
 add_citation <- function(p, source){
   if("plotly" %in% class(p) & is.character(source)){
     p <- plotly::layout(p, 
