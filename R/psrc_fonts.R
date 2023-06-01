@@ -20,7 +20,7 @@ install_psrc_fonts <- function() {
 `%not_in%` <- Negate(`%in%`)
 
 confirm_fonts <- function(){
-  if("Poppins" %not_in% sysfonts::font_families()){
+  if("Poppins" %not_in% sysfonts::font_files()$family){
     sysfonts::font_add_google(name="Poppins", family="Poppins")
   }
   showtext::showtext_auto()
