@@ -20,7 +20,8 @@ static_facet_column_chart(
   title = NULL,
   subtitle = NULL,
   source = "",
-  alt = NULL
+  alt = NULL,
+  ...
 )
 }
 \arguments{
@@ -55,6 +56,8 @@ static_facet_column_chart(
 \item{source}{Source reference as character string, if desired - defaults to blank}
 
 \item{alt}{Text to be used for alt-text, if desired - defaults to "NULL"}
+
+\item{...}{additional arguments passed to  \code{\link{generic_column_bar}}}
 }
 \value{
 A static facet column (vertical bar) chart; based on facet_wrap()
@@ -123,4 +126,7 @@ my_facet3 <- static_facet_column_chart(t = df3,
                 source = paste("Source: ACS 5-Year Estimates, table B03002",
                                "for King, Kitsap, Pierce and Snohomish counties.",
                                sep = "\n"))
+}
+\author{
+Christy Lam
 }

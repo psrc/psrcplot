@@ -21,8 +21,10 @@
     "textStyle": {},
     "title": {
         "textStyle": {
-            "color": "#4c4c4c"
+            "color": "#4c4c4c",
+            "padding":"[2, 2, 100, 2]"
         },
+        
         "subtextStyle": {
             "color": "#6E7079"
         }

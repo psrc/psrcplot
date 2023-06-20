@@ -1,0 +1,34 @@
+---
+title: "Install the Poppins font"
+description: >
+  Permanently install the default PSRC font
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Install the Poppins font}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The **psrcplot** package uses PSRC's default font, Poppins. 
+
+The package includes a way for R to access it temporarily; this leaves some stuff behind in your `user\AppData\local\Temp` directory. Since the agency uses Poppins so extensively, it makes sense for staff to install it permanently--however, you'll need to enable all users access to it if R is to utilize that version rather than go back to its own temporary install.
+
+Here are the steps to follow:
+
+  1. Download the font family (a .zipfile archive) from https://fonts.google.com/specimen/Poppins.
+  2. Extract/unzip the folder, select all the included font files, and **right-click**
+  3. Select ***"Install for all users"*** - without this, R will not see it.
+  4. Reboot
+
+The font should be installed in the `C:\Windows\Fonts` directory. 
+To verify it is visible to R, confim the following returns `TRUE`:
+
+```{r mode_data, message=FALSE}
+
+"Poppins" %in% sysfonts::font_files()$family
+```
+

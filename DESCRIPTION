@@ -28,6 +28,7 @@ Suggests:
 Imports: 
     magrittr,
     dplyr,
+    echarts4r,
     scales,
     ggplot2,
     treemapify,
