@@ -21,7 +21,7 @@ install_psrc_fonts <- function() {
 
 confirm_fonts <- function(){
   if("Poppins" %not_in% sysfonts::font_families()){
-    if("Poppins" %not_in% sysfonts::font_files()$family){
+    if(systemfonts::match_font("Poppins")$path != "C:\\windows\\Fonts\\Poppins-Regular.ttf"){
       sysfonts::font_add_google(name="Poppins", family="Poppins")
     }else{
       sysfonts::font_add(family = "Poppins",

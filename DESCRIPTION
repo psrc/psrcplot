@@ -36,6 +36,7 @@ Imports:
     formattable,
     graphics,
     sysfonts,
+    systemfonts,
     showtext,
     stringr,
     plotly
