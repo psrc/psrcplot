@@ -69,10 +69,14 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   }
   
   # If there are margins of error, add error bars
-  if (!(is.null(moe))) {
+  if (!is.null(moe) & pos == 'dodge') {
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
-                          ymax=.data[[numeric_var]]+.data[[moe]]), 
-                                    width=0.2, position = ggplot2::position_dodge(0.9))
+                                    ymax=.data[[numeric_var]]+.data[[moe]]), 
+                                    width=0.2, position = ggplot2::position_dodge(0.8))
+  } else if (!is.null(moe) & pos == 'stack') {
+    c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
+                                                 ymax=.data[[numeric_var]]+.data[[moe]]), 
+                                    width=0.2, position = ggplot2::position_stack())
   }
   
   # Pivot for bar chart
