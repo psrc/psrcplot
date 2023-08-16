@@ -26,9 +26,9 @@ confirm_fonts <- function(){
     }else{
       sysfonts::font_add(family = "Poppins",
                          regular="C:/Windows/Fonts/Poppins-Regular.ttf",
-                         bold = "C:/Windows/Fonts/Poppins-Bold_0.ttf",
+                         bold = "C:/Windows/Fonts/Poppins-Bold.ttf",
                          italic = "C:/Windows/Fonts/Poppins-Italic.ttf",
-                         bolditalic = "C:/Windows/Fonts/Poppins-BoldItalic_0.ttf")
+                         bolditalic = "C:/Windows/Fonts/Poppins-BoldItalic.ttf")
     }
     showtext::showtext_auto()
   }
