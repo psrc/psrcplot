@@ -359,7 +359,7 @@ static_facet_column_chart <- function(t,
   
   p <- ggplot2::ggplot(data = t,
                        ggplot2::aes(x = .data[[x]],
-                                    y = formattable::digits(round(.data[[y]], dec), digits = max(0, dec)),
+                                    y = formattable::digits(.data[[y]], digits = max(0, dec)),
                                     fill = .data[[fill]],
                                     group = .data[[fill]])) +
        ggplot2::geom_col(position = pos, na.rm = TRUE)
