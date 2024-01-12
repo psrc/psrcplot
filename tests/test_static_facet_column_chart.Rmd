@@ -1,0 +1,51 @@
+---
+title: "test-static-facet"
+author: "suzanne"
+date: "2024-01-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(devtools)
+library(dplyr)
+#devtools::install_github("psrc/psrcplot", ref='1.3-dev')
+```
+
+
+restarted r, then
+```{r}
+library(psrcplot)
+library(psrccensus)
+```
+
+```{r}
+ten_county_race<-get_psrc_pums(span=5,
+                              dyear= 2021,
+                              level="h",
+                              vars= c("COUNTY", "TEN", "HRACE"))
+
+
+```
+
+```{r}
+tenure_count<-psrc_pums_count(ten_county_race, group_vars=c("COUNTY", "HRACE","TEN"))%>%filter(HRACE!='Total')
+
+```
+
+```{r}
+?static_facet_column_chart
+```
+
+
+```{r}
+tenure_facet<- static_facet_column_chart(t= tenure_count, 
+                                          x= 'HRACE',
+                                          y="share",
+                                          fill= "TEN",
+                                          facet='COUNTY',
+                                          moe='share_moe',
+                                         color= 'pgnobgy_10')
+
+tenure_facet
+```
+
