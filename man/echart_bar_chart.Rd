@@ -9,28 +9,34 @@ echart_bar_chart(
   category_var,
   numeric_var,
   fill,
+  color = NULL,
   pos = "NULL",
   column_vs_bar = "column",
   est = "percent",
-  title
+  title = NULL,
+  subtitle = NULL
 )
 }
 \arguments{
-\item{df}{}
+\item{df}{A data frame}
 
-\item{category_var}{}
+\item{category_var}{The name of the category variable}
 
-\item{numeric_var}{}
+\item{numeric_var}{The name of the variable with numeric values to plot}
 
-\item{fill}{}
+\item{fill}{The name of the variable you want the fill color of the bars to be based on}
 
-\item{pos}{The position either NULL or "grp" (stacked)}
+\item{color}{A vector of colors or a color palette to fill the bars}
+
+\item{pos}{The position either NULL (dodge) or "grp" (stacked)}
 
 \item{column_vs_bar}{"column" or "bar"}
 
 \item{est}{Estimate type, enter "percent", "currency" or "number", defaults to "percent"}
 
-\item{title}{}
+\item{title}{A chart title, defaults to NULL}
+
+\item{subtitle}{A chart subtitle, defaults to NULL}
 }
 \value{
 An interactive bar or column chart via echarts4r
@@ -41,16 +47,19 @@ Create an echart4r bar or column chart
 \examples{
 library(tidyverse)
 
-d <- mode_share_example_data \%>\% 
-filter(Year == 2020)
+d <- mode_share_example_data |>
+filter(Year == 2020) |> 
+mutate(Race = str_wrap(Race, 20))
+
+color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3')
 
 echart_bar_chart(df = d ,
                 category_var = "Race",
                 numeric_var = "share",
                 fill = "Geography",
+                color = color_palette,
                 title = "Test Chart",
                 pos = NULL,
                 column_vs_bar = "bar",
-                est = "number"
-)
+                est = "percent")
 }
