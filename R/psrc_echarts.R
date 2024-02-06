@@ -51,7 +51,7 @@ echart_bar_chart <- function(df, category_var, numeric_var, fill, pos = "NULL",
   
   # Create the most basic chart
   p <- df |> 
-    group_by(.data[[fill]]) |>
+    dplyr::group_by(.data[[fill]]) |>
     echarts4r::e_charts_(category_var) |>
     echarts4r::e_bar_(numeric_var, stack = pos) |>
     echarts4r::e_title(title) |>
