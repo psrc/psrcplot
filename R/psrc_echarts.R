@@ -1,67 +1,65 @@
 echarts4r::e_common(font_family = "Poppins")
 
-tooltip_fmt <- "function(params, ticket, callback) {
-      var fmt = new Intl.NumberFormat('en',
-      {\"style\":\"percent\",\"minimumFractionDigits\":0,\"maximumFractionDigits\":0,\"currency\":\"USD\"});\n
-      var idx = 0;\n
-      if (params.name == params.value[0]) {\n
-      idx = 1;\n        }\n
-      return(params.seriesName + '<br>' + 
-      params.marker + ' ' +\n
-      params.name + ': ' + fmt.format(parseFloat(params.value[idx]))
-      )
-      }"
+#' Format echart4r Tooltip
+#'
+#' @param est Select "number", "percent", or "currency"
+#' @param fill A grouping variable, defaults to NULL
+#'
+#' @return JavaScript string that will format echart4r tooltip text. Is called within \code{\link{generic_echart}}
+#'
+tooltip_fmt <- function(est, fill = NULL) {
+  if(est == 'number') est <- 'decimal'
+  style_quoted <- paste0('"', est, '"')
+  
+  # adjust maximumFractionDigits
+  if(est %in% c('percent', 'currency')) {
+    max_fd <- 0
+  } else {
+    max_fd <- 2
+  }
+  
+  if(!is.null(fill)) {
+    r <- "params.seriesName + '<br>' + params.marker + ' ' + params.value[1] + ': ' + fmt.format(params.value[0])"
+  } else {
+    # When data is not grouped by a variable & filled with color
+    r <- "params.seriesName + '<br>' + params.marker + fmt.format(params.value[1])"
+  }
+  
+  t <- paste0("function(params, ticket, callback) {
+                  let fmt = new Intl.NumberFormat('en', {style:", style_quoted, ", minimumFractionDigits:0, maximumFractionDigits:", max_fd, ", currency: 'USD'});
+                  return(", r, ")","}")
+}
 
-#' Create an echart4r bar or column chart 
+#' Generic echart4r workhorse function
+#' Helper function to \code{\link{echart_bar_chart}} and \code{\link{echart_line_chart}}
 #'
-#' @param df A data frame
+#' @param df A data frame in long form for plotting
 #' @param category_var The name of the category variable
-#' @param numeric_var The name of the variable with numeric values to plot
-#' @param fill The name of the variable you want the fill color of the bars to be based on
-#' @param color A vector of colors or a color palette to fill the bars
-#' @param pos The position either NULL (dodge) or "grp" (stacked)
-#' @param column_vs_bar "column" or "bar"
-#' @param est Estimate type, enter "percent", "currency" or "number", defaults to "percent"
-#' @param title A chart title, defaults to NULL
-#' @param subtitle A chart subtitle, defaults to NULL
+#' @param fill The name of the variable you want the fill color of the bars or lines to be based on
+#' @param color A vector of colors or color palette
+#' @param est Select "number", "percent", or "currency" - defaults to "percent"
+#' @param title Chart title
+#' @param subtitle Chart subtitle
 #'
-#' @return An interactive bar or column chart via echarts4r
-#' @export
-#'
-#' @examples
-#' library(tidyverse)
-#' 
-#' d <- mode_share_example_data |>
-#' filter(Year == 2020) |> 
-#' mutate(Race = str_wrap(Race, 20))
-#' 
-#' color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3')
-#' 
-#' echart_bar_chart(df = d ,
-#'                 category_var = "Race",
-#'                 numeric_var = "share",
-#'                 fill = "Geography",
-#'                 color = color_palette,
-#'                 title = "Test Chart",
-#'                 pos = NULL,
-#'                 column_vs_bar = "bar",
-#'                 est = "percent")
-echart_bar_chart <- function(df, 
-                             category_var, 
-                             numeric_var, 
-                             fill, 
-                             color = NULL,
-                             pos = "NULL",
-                             column_vs_bar = "column",
-                             est = "percent",
-                             title = NULL,
-                             subtitle = NULL) {
+#' @return Does not return a chart, called within \code{\link{echart_bar_chart}} and \code{\link{echart_line_chart}}
+generic_echart <- function(df,
+                           category_var,
+                           fill = NULL,
+                           color = NULL,
+                           est = "percent",
+                           title = NULL,
+                           subtitle = NULL) {
   
   # Create the most basic chart
-  p <- df |> 
-    dplyr::group_by(.data[[fill]]) |>
+  if(is.null(fill)) {
+    p <- df
+  } else {
+    p <- df |>
+      dplyr::group_by(.data[[fill]]) 
+  }
+  
+  p <- p |>
     echarts4r::e_charts_(category_var) |>
-    echarts4r::e_bar_(numeric_var, stack = pos) |>
     echarts4r::e_color(color) |>
     echarts4r::e_title(title, subtitle) |>
     echarts4r::e_grid(left = '20%') |>
@@ -69,31 +67,89 @@ echart_bar_chart <- function(df,
     echarts4r::e_show_loading() |>
     echarts4r::e_legend(show = TRUE, bottom = 0) |>
     echarts4r::e_toolbox_feature("dataView") |>
-    echarts4r::e_toolbox_feature("saveAsImage")
+    echarts4r::e_toolbox_feature("saveAsImage") 
   
   if(est == "number") {
     p <- p |> echarts4r::e_tooltip(trigger = "item")
+    
   } else {
-    if(est == "currency") {
-      curr <- "USD"
-    } else {
-      curr <- NULL
-    }
-    
     p <- p |>
-      echarts4r::e_y_axis(formatter = echarts4r::e_axis_formatter(est)) |>
-      echarts4r::e_tooltip(trigger = "item",
-                           formatter =  echarts4r::e_tooltip_item_formatter(style = est, digits = 0, currency = curr)) |>
-      echarts4r::e_tooltip(formatter =  htmlwidgets::JS(tooltip_fmt))
-    
+      echarts4r::e_y_axis(formatter = echarts4r::e_axis_formatter(est))
   }
+  
+  p <- p |>
+    echarts4r::e_tooltip(formatter =  htmlwidgets::JS(tooltip_fmt(est, fill)))
+  
+  return(p)
+}
+
+#' echart4r Bar Chart
+#' 
+#' @param t A data frame in long form for plotting
+#' @param x The name of the category variable
+#' @param y The name of the variable with numeric values to plot
+#' @param pos Determines if the bars are side-by-side(NULL) or stacked("grp") - defaults to NULL
+#' @param column_vs_bar Select "column" or "bar" for chart orientation - defaults to "column"
+#' @param ... additional arguments passed to  \code{\link{generic_echart}}
+#' 
+#' @return An interactive bar or column chart via echarts4r
+#' @author Christy Lam
+#' @export
+#'
+#' @examples
+#' library(tidyverse)
+#'
+#'d <- mode_share_example_data |>
+#'  filter(Year == 2020 & Category == 'Population by Race') |>
+#'  mutate(Race = str_wrap(Race, 20))
+#'
+#'color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3')
+#'
+#'echart_bar_chart(t = d,
+#'                 x = "Race",
+#'                 y = "share",
+#'                 fill = "Geography",
+#'                 color = color_palette,
+#'                 title = "Population by Race",
+#'                 subtitle = "In 2020",
+#'                 pos = NULL,
+#'                 column_vs_bar = "bar",
+#'                 est = "number")
+#'
+echart_bar_chart <- function(t,
+                             x,
+                             y,
+                             pos = "NULL",
+                             column_vs_bar = "column", ...) {
+  
+  p <- generic_echart(df = t, category_var = x, ...) |>
+    echarts4r::e_bar_(y, stack = pos) 
   
   if(column_vs_bar == "bar") {
     p <- p |>
       echarts4r::e_flip_coords() |>
       echarts4r::e_y_axis(inverse = TRUE)
   }
+  return(p)
+}
+
+#' echart4r Line Chart
+#'
+#' @param t A data frame in long form for plotting
+#' @param x The name of the category variable
+#' @param y The name of the variable with numeric values to plot
+#' @param ... Additional arguments passed to \code{\link{generic_echart}}
+#'
+#' @return An interactive line chart via echarts4r
+#' @export
+#'
+echart_line_chart <- function(t,
+                              x,
+                              y, 
+                              ...) {
+  
+  p <- generic_echart(df = t, category_var = x, ...) |>
+    echarts4r::e_line_(y)
   
   return(p)
-  
 }

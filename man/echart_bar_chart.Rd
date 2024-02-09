@@ -2,64 +2,50 @@
 % Please edit documentation in R/psrc_echarts.R
 \name{echart_bar_chart}
 \alias{echart_bar_chart}
-\title{Create an echart4r bar or column chart}
+\title{echart4r Bar Chart}
 \usage{
-echart_bar_chart(
-  df,
-  category_var,
-  numeric_var,
-  fill,
-  color = NULL,
-  pos = "NULL",
-  column_vs_bar = "column",
-  est = "percent",
-  title = NULL,
-  subtitle = NULL
-)
+echart_bar_chart(t, x, y, pos = "NULL", column_vs_bar = "column", ...)
 }
 \arguments{
-\item{df}{A data frame}
+\item{t}{A data frame in long form for plotting}
 
-\item{category_var}{The name of the category variable}
+\item{x}{The name of the category variable}
 
-\item{numeric_var}{The name of the variable with numeric values to plot}
+\item{y}{The name of the variable with numeric values to plot}
 
-\item{fill}{The name of the variable you want the fill color of the bars to be based on}
+\item{pos}{Determines if the bars are side-by-side(NULL) or stacked("grp") - defaults to NULL}
 
-\item{color}{A vector of colors or a color palette to fill the bars}
+\item{column_vs_bar}{Select "column" or "bar" for chart orientation - defaults to "column"}
 
-\item{pos}{The position either NULL (dodge) or "grp" (stacked)}
-
-\item{column_vs_bar}{"column" or "bar"}
-
-\item{est}{Estimate type, enter "percent", "currency" or "number", defaults to "percent"}
-
-\item{title}{A chart title, defaults to NULL}
-
-\item{subtitle}{A chart subtitle, defaults to NULL}
+\item{...}{additional arguments passed to  \code{\link{generic_echart}}}
 }
 \value{
 An interactive bar or column chart via echarts4r
 }
 \description{
-Create an echart4r bar or column chart
+echart4r Bar Chart
 }
 \examples{
 library(tidyverse)
 
 d <- mode_share_example_data |>
-filter(Year == 2020) |> 
-mutate(Race = str_wrap(Race, 20))
+ filter(Year == 2020 & Category == 'Population by Race') |>
+ mutate(Race = str_wrap(Race, 20))
 
 color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3')
 
-echart_bar_chart(df = d ,
-                category_var = "Race",
-                numeric_var = "share",
+echart_bar_chart(t = d,
+                x = "Race",
+                y = "share",
                 fill = "Geography",
                 color = color_palette,
-                title = "Test Chart",
+                title = "Population by Race",
+                subtitle = "In 2020",
                 pos = NULL,
                 column_vs_bar = "bar",
-                est = "percent")
+                est = "number")
+
+}
+\author{
+Christy Lam
 }
