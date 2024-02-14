@@ -4,7 +4,16 @@
 \alias{echart_bar_chart}
 \title{echart4r Bar Chart}
 \usage{
-echart_bar_chart(t, x, y, pos = "NULL", column_vs_bar = "column", ...)
+echart_bar_chart(
+  t,
+  x,
+  y,
+  est,
+  fill,
+  pos = "NULL",
+  column_vs_bar = "column",
+  ...
+)
 }
 \arguments{
 \item{t}{A data frame in long form for plotting}
@@ -12,6 +21,10 @@ echart_bar_chart(t, x, y, pos = "NULL", column_vs_bar = "column", ...)
 \item{x}{The name of the category variable}
 
 \item{y}{The name of the variable with numeric values to plot}
+
+\item{est}{Select "number", "percent", or "currency" - defaults to "percent"}
+
+\item{fill}{The name of the variable you want the fill color of the bars or lines to be based on}
 
 \item{pos}{Determines if the bars are side-by-side(NULL) or stacked("grp") - defaults to NULL}
 

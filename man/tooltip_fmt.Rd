@@ -4,12 +4,14 @@
 \alias{tooltip_fmt}
 \title{Format echart4r Tooltip}
 \usage{
-tooltip_fmt(est, fill = NULL)
+tooltip_fmt(est, fill = NULL, column_vs_bar = NULL)
 }
 \arguments{
 \item{est}{Select "number", "percent", or "currency"}
 
 \item{fill}{A grouping variable, defaults to NULL}
+
+\item{column_vs_bar}{Select "column" or "bar" for chart orientation - defaults to NULL}
 }
 \value{
 JavaScript string that will format echart4r tooltip text. Is called within \code{\link{generic_echart}}

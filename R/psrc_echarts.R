@@ -4,10 +4,10 @@ echarts4r::e_common(font_family = "Poppins")
 #'
 #' @param est Select "number", "percent", or "currency"
 #' @param fill A grouping variable, defaults to NULL
-#'
+#' @param column_vs_bar Select "column" or "bar" for chart orientation - defaults to NULL
 #' @return JavaScript string that will format echart4r tooltip text. Is called within \code{\link{generic_echart}}
 #'
-tooltip_fmt <- function(est, fill = NULL) {
+tooltip_fmt <- function(est, fill = NULL, column_vs_bar = NULL) {
   if(est == 'number') est <- 'decimal'
   style_quoted <- paste0('"', est, '"')
   
@@ -18,11 +18,18 @@ tooltip_fmt <- function(est, fill = NULL) {
     max_fd <- 2
   }
   
-  if(!is.null(fill)) {
-    r <- "params.seriesName + '<br>' + params.marker + ' ' + params.value[1] + ': ' + fmt.format(params.value[0])"
+  if((!is.null(fill)) & (is.null(column_vs_bar) || column_vs_bar == "column")) {
+    # line & column
+    r <- "params.seriesName + '<br>' + params.marker + ' ' + params.value[0] + ': ' + fmt.format(params.value[1])" 
+    
+  } else if (!is.null(fill) & column_vs_bar == "bar") {
+    # bar
+    r <- "params.seriesName + '<br>' + params.marker + ' ' + params.value[1] + ': ' + fmt.format(params.value[0])" 
+    
   } else {
     # When data is not grouped by a variable & filled with color
     r <- "params.seriesName + '<br>' + params.marker + fmt.format(params.value[1])"
+    
   }
   
   t <- paste0("function(params, ticket, callback) {
@@ -77,9 +84,6 @@ generic_echart <- function(df,
       echarts4r::e_y_axis(formatter = echarts4r::e_axis_formatter(est))
   }
   
-  p <- p |>
-    echarts4r::e_tooltip(formatter =  htmlwidgets::JS(tooltip_fmt(est, fill)))
-  
   return(p)
 }
 
@@ -88,6 +92,8 @@ generic_echart <- function(df,
 #' @param t A data frame in long form for plotting
 #' @param x The name of the category variable
 #' @param y The name of the variable with numeric values to plot
+#' @param est Select "number", "percent", or "currency" - defaults to "percent"
+#' @param fill The name of the variable you want the fill color of the bars or lines to be based on
 #' @param pos Determines if the bars are side-by-side(NULL) or stacked("grp") - defaults to NULL
 #' @param column_vs_bar Select "column" or "bar" for chart orientation - defaults to "column"
 #' @param ... additional arguments passed to  \code{\link{generic_echart}}
@@ -118,11 +124,13 @@ generic_echart <- function(df,
 #'
 echart_bar_chart <- function(t,
                              x,
-                             y,
+                             y, 
+                             est,
+                             fill,
                              pos = "NULL",
                              column_vs_bar = "column", ...) {
   
-  p <- generic_echart(df = t, category_var = x, ...) |>
+  p <- generic_echart(df = t, category_var = x, est = est, fill = fill, ...) |>
     echarts4r::e_bar_(y, stack = pos) 
   
   if(column_vs_bar == "bar") {
@@ -130,6 +138,10 @@ echart_bar_chart <- function(t,
       echarts4r::e_flip_coords() |>
       echarts4r::e_y_axis(inverse = TRUE)
   }
+  
+  p <- p |>
+    echarts4r::e_tooltip(formatter =  htmlwidgets::JS(tooltip_fmt(est, fill, column_vs_bar)))
+  
   return(p)
 }
 
@@ -138,6 +150,8 @@ echart_bar_chart <- function(t,
 #' @param t A data frame in long form for plotting
 #' @param x The name of the category variable
 #' @param y The name of the variable with numeric values to plot
+#' @param est Select "number", "percent", or "currency" - defaults to "percent"
+#' @param fill The name of the variable you want the fill color of the bars or lines to be based on
 #' @param ... Additional arguments passed to \code{\link{generic_echart}}
 #'
 #' @return An interactive line chart via echarts4r
@@ -146,10 +160,13 @@ echart_bar_chart <- function(t,
 echart_line_chart <- function(t,
                               x,
                               y, 
+                              est,
+                              fill,
                               ...) {
   
-  p <- generic_echart(df = t, category_var = x, ...) |>
-    echarts4r::e_line_(y)
+  p <- generic_echart(df = t, category_var = x, est = est, fill = fill, ...) |>
+    echarts4r::e_line_(y) |>
+    echarts4r::e_tooltip(formatter =  htmlwidgets::JS(tooltip_fmt(est, fill, column_vs_bar = NULL)))
   
   return(p)
 }
