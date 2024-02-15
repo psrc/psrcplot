@@ -47,6 +47,7 @@ tooltip_fmt <- function(est, fill = NULL, column_vs_bar = NULL) {
 #' @param est Select "number", "percent", or "currency" - defaults to "percent"
 #' @param title Chart title
 #' @param subtitle Chart subtitle
+#' @param legend TRUE or FALSE to display legend - defaults to TRUE
 #'
 #' @return Does not return a chart, called within \code{\link{echart_bar_chart}} and \code{\link{echart_line_chart}}
 generic_echart <- function(df,
@@ -55,7 +56,8 @@ generic_echart <- function(df,
                            color = NULL,
                            est = "percent",
                            title = NULL,
-                           subtitle = NULL) {
+                           subtitle = NULL,
+                           legend = TRUE) {
   
   # Create the most basic chart
   if(is.null(fill)) {
@@ -72,7 +74,7 @@ generic_echart <- function(df,
     echarts4r::e_grid(left = '20%') |>
     echarts4r::e_x_axis(axisTick = list(show = FALSE)) |>
     echarts4r::e_show_loading() |>
-    echarts4r::e_legend(show = TRUE, bottom = 0) |>
+    echarts4r::e_legend(show = legend, bottom = 0) |>
     echarts4r::e_toolbox_feature("dataView") |>
     echarts4r::e_toolbox_feature("saveAsImage") 
   
@@ -156,7 +158,7 @@ echart_bar_chart <- function(t,
 #'
 #' @return An interactive line chart via echarts4r
 #' @export
-#'
+#' 
 echart_line_chart <- function(t,
                               x,
                               y, 

@@ -12,7 +12,8 @@ generic_echart(
   color = NULL,
   est = "percent",
   title = NULL,
-  subtitle = NULL
+  subtitle = NULL,
+  legend = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ generic_echart(
 \item{title}{Chart title}
 
 \item{subtitle}{Chart subtitle}
+
+\item{legend}{TRUE or FALSE to display legend - defaults to TRUE}
 }
 \value{
 Does not return a chart, called within \code{\link{echart_bar_chart}} and \code{\link{echart_line_chart}}
