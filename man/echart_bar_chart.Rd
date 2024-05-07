@@ -10,6 +10,7 @@ echart_bar_chart(
   y,
   est,
   fill,
+  moe = NULL,
   pos = "NULL",
   column_vs_bar = "column",
   ...
@@ -26,7 +27,9 @@ echart_bar_chart(
 
 \item{fill}{The name of the variable you want the fill color of the bars or lines to be based on}
 
-\item{pos}{Determines if the bars are side-by-side(NULL) or stacked("grp") - defaults to NULL}
+\item{moe}{The name of the margin of error variable}
+
+\item{pos}{Determines if the bars are side-by-side (NULL) or stacked ("grp") - defaults to NULL}
 
 \item{column_vs_bar}{Select "column" or "bar" for chart orientation - defaults to "column"}
 

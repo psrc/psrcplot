@@ -96,7 +96,8 @@ generic_echart <- function(df,
 #' @param y The name of the variable with numeric values to plot
 #' @param est Select "number", "percent", or "currency" - defaults to "percent"
 #' @param fill The name of the variable you want the fill color of the bars or lines to be based on
-#' @param pos Determines if the bars are side-by-side(NULL) or stacked("grp") - defaults to NULL
+#' @param moe The name of the margin of error variable
+#' @param pos Determines if the bars are side-by-side (NULL) or stacked ("grp") - defaults to NULL
 #' @param column_vs_bar Select "column" or "bar" for chart orientation - defaults to "column"
 #' @param ... additional arguments passed to  \code{\link{generic_echart}}
 #' 
@@ -129,16 +130,34 @@ echart_bar_chart <- function(t,
                              y, 
                              est,
                              fill,
+                             moe = NULL,
                              pos = "NULL",
                              column_vs_bar = "column", ...) {
   
+  if(!is.null(moe)) {
+    t <- t |>
+      mutate(y_lower = .data[[y]] - .data[[moe]], y_upper = .data[[y]] + .data[[moe]])
+  }
+  
   p <- generic_echart(df = t, category_var = x, est = est, fill = fill, ...) |>
-    echarts4r::e_bar_(y, stack = pos) 
+    echarts4r::e_bar_(y, stack = pos)
+  
+  if(column_vs_bar == "column" & !is.null(moe)) {
+    
+    p <- p |>
+      echarts4r::e_error_bar(lower = y_lower, upper = y_upper, itemStyle = list(borderWidth = .5))
+  }
   
   if(column_vs_bar == "bar") {
+    # error bars are stacked...can't dodge 
+    # https://github.com/JohnCoene/echarts4r/issues/259#issuecomment-754812027
     p <- p |>
       echarts4r::e_flip_coords() |>
       echarts4r::e_y_axis(inverse = TRUE)
+  }
+  
+  if(column_vs_bar == "bar" & !is.null(moe)) {
+    message(paste0('A bar chart was created without error bars. Consider creating a "column" chart to see error bars using ' , moe, '.'))
   }
   
   p <- p |>
@@ -165,6 +184,7 @@ echart_line_chart <- function(t,
                               est,
                               fill,
                               ...) {
+
   
   p <- generic_echart(df = t, category_var = x, est = est, fill = fill, ...) |>
     echarts4r::e_line_(y) |>
