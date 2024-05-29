@@ -13,7 +13,11 @@ generic_echart(
   est = "percent",
   title = NULL,
   subtitle = NULL,
-  legend = TRUE
+  legend = TRUE,
+  egrid_bottom = "15\%",
+  egrid_left = "20\%",
+  str_wrap_num = 0,
+  x_axis_rotate = 0
 )
 }
 \arguments{
@@ -32,6 +36,14 @@ generic_echart(
 \item{subtitle}{Chart subtitle}
 
 \item{legend}{TRUE or FALSE to display legend - defaults to TRUE}
+
+\item{egrid_bottom}{Bottom axis padding - defaults to "15\%"}
+
+\item{egrid_left}{Left axis padding - defaults to "20\%"}
+
+\item{str_wrap_num}{Positive integer giving target line width (in number of characters) - defaults to 0}
+
+\item{x_axis_rotate}{Positive integer giving x-axis label rotation - defaults to 0}
 }
 \value{
 Does not return a chart, called within \code{\link{echart_bar_chart}} and \code{\link{echart_line_chart}}

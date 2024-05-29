@@ -48,8 +48,13 @@ tooltip_fmt <- function(est, fill = NULL, column_vs_bar = NULL) {
 #' @param title Chart title
 #' @param subtitle Chart subtitle
 #' @param legend TRUE or FALSE to display legend - defaults to TRUE
+#' @param egrid_bottom Bottom axis padding - defaults to "15\%"
+#' @param egrid_left Left axis padding - defaults to "20\%"
+#' @param str_wrap_num Positive integer giving target line width (in number of characters) - defaults to 0
+#' @param x_axis_rotate Positive integer giving x-axis label rotation - defaults to 0
 #'
 #' @return Does not return a chart, called within \code{\link{echart_bar_chart}} and \code{\link{echart_line_chart}}
+#' @importFrom rlang :=
 generic_echart <- function(df,
                            category_var,
                            fill = NULL,
@@ -57,22 +62,31 @@ generic_echart <- function(df,
                            est = "percent",
                            title = NULL,
                            subtitle = NULL,
-                           legend = TRUE) {
+                           legend = TRUE,
+                           egrid_bottom = '15%',
+                           egrid_left = '20%',
+                           str_wrap_num = 0,
+                           x_axis_rotate = 0
+                           ) {
   
   # Create the most basic chart
   if(is.null(fill)) {
     p <- df
   } else {
     p <- df |>
-      dplyr::group_by(.data[[fill]]) 
+      dplyr::group_by(.data[[fill]]) |> 
+      dplyr::mutate(!!fill := stringr::str_wrap(.data[[fill]], str_wrap_num))
   }
+  
+  # check category_var characters, str_wrap?
   
   p <- p |>
     echarts4r::e_charts_(category_var) |>
     echarts4r::e_color(color) |>
     echarts4r::e_title(title, subtitle) |>
-    echarts4r::e_grid(left = '20%') |>
-    echarts4r::e_x_axis(axisTick = list(show = FALSE)) |>
+    echarts4r::e_grid(left = egrid_left, bottom = egrid_bottom) |>
+    echarts4r::e_x_axis(axisLabel = list(rotate = x_axis_rotate),
+                        axisTick = list(show = FALSE)) |>
     echarts4r::e_show_loading() |>
     echarts4r::e_legend(show = legend, bottom = 0) |>
     echarts4r::e_toolbox_feature("dataView") |>
@@ -136,7 +150,7 @@ echart_bar_chart <- function(t,
   
   if(!is.null(moe)) {
     t <- t |>
-      mutate(y_lower = .data[[y]] - .data[[moe]], y_upper = .data[[y]] + .data[[moe]])
+      dplyr::mutate(y_lower = .data[[y]] - .data[[moe]], y_upper = .data[[y]] + .data[[moe]])
   }
   
   p <- generic_echart(df = t, category_var = x, est = est, fill = fill, ...) |>
@@ -145,7 +159,7 @@ echart_bar_chart <- function(t,
   if(column_vs_bar == "column" & !is.null(moe)) {
     
     p <- p |>
-      echarts4r::e_error_bar(lower = y_lower, upper = y_upper, itemStyle = list(borderWidth = .5))
+      echarts4r::e_error_bar(lower = .data$y_lower, upper = .data$y_upper, itemStyle = list(borderWidth = .5))
   }
   
   if(column_vs_bar == "bar") {
@@ -159,7 +173,7 @@ echart_bar_chart <- function(t,
   if(column_vs_bar == "bar" & !is.null(moe)) {
     message(paste0('A bar chart was created without error bars. Consider creating a "column" chart to see error bars using ' , moe, '.'))
   }
-  
+
   p <- p |>
     echarts4r::e_tooltip(formatter =  htmlwidgets::JS(tooltip_fmt(est, fill, column_vs_bar)))
   
