@@ -16,8 +16,9 @@ generic_echart(
   legend = TRUE,
   egrid_bottom = "15\%",
   egrid_left = "20\%",
-  str_wrap_num = 0,
-  x_axis_rotate = 0
+  legend_str_wrap = NULL,
+  x_label_str_wrap = NULL,
+  x_label_rotate = 0
 )
 }
 \arguments{
@@ -41,9 +42,11 @@ generic_echart(
 
 \item{egrid_left}{Left axis padding - defaults to "20\%"}
 
-\item{str_wrap_num}{Positive integer giving target line width (in number of characters) - defaults to 0}
+\item{legend_str_wrap}{Positive integer giving target line width to legend labels (in number of characters) - defaults to NULL}
 
-\item{x_axis_rotate}{Positive integer giving x-axis label rotation - defaults to 0}
+\item{x_label_str_wrap}{Positive integer giving target line width to x-axis labels (in number of characters) - defaults to NULL}
+
+\item{x_label_rotate}{Positive integer giving x-axis label rotation - defaults to 0}
 }
 \value{
 Does not return a chart, called within \code{\link{echart_bar_chart}} and \code{\link{echart_line_chart}}
