@@ -50,8 +50,9 @@ tooltip_fmt <- function(est, fill = NULL, column_vs_bar = NULL) {
 #' @param legend TRUE or FALSE to display legend - defaults to TRUE
 #' @param egrid_bottom Bottom axis padding - defaults to "15\%"
 #' @param egrid_left Left axis padding - defaults to "20\%"
-#' @param str_wrap_num Positive integer giving target line width (in number of characters) - defaults to 0
-#' @param x_axis_rotate Positive integer giving x-axis label rotation - defaults to 0
+#' @param legend_str_wrap Positive integer giving target line width to legend labels (in number of characters) - defaults to NULL
+#' @param x_label_str_wrap Positive integer giving target line width to x-axis labels (in number of characters) - defaults to NULL
+#' @param x_label_rotate Positive integer giving x-axis label rotation - defaults to 0
 #'
 #' @return Does not return a chart, called within \code{\link{echart_bar_chart}} and \code{\link{echart_line_chart}}
 #' @importFrom rlang :=
@@ -65,8 +66,9 @@ generic_echart <- function(df,
                            legend = TRUE,
                            egrid_bottom = '15%',
                            egrid_left = '20%',
-                           str_wrap_num = 0,
-                           x_axis_rotate = 0
+                           legend_str_wrap = NULL,
+                           x_label_str_wrap = NULL,
+                           x_label_rotate = 0
                            ) {
   
   # Create the most basic chart
@@ -74,18 +76,27 @@ generic_echart <- function(df,
     p <- df
   } else {
     p <- df |>
-      dplyr::group_by(.data[[fill]]) |> 
-      dplyr::mutate(!!fill := stringr::str_wrap(.data[[fill]], str_wrap_num))
+      dplyr::group_by(.data[[fill]])
   }
   
-  # check category_var characters, str_wrap?
+  # String wraps
+  if(!is.null(legend_str_wrap)) {
+    p <- p |> 
+      dplyr::mutate(!!fill := stringr::str_wrap(.data[[fill]], legend_str_wrap))
+  }
+  
+  if(!is.null(x_label_str_wrap)) {
+    p <- p |>
+      dplyr::mutate(!!category_var := stringr::str_wrap(.data[[category_var]], x_label_str_wrap))
+  }
+ 
   
   p <- p |>
     echarts4r::e_charts_(category_var) |>
     echarts4r::e_color(color) |>
     echarts4r::e_title(title, subtitle) |>
     echarts4r::e_grid(left = egrid_left, bottom = egrid_bottom) |>
-    echarts4r::e_x_axis(axisLabel = list(rotate = x_axis_rotate),
+    echarts4r::e_x_axis(axisLabel = list(rotate = x_label_rotate),
                         axisTick = list(show = FALSE)) |>
     echarts4r::e_show_loading() |>
     echarts4r::e_legend(show = legend, bottom = 0) |>
