@@ -11,7 +11,7 @@ echart_bar_chart(
   est,
   fill,
   moe = NULL,
-  pos = "NULL",
+  pos = NULL,
   column_vs_bar = "column",
   ...
 )

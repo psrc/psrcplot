@@ -156,7 +156,7 @@ echart_bar_chart <- function(t,
                              est,
                              fill,
                              moe = NULL,
-                             pos = "NULL",
+                             pos = NULL,
                              column_vs_bar = "column", ...) {
   
   if(!is.null(moe)) {
@@ -168,9 +168,9 @@ echart_bar_chart <- function(t,
     echarts4r::e_bar_(y, stack = pos)
   
   if(column_vs_bar == "column" & !is.null(moe)) {
-    
+
     p <- p |>
-      echarts4r::e_error_bar(lower = .data$y_lower, upper = .data$y_upper, itemStyle = list(borderWidth = .5))
+      echarts4r::e_error_bar(lower = y_lower, upper =  y_upper, itemStyle = list(borderWidth = .35))
   }
   
   if(column_vs_bar == "bar") {
