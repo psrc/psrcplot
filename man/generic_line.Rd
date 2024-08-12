@@ -42,7 +42,7 @@ generic_line(
 
 \item{dform}{Format for Date values}
 
-\item{breaks}{Break points for a continuous scale or date break description for date scale; default NULL}
+\item{breaks}{Break points for a continuous/discrete scale or date break description for date scale; default NULL}
 
 \item{lwidth}{Width of lines, defaults to 1}
 
