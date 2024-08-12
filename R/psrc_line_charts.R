@@ -9,6 +9,7 @@ NULL
 #' @param t A tibble or dataframe in long form for plotting
 #' @param x The name of the variable you want plotted on the X-Axis
 #' @param y The name of the variable you want plotted on the Y-Axis
+#' @param text name of the variable to use as tooltip 
 #' @param dform Format for Date values 
 #' @param breaks Break points for a continuous scale or date break description for date scale; default NULL
 #' @param lwidth Width of lines, defaults to 1
@@ -20,7 +21,7 @@ NULL
 #' @author Craig Helmann, Michael Jensen 
 #' 
 generic_line <- function(t, x, y, fill, 
-                         est=NULL, dec=0, dform="%b-%Y",  
+                         est=NULL, text = NULL, dec=0, dform="%b-%Y",  
                          breaks=NULL, lwidth=1, color="gnbopgy_5",
                          title=NULL, subtitle=NULL, source="",
                          alt=NULL, xlabel=NULL, ylabel=NULL,
@@ -46,7 +47,10 @@ generic_line <- function(t, x, y, fill,
   c <- ggplot2::ggplot(data=t, 
                        ggplot2::aes(x=.data[[x]],
                                     y=.data[[y]], 
-                                    text=paste0(.data[[fill]], ": ", valfrmt$pfx, prettyNum(formattable::digits(round(.data[[y]] * valfrmt$fac, dec), digits=max(0, dec)), big.mark = ","), valfrmt$sfx),
+                                    text=if(is.null(text)) paste0(.data[[fill]], ": ", valfrmt$pfx, 
+                                                                  prettyNum(formattable::digits(round(.data[[y]] * valfrmt$fac, dec), digits=max(0, dec)), 
+                                                                            big.mark = ","), 
+                                                                  valfrmt$sfx) else .data[[text]],
                                     group=.data[[fill]]))  + 
     ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round", na.rm=TRUE) +
     ggplot2::scale_color_manual(values=cols)  +

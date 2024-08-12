@@ -10,6 +10,7 @@ generic_line(
   y,
   fill,
   est = NULL,
+  text = NULL,
   dec = 0,
   dform = "\%b-\%Y",
   breaks = NULL,
@@ -34,6 +35,8 @@ generic_line(
 \item{fill}{The name of the variable you want the fill color of the bars to be based on}
 
 \item{est}{Type for the numeric values - enter "percent", "currency" or "number", defaults to "percent"}
+
+\item{text}{name of the variable to use as tooltip}
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
