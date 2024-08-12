@@ -11,7 +11,7 @@ NULL
 #' @param y The name of the variable you want plotted on the Y-Axis
 #' @param text name of the variable to use as tooltip 
 #' @param dform Format for Date values 
-#' @param breaks Break points for a continuous scale or date break description for date scale; default NULL
+#' @param breaks Break points for a continuous/discrete scale or date break description for date scale; default NULL
 #' @param lwidth Width of lines, defaults to 1
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
 #' @param xlabel category-axis title to be used for chart, if desired - defaults to "NULL"
@@ -64,7 +64,10 @@ generic_line <- function(t, x, y, fill,
   }else{
     c <- c + ggplot2::geom_point(ggplot2::aes(color=.data[[fill]]))
     if(!is.null(breaks)){
-      c <- c + ggplot2::scale_x_discrete(breaks=breaks)
+      if(xtype %in% c("numeric", "integer"))
+        c <- c + ggplot2::scale_x_continuous(breaks=breaks)
+      else
+        c <- c + ggplot2::scale_x_discrete(breaks=breaks)
     }  
   }
   
