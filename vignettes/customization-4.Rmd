@@ -61,8 +61,8 @@ For those who create plots directly with ggplot2, you can still apply PSRC forma
 
 You can use the function [**`psrcplot::make_interactive()`**](library/prsrplot/html/make_interactive.html) to convert a **psrcplot** or **ggplot2** object to an interactive **plotly** object with PSRC styling. Due to constraints in **plotly**, you must currently specify the `source` argument as well. 
 
-```{r make_interactive_example, message=FALSE}
-interactive_plot <- static_rev %>% make_interactive()
+```{r make_interactive_example, eval = FALSE, message=FALSE}
+interactive_plot <- static_rev %>% psrcplot::make_interactive()
 
 interactive_plot
 ```

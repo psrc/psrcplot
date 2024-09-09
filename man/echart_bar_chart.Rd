@@ -2,55 +2,66 @@
 % Please edit documentation in R/psrc_echarts.R
 \name{echart_bar_chart}
 \alias{echart_bar_chart}
-\title{Create an echart4r bar or column chart}
+\title{echart4r Bar Chart}
 \usage{
 echart_bar_chart(
-  df,
-  category_var,
-  numeric_var,
+  t,
+  x,
+  y,
+  est,
   fill,
+  moe = NULL,
   pos = "NULL",
   column_vs_bar = "column",
-  est = "percent",
-  title
+  ...
 )
 }
 \arguments{
-\item{df}{}
+\item{t}{A data frame in long form for plotting}
 
-\item{category_var}{}
+\item{x}{The name of the category variable}
 
-\item{numeric_var}{}
+\item{y}{The name of the variable with numeric values to plot}
 
-\item{fill}{}
+\item{est}{Select "number", "percent", or "currency" - defaults to "percent"}
 
-\item{pos}{The position either NULL or "grp" (stacked)}
+\item{fill}{The name of the variable you want the fill color of the bars or lines to be based on}
 
-\item{column_vs_bar}{"column" or "bar"}
+\item{moe}{The name of the margin of error variable}
 
-\item{est}{Estimate type, enter "percent", "currency" or "number", defaults to "percent"}
+\item{pos}{Determines if the bars are side-by-side (NULL) or stacked ("grp") - defaults to NULL}
 
-\item{title}{}
+\item{column_vs_bar}{Select "column" or "bar" for chart orientation - defaults to "column"}
+
+\item{...}{additional arguments passed to  \code{\link{generic_echart}}}
 }
 \value{
 An interactive bar or column chart via echarts4r
 }
 \description{
-Create an echart4r bar or column chart
+echart4r Bar Chart
 }
 \examples{
 library(tidyverse)
 
-d <- mode_share_example_data \%>\% 
-filter(Year == 2020)
+d <- mode_share_example_data |>
+ filter(Year == 2020 & Category == 'Population by Race') |>
+ mutate(Race = str_wrap(Race, 20))
 
-echart_bar_chart(df = d ,
-                category_var = "Race",
-                numeric_var = "share",
+color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3')
+
+echart_bar_chart(t = d,
+                x = "Race",
+                y = "share",
                 fill = "Geography",
-                title = "Test Chart",
+                color = color_palette,
+                title = "Population by Race",
+                subtitle = "In 2020",
                 pos = NULL,
                 column_vs_bar = "bar",
-                est = "number"
-)
+                est = "number")
+
+}
+\author{
+Christy Lam
 }
