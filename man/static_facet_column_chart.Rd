@@ -16,7 +16,7 @@ static_facet_column_chart(
   ncol = 3,
   scales = "free",
   dec = 0,
-  color = "pgnobgy_5",
+  color = "pgnobgy_10",
   title = NULL,
   subtitle = NULL,
   source = "",

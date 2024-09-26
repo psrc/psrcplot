@@ -34,7 +34,7 @@ create_bubble_chart <- function(t, x, y, fill, s, color="psrc_light", title=NULL
   
   p <- ggplot2::ggplot(data=t, ggplot2::aes(x = .data[[x]], y = .data[[y]])) + 
     ggplot2::geom_point(ggplot2::aes(color = .data[[fill]], size = .data[[s]]), alpha = 1.0, na.rm = TRUE) +
-    ggplot2::scale_size(range = c(0.5, 12)) +
+    ggplot2::scale_size(range = c(0.5, 14)) +
     ggplot2::scale_color_manual(values=cols) +
     ggplot2::ggtitle(title, subtitle = subtitle) +
     psrc_style() +

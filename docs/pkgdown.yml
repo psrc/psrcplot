@@ -1,4 +1,4 @@
-pandoc: 3.1.1
+pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -8,7 +8,7 @@ articles:
   poppins-font-6: poppins-font-6.html
   psrcplot-intro-1: psrcplot-intro-1.html
   static-plots-2: static-plots-2.html
-last_built: 2023-06-20T20:19Z
+last_built: 2024-09-26T17:03Z
 urls:
   reference: https://psrc.github.io/psrcplot/reference
   article: https://psrc.github.io/psrcplot/articles

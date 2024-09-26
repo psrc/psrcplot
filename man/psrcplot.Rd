@@ -2,8 +2,8 @@
 % Please edit documentation in R/psrcplot_details.R
 \docType{package}
 \name{psrcplot}
-\alias{psrcplot}
 \alias{psrcplot-package}
+\alias{psrcplot}
 \title{psrcplot: A package for easy creation of plots and maps for the Puget Sound Region.}
 \description{
 Various functions to create charts, tables and maps for data in the Central Puget Sound Region.

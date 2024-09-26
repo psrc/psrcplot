@@ -21,7 +21,7 @@ generic_column_bar(
   numeric_label = NULL,
   column_vs_bar = "column",
   dec = 0,
-  color = "pgnobgy_5",
+  color = "pgnobgy_10",
   interactive = FALSE
 )
 }

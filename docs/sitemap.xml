@@ -52,6 +52,12 @@
     <loc>https://psrc.github.io/psrcplot/reference/create_treemap_chart.html</loc>
   </url>
   <url>
+    <loc>https://psrc.github.io/psrcplot/reference/echart_bar_chart.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/echart_line_chart.html</loc>
+  </url>
+  <url>
     <loc>https://psrc.github.io/psrcplot/reference/enplanement_example_data.html</loc>
   </url>
   <url>
@@ -65,6 +71,9 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/generic_column_bar.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/generic_echart.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/generic_line.html</loc>
@@ -116,6 +125,9 @@
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/summary_pums_example_data.html</loc>
+  </url>
+  <url>
+    <loc>https://psrc.github.io/psrcplot/reference/tooltip_fmt.html</loc>
   </url>
   <url>
     <loc>https://psrc.github.io/psrcplot/reference/transit_access_example_data.html</loc>

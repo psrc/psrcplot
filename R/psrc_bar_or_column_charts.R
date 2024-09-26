@@ -27,7 +27,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                title=NULL, subtitle=NULL, source="", alt=NULL,
                                category_label=NULL, numeric_label=NULL, 
                                column_vs_bar="column",
-                               dec = 0, color="pgnobgy_5",
+                               dec = 0, color="pgnobgy_10",
                                interactive=FALSE){
   
   # do we want to do this? let's discuss:
@@ -100,7 +100,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                               check_overlap = TRUE,
                               position = ggplot2::position_dodge(0.8),
                               vjust = -0.20,
-                              size = 11*0.32,
+                              size = 16/.pt,
                               family="Poppins")
     } else if(column_vs_bar =='bar') {
       t <- ggplot2::geom_text(ggplot2::aes(x=.data[[category_var]],
@@ -109,7 +109,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                               check_overlap = TRUE,
                               position = ggplot2::position_dodge(0.8),
                               hjust = -0.20,
-                              size = 11*0.32,
+                              size = 16/.pt,
                               family="Poppins")
     }
     c <- c +
@@ -128,7 +128,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                              label=paste0(valfrmt$pfx, prettyNum(formattable::digits(round(.data[[numeric_var]] * valfrmt$fac, dec), digits=max(0, dec)), big.mark = ","), valfrmt$sfx)),
                                 check_overlap = TRUE,
                                 position = ggplot2::position_stack(vjust = .5),
-                                size = 11*0.32,
+                                size = 14,
                                 family="Poppins")
   } 
   
@@ -155,12 +155,12 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     x.vals <- length(unique(c$data[[category_var]]))
     if(category_var != fill & x.vals > 5 & "ScaleDiscrete" %in% class(layer_scales(c)$x)) {
       axis.text.x.value <- ggplot2::element_text(angle = if(column_vs_bar!="bar"){90}else{0}, 
-                                                 size = 9, vjust = 0.5, hjust=1)
+                                                 size = 12, vjust = 0.5, hjust=1)
       c <- c + 
         ggplot2::scale_x_discrete(labels = wrap_labels_evenly(15)) + 
         ggplot2::theme(axis.text.x = axis.text.x.value)
     } else if(category_var != fill & x.vals <= 5) {
-      axis.text.x.value <- ggplot2::element_text(size = 9)
+      axis.text.x.value <- ggplot2::element_text(size = 12)
       c <- c + ggplot2::theme(axis.text.x = axis.text.x.value)
     }
   }
@@ -328,7 +328,7 @@ static_facet_column_chart <- function(t,
                                       ncol = 3,
                                       scales = "free", 
                                       dec = 0, 
-                                      color = "pgnobgy_5", 
+                                      color = "pgnobgy_10", 
                                       title = NULL, 
                                       subtitle = NULL,
                                       source = "",
@@ -390,18 +390,18 @@ static_facet_column_chart <- function(t,
       # smaller font size and wrap/angle labels if there's a lot of x categories
       p <- p +
         ggplot2::scale_x_discrete(labels = wrap_labels_evenly(20))
-      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
+      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 12, vjust = 0.5, hjust=1)
     } else {
-      axis.text.x.value <- ggplot2::element_text(size = 7)
+      axis.text.x.value <- ggplot2::element_text(size =10)
     }
   } else if(stringr::str_detect(x, ".*[Y|y]ear.*") & stringr::str_detect(fill, ".*[Y|y]ear.*")) {
     # remove legend but keep x-axis labels for each year
     p <- p +
       ggplot2::scale_x_discrete(labels = wrap_labels_evenly(20)) +
       ggplot2::guides(fill = "none")
-    axis.text.x.value <- ggplot2::element_text(size = 7)
+    axis.text.x.value <- ggplot2::element_text(size = 12)
     if(x.vals > 5) {
-      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
+      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 10, vjust = 0.5, hjust=1)
     }
   } else {
     axis.text.x.value <- ggplot2::element_blank()
@@ -415,8 +415,8 @@ static_facet_column_chart <- function(t,
                         ncol = ncol) +
     psrc_style() +
     ggplot2::theme(axis.text.x = axis.text.x.value,
-                   axis.text.y = ggplot2::element_text(size = 9, color = l.clr),
-                   strip.text = ggplot2::element_text(family = 'Poppins', size = 10),
+                   axis.text.y = ggplot2::element_text(size = 16, color = l.clr),
+                   strip.text = ggplot2::element_text(family = 'Poppins', size = 16),
                    panel.grid.major.y = ggplot2::element_blank()
     ) 
   

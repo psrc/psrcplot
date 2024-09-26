@@ -152,7 +152,7 @@ static_facet_line_chart <- function(t, x, y, fill,
       } else if("ScaleContinuous" %in% class(layer_scales(c)$x)){
         c <- c + ggplot2::scale_x_continuous(labels = wrap_labels_evenly(20))
       }
-      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 7, vjust = 0.5, hjust=1)
+      axis.text.x.value <- ggplot2::element_text(angle = 90, size = 10, vjust = 0.5, hjust=1)
     } else {
       axis.text.x.value <- ggplot2::element_text(size = 7)
     }
