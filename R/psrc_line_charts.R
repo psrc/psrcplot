@@ -22,7 +22,8 @@ NULL
 #' 
 generic_line <- function(t, x, y, fill, 
                          est=NULL, text = NULL, dec=0, dform="%b-%Y",  
-                         breaks=NULL, lwidth=1, color="gnbopgy_5",
+                         breaks=NULL, lwidth=1, 
+                         color= NULL,
                          title=NULL, subtitle=NULL, source="",
                          alt=NULL, xlabel=NULL, ylabel=NULL,
                          interactive=FALSE){
@@ -32,9 +33,6 @@ generic_line <- function(t, x, y, fill,
   # Create a color palette from PSRC palette
   grps <- t %>% select(all_of(fill)) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
-  l.colors <- unlist(psrcplot::psrc_colors[color])
-  l.colors <- l.colors[1:num.grps]
-  cols <- stats::setNames(l.colors, grps)
   
   # Estimate type determines the labels for the axis and the format of the value labels
   if(is.null(est)){est <- t %>% dplyr::pull(.data[[y]]) %>% est_type_default()}
@@ -51,12 +49,24 @@ generic_line <- function(t, x, y, fill,
                                                                   prettyNum(formattable::digits(round(.data[[y]] * valfrmt$fac, dec), digits=max(0, dec)), 
                                                                             big.mark = ","), 
                                                                   valfrmt$sfx) else .data[[text]],
-                                    group=.data[[fill]]))  + 
+                                    group=.data[[fill]])) + 
     ggplot2::geom_line(ggplot2::aes(color=.data[[fill]]), linewidth=lwidth, linejoin = "round", na.rm=TRUE) +
-    ggplot2::scale_color_manual(values=cols)  +
-    ggplot2::scale_y_continuous(labels=lab, expand=ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
+    ggplot2::scale_y_continuous(labels=lab, expand=ggplot2::expansion(mult = c(0, .2))) +   # expand is to accommodate value labels
     ggplot2::labs(title=title, subtitle=subtitle, caption=source, alt=alt, x=xlabel, y=ylabel) +
-    psrc_style()
+    psrcplot:::psrc_style()
+  
+  # Apply color palette if available, check enough colors are available
+  if(!is.null(color)) {
+    equal_colors_and_groups <- length(color) == length(grps)
+    
+    if(equal_colors_and_groups == FALSE & length(color) < length(grps)) {
+      stop(paste("Not enough colors in color palette. There are", length(color), "colors but", num.grps, "groups"))
+    }
+    
+    cols <- stats::setNames(color, grps)
+    c <- c +
+      ggplot2::scale_color_manual(values=cols)
+  }
   
   if (xtype=="Date"){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform), date_breaks = breaks) + 
@@ -89,10 +99,10 @@ generic_line <- function(t, x, y, fill,
 #' @param t A tibble in long form for plotting
 #' @param x The name of the variable you want plotted on the X-Axis
 #' @param y The name of the variable you want plotted on the Y-Axis
-#' @param fill The name of the variable you want the fill color of the bars to be based on
+#' @param fill The name of the variable you want the fill color of the lines to be based on
 #' @param ... additional arguments passed to  \code{\link{generic_line}}
 #' @name line_charts
-#' @return static or interactive column or bar chart
+#' @return static or interactive line chart
 #' @author Craig Helmann, Michael Jensen 
 NULL
 

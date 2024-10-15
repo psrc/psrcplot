@@ -17,12 +17,12 @@ interactive_line_chart(t, x, y, fill, ...)
 
 \item{y}{The name of the variable you want plotted on the Y-Axis}
 
-\item{fill}{The name of the variable you want the fill color of the bars to be based on}
+\item{fill}{The name of the variable you want the fill color of the lines to be based on}
 
 \item{...}{additional arguments passed to  \code{\link{generic_line}}}
 }
 \value{
-static or interactive column or bar chart
+static or interactive line chart
 }
 \description{
 Separate functions for static and interactive line charts

@@ -160,7 +160,7 @@ modes_column_chart <- static_column_chart(t=mode_shares, x="Mode",y="share", fil
                                           source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                        "for King, Kitsap, Pierce and Snohomish counties.",
                                                        sep = "\n"),
-                                          color="pgnobgy_5",
+                                          color=psrcplot::psrc_colors$pgnobgy_5,
                                           dec = 0,
                                           xlabel = "Mode to Work")
 modes_column_chart
@@ -172,7 +172,7 @@ interactive_modes_column_chart <- interactive_column_chart(t=mode_shares, x="Mod
                                                            subtitle="For People 16+ with a job",
                                                            alt="Chart of Work Mode Shares",
                                                            source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002"),
-                                                           color="pgnobgy_5",
+                                                           color=psrcplot::psrc_colors$pgnobgy_5,
                                                            dec = 0)
 
 interactive_modes_column_chart
@@ -190,7 +190,7 @@ modes_column_chart_moe <- static_column_chart(t=mode_shares, x="Mode",y="count",
                                               source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                            "for King, Kitsap, Pierce and Snohomish counties.",
                                                            sep = "\n"),
-                                              color="pognbgy_5",
+                                              color=psrcplot::psrc_colors$pgnobgy_5,
                                               est = "number",
                                               moe = "count_moe",
                                               xlabel = "Mode to Work",
@@ -208,7 +208,7 @@ modes_bar_chart <- static_bar_chart(t=mode_shares, x="share", y="Mode", fill="Ye
                                     source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                  "for King, Kitsap, Pierce and Snohomish counties.",
                                                  sep = "\n"),
-                                    color="gnbopgy_5",
+                                    color=psrcplot::psrc_colors$gnbopgy_5,
                                     dec = 0)
 
 modes_bar_chart
@@ -220,7 +220,7 @@ modes_bar_chart_moe <- static_bar_chart(t=mode_shares, x="share", y="Mode", fill
                                         source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                      "for King, Kitsap, Pierce and Snohomish counties.",
                                                      sep = "\n"),
-                                        color="obgnpgy_5",
+                                        color=psrcplot::psrc_colors$obgnpgy_5,
                                         moe = "share_moe",
                                         xlabel = "Share of Workers",
                                         ylabel = "Mode to Work")
@@ -233,7 +233,7 @@ modes_bar_chart_stack <- static_bar_chart(t=mode_shares, x="share", y="Year", fi
                                         source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                      "for King, Kitsap, Pierce and Snohomish counties.",
                                                      sep = "\n"),
-                                        color="obgnpgy_5",
+                                        color=psrcplot::psrc_colors$obgnpgy_5,
                                         xlabel = "share",
                                         ylabel = "year", pos='stack')
 
@@ -244,7 +244,7 @@ interactive_modes_bar_chart <- interactive_bar_chart(t=mode_shares,
                                                      x="share", y="Mode", fill="Year",
                                                      est = "percent",
                                                      title="Mode Share to Work",
-                                                     color="gnbopgy_5",
+                                                     color=psrcplot::psrc_colors$gnbopgy_5,
                                                      dec = 0)
 interactive_modes_bar_chart
 
@@ -257,7 +257,7 @@ interactive_mode_line_chart <- interactive_line_chart(t=mode_shares %>% mutate(Y
                                                       x="Year", y="share", fill="Mode",
                                                       est = "percent",
                                                       title="Mode Share to Work",
-                                                      color="gnbopgy_5",
+                                                      color=psrcplot::psrc_colors$gnbopgy_5,
                                                       dec = 0)
 
 interactive_mode_line_chart
@@ -398,7 +398,7 @@ make_interactive(static_line_chart(t=rtp_data %>% filter(grouping=="Growth Near 
                                    title="Share of Regional Population Growth near HCT: 2010 to 2022",
                                    lwidth = 2,
                                    breaks = c("2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022"),
-                                   color = "pgnobgy_5") + ggplot2::scale_y_continuous(limits=c(0,1), labels=scales::label_percent()), title="Share of Regional Population Growth near HCT: 2010 to 2022")
+                                   color = psrcplot::psrc_colors$pgnobgy_5) + ggplot2::scale_y_continuous(limits=c(0,1), labels=scales::label_percent()), title="Share of Regional Population Growth near HCT: 2010 to 2022")
 ```
 
 
@@ -408,7 +408,7 @@ interactive_line_chart(t=rtp_data %>% filter(metric=="1yr Fatality Rate" & geogr
                        title="Fatal Collisions by Year in the PSRC Region: 2010 to 2020",
                        lwidth = 2,
                        breaks = c("2010","2015","2020"),
-                       color = "pgnobgy_5")
+                       color = psrcplot::psrc_colors$pgnobgy_5)
 
 ```
 
@@ -417,7 +417,7 @@ static_facet_column_chart(t=rtp_data %>% filter(metric=="1yr Fatality Rate" & ge
                           x="data_year", y="estimate", 
                           fill="data_year", facet="geography", 
                           est = "number",
-                          color = "pgnobgy_10",
+                          color = psrcplot::psrc_colors$pgnobgy_10,
                           title="Fatal Collisions by County: 2015 to 2020",
                           ncol=2, scales="fixed")
 ```
@@ -426,7 +426,7 @@ static_facet_column_chart(t=rtp_data %>% filter(metric=="1yr Fatality Rate" & ge
 ```{r}
 interactive_bar_chart(t=mpo_safety_tbl_min,
                       y='geography', x='estimate', fill='plot_id',
-                      est="number", dec=1, color='pgnobgy_5',
+                      est="number", dec=1, color=psrcplot::psrc_colors$pgnobgy_5,
                       title=paste0('Annual Fatalities per 100,000 people: ',safety_min_year))
 ```
 
@@ -434,7 +434,7 @@ interactive_bar_chart(t=mpo_safety_tbl_min,
 ```{r}
 interactive_column_chart(t=rtp_data %>% filter(metric=="New Vehicle Registrations" & geography=="Region") %>% mutate(date=as.character(date)),
                          y='share', x='date', fill='variable', pos = "stack",
-                         est="percent", dec=0, color='pgnobgy_5',
+                         est="percent", dec=0, color=psrcplot::psrc_colors$pgnobgy_5,
                          title=(paste0('Share of New Vehicle Registrations')))
 ```
 

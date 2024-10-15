@@ -12,7 +12,7 @@ create_treemap_chart(
   subtitle = NULL,
   est = NULL,
   dec = 0,
-  color = "psrc_light"
+  color = NULL
 )
 }
 \arguments{

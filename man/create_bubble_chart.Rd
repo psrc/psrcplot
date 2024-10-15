@@ -10,7 +10,7 @@ create_bubble_chart(
   y,
   fill,
   s,
-  color = "psrc_light",
+  color = NULL,
   title = NULL,
   subtitle = NULL
 )
@@ -26,7 +26,7 @@ create_bubble_chart(
 
 \item{s}{The name of the variable used to size the bubbles}
 
-\item{color}{Name of color palette to use - defaults to "psrc_light"}
+\item{color}{A vector of colors, otherwise uses ggplot2 default color palette - defaults to "NULL"}
 
 \item{title}{Title to be used for chart, if desired - defaults to "NULL"}
 

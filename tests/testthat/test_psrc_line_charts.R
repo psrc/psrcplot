@@ -10,7 +10,7 @@ test_that("static generic line charts look correct", {
                                 est='number',
                                 title='test line chart',
                                 subtitle='for consistency checking in unit tests',
-                                color='pgnobgy_10')
+                                color=psrcplot::psrc_colors$pgnobgy_10)
   
   vdiffr::expect_doppelganger('example-psrc-generic-line-chart', my.line.chart) 
 })

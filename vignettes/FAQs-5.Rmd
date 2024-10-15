@@ -92,7 +92,7 @@ income.chart.low_high <- static_bar_chart(
       x="HINCP_median", y="HRACE_low_high",
       fill="DATE",
       moe='HINCP_median_moe',
-      color='psrc_dark',
+      color=psrcplot::psrc_colors$psrc_dark,
       est='currency',
       title="Median Household Income by Race - median income order")
 
@@ -123,7 +123,7 @@ income.chart.custom <- static_bar_chart(
       y="HRACE_custom",
       fill="DATE",
       moe='HINCP_median_moe',
-      color='psrc_dark',
+      color=psrcplot::psrc_colors$psrc_dark,
       est='currency',
       title= "Regional Household Median Income by Race - custom order")
 

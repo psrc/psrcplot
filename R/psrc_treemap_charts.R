@@ -28,9 +28,13 @@ NULL
 #' @export
 #'
 
-create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est=NULL, dec=0, color="psrc_light") {
+create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est=NULL, dec=0, color=NULL) {
   
   confirm_fonts() 
+  
+  # Determine number of fill groups
+  grps <- select(t, all_of(fill)) %>% unique() %>% dplyr::pull()
+  num.grps <- length(grps)
   
   total_share<- NULL
   s_vctr <- t %>% select(all_of(s)) %>% dplyr::pull()
@@ -64,8 +68,20 @@ create_treemap_chart <- function(t, s, fill, title=NULL, subtitle=NULL, est=NULL
                                   na.rm = TRUE) +
     psrc_style() +
     ggplot2::theme(legend.position = "none") +
-    scale_fill_discrete_psrc(color) +
     ggplot2::ggtitle(title, subtitle = subtitle)
+  
+  # Apply color palette if available, check enough colors are available
+  if(!is.null(color)) {
+    equal_colors_and_groups <- length(color) == length(grps)
+    
+    if(equal_colors_and_groups == FALSE & length(color) < length(grps)) {
+      stop(paste("Not enough colors in color palette. There are", length(color), "colors but", num.grps, "groups"))
+    }
+    
+    cols <- stats::setNames(color, grps)
+    c <- c +
+      ggplot2::scale_fill_manual(values=cols)
+  }
   
   return(c)
 }

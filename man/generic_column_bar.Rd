@@ -21,7 +21,7 @@ generic_column_bar(
   numeric_label = NULL,
   column_vs_bar = "column",
   dec = 0,
-  color = "pgnobgy_5",
+  color = NULL,
   interactive = FALSE
 )
 }
@@ -58,7 +58,7 @@ generic_column_bar(
 
 \item{dec}{Number of decimal points in labels - defaults to 0}
 
-\item{color}{Name of color palette to use - generally defaults to "pgnobgy_5"}
+\item{color}{A vector of colors, otherwise uses ggplot2 default color palette - defaults to "NULL"}
 
 \item{interactive}{Enable hover text and other interactive features - defaults to FALSE}
 }

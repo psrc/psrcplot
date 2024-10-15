@@ -15,7 +15,7 @@ generic_line(
   dform = "\%b-\%Y",
   breaks = NULL,
   lwidth = 1,
-  color = "gnbopgy_5",
+  color = NULL,
   title = NULL,
   subtitle = NULL,
   source = "",

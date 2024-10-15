@@ -33,7 +33,7 @@ transit_access_chart <- interactive_column_chart(
                             t=transit_access, 
                             x='mode_acc_walk', y='share', fill='year', 
                             moe='share_moe', est='percent',
-                            color="psrc_light", title='Transit Access Mode')
+                            color=psrcplot::psrc_colors$psrc_light, title='Transit Access Mode')
 transit_access_chart
 ```
 

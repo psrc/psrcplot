@@ -44,7 +44,7 @@ tenure_facet<- static_facet_column_chart(t= tenure_count,
                                           fill= "TEN",
                                           facet='COUNTY',
                                           moe='share_moe',
-                                         color= 'pgnobgy_10')
+                                         color= psrcplot::psrc_colors$pgnobgy_10)
 
 tenure_facet
 ```

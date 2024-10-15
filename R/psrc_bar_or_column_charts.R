@@ -17,7 +17,8 @@ NULL
 #' @param alt Text to be used for alt-text, if desired - defaults to "NULL"
 #' @param category_label category-axis title to be used for chart, if desired - defaults to "NULL"
 #' @param numeric_label numeric-axis title to be used for chart, if desired - defaults to "NULL"
-#' @param column_vs_bar "column": vertical bars or "bar": horizontal bars - defaults to "column" 
+#' @param column_vs_bar "column": vertical bars or "bar": horizontal bars - defaults to "column"
+#' @param color A vector of colors, otherwise uses ggplot2 default color palette - defaults to "NULL" 
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @return static or interactive column or bar chart
 #' @author Craig Helmann, Michael Jensen
@@ -27,7 +28,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                title=NULL, subtitle=NULL, source="", alt=NULL,
                                category_label=NULL, numeric_label=NULL, 
                                column_vs_bar="column",
-                               dec = 0, color="pgnobgy_5",
+                               dec = 0, color = NULL,
                                interactive=FALSE){
   
   # do we want to do this? let's discuss:
@@ -35,13 +36,9 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- select(t, all_of(numeric_var)) %>% dplyr::pull() %>% max()
-  
-  # Create a color palette from PSRC palette
+
   grps <- select(t, all_of(fill)) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
-  l.colors <- unlist(psrcplot::psrc_colors[color])
-  l.colors <- l.colors[1:num.grps]
-  cols <- stats::setNames(l.colors, grps)
 
   # Estimate type determines the labels for the axis and the format of the value labels
   if(is.null(est)){est <- t %>% dplyr::pull(.data[[numeric_var]]) %>% est_type_default()}
@@ -58,12 +55,23 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
                                     fill=.data[[fill]],
                                     group=if(column_vs_bar=="bar"){forcats::fct_rev(.data[[fill]])}else{.data[[fill]]})) +
     ggplot2::geom_bar(position=pos, stat="identity", na.rm=TRUE) +
-    ggplot2::scale_fill_manual(values=cols) +
     ggplot2::scale_y_continuous(labels=lab, expand = ggplot2::expansion(mult = c(0, .2)))  +   # expand is to accommodate value labels
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
-    psrcplot::psrc_style()
-                                    
+    psrcplot:::psrc_style()
   
+  # Apply color palette if available, check enough colors are available
+  if(!is.null(color)) {
+    equal_colors_and_groups <- length(color) == length(grps)
+    
+    if(equal_colors_and_groups == FALSE & length(color) < length(grps)) {
+      stop(paste("Not enough colors in color palette. There are", length(color), "colors but", num.grps, "groups"))
+    }
+    
+    cols <- stats::setNames(color, grps)
+    c <- c +
+      ggplot2::scale_fill_manual(values=cols)
+  }
+                                    
   if (xtype=="Date"){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
   }
@@ -270,7 +278,7 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'                 moe = 'share_moe',
 #'                 ncol = 4,
 #'                 scales = "fixed",
-#'                 color = "pgnobgy_5",
+#'                 color = psrcplot::psrc_colors$pgnobgy_5,
 #'                 title = "Population by Race 2020",
 #'                 subtitle = "For counties in the Central Puget Sound Region",
 #'                 source = paste("Source: ACS 5-Year Estimates, table B03002",
@@ -289,7 +297,7 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'                 ncol = 2,
 #'                 moe = 'share_moe',
 #'                 scales = "fixed",
-#'                 color = "psrc_light",
+#'                 color = psrcplot::psrc_colors$psrc_light,
 #'                 title = "Population by Race 2020",
 #'                 subtitle = "For counties in the Central Puget Sound Region",
 #'                 source = paste("Source: ACS 5-Year Estimates, table B03002",
@@ -309,7 +317,7 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'                 ncol = 2,
 #'                 moe = 'share_moe',
 #'                 scales = "fixed",
-#'                 color = "psrc_light",
+#'                 color = psrcplot::psrc_colors$psrc_light,
 #'                 title = "Population by Race 2020",
 #'                 subtitle = "For counties in the Central Puget Sound Region",
 #'                 source = paste("Source: ACS 5-Year Estimates, table B03002",
@@ -328,7 +336,7 @@ static_facet_column_chart <- function(t,
                                       ncol = 3,
                                       scales = "free", 
                                       dec = 0, 
-                                      color = "pgnobgy_5", 
+                                      color = NULL, 
                                       title = NULL, 
                                       subtitle = NULL,
                                       source = "",
@@ -339,16 +347,11 @@ static_facet_column_chart <- function(t,
   
   l.clr <- "#4C4C4C"
   
-  # Create a color palette from PSRC palette
   grps <- t %>% 
     dplyr::select(dplyr::all_of(fill)) %>% 
     unique() %>% 
     dplyr::pull()
   num.grps <- length(grps)
-  l.colors <- unlist(psrcplot::psrc_colors[color])
-  l.colors <- l.colors[1:num.grps]
-  cols <- stats::setNames(l.colors, grps)
-  
   
   # Estimate type determines the labels for the axis and the format of the value labels
   if(is.null(est)){est <- t %>% dplyr::pull(.data[[y]]) %>% est_type_default()}
@@ -372,8 +375,20 @@ static_facet_column_chart <- function(t,
                   caption = source,
                   x = NULL,
                   y = NULL) +
-    ggplot2::scale_y_continuous(labels = label) +
-    scale_fill_discrete_psrc(color)
+    ggplot2::scale_y_continuous(labels = label)
+  
+  # Apply color palette if available, check enough colors are available
+  if(!is.null(color)) {
+    equal_colors_and_groups <- length(color) == length(grps)
+    
+    if(equal_colors_and_groups == FALSE & length(color) < length(grps)) {
+      stop(paste("Not enough colors in color palette. There are", length(color), "colors but", num.grps, "groups"))
+    }
+    
+    cols <- stats::setNames(color, grps)
+    p <- p +
+      ggplot2::scale_fill_manual(values = cols)
+  }
   
   if(!(is.null(moe))) {
     p <- p + 
@@ -419,6 +434,8 @@ static_facet_column_chart <- function(t,
                    strip.text = ggplot2::element_text(family = 'Poppins', size = 10),
                    panel.grid.major.y = ggplot2::element_blank()
     ) 
+  
+ 
   
   return(p)
 }

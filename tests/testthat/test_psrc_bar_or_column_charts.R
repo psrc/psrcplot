@@ -12,7 +12,7 @@ test_that("static charts look correct", {
                                   source=paste("Source: ACS 5-Year Estimates, table B3002",
                                                "for King, Kitsap, Pierce and Snohomish counties.",
                                                sep = "\n"),
-                                  color="pgnobgy_10")
+                                  color=psrcplot::psrc_colors$pgnobgy_10)
   
   vdiffr::expect_doppelganger('example-mode-shares-bar-chart', modes_chart)
   
@@ -22,7 +22,7 @@ test_that("static charts look correct", {
                                   source=paste("Source: ACS 5-Year Estimates, table B3002",
                                                "for King, Kitsap, Pierce and Snohomish counties.",
                                                sep = "\n"),
-                                  color="pgnobgy_10",
+                                  color=psrcplot::psrc_colors$pgnobgy_10,
                                   dec = 0,
                                   xlabel = 'Mode to Work')
   
@@ -33,7 +33,7 @@ test_that("static charts look correct", {
                                                 source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                              "for King, Kitsap, Pierce and Snohomish counties.",
                                                              sep = "\n"),
-                                                color="pognbgy_5",
+                                                color=psrcplot::psrc_colors$pgnobgy_5,
                                                 est = "number",
                                                 moe = "count_moe",
                                                 xlabel = "Mode to Work",
@@ -46,7 +46,7 @@ test_that("static charts look correct", {
                                           source=paste("Source: U.S. Census Bureau, ACS 5-Year Estimates, table B3002",
                                                        "for King, Kitsap, Pierce and Snohomish counties.",
                                                        sep = "\n"),
-                                          color="obgnpgy_5",
+                                          color=psrcplot::psrc_colors$obgnpgy_5,
                                           moe = "share_moe",
                                           xlabel = "Share of Workers",
                                           ylabel = "Mode to Work")
@@ -65,7 +65,7 @@ test_that('rtp charts look correct', {
                             x="data_year", y="estimate", 
                             fill="data_year", facet="geography", 
                             est = "number",
-                            color = "pgnobgy_10",
+                            color = psrcplot::psrc_colors$pgnobgy_10,
                             title="Fatal Collisions by County: 2015 to 2020",
                             ncol=2, scales="fixed")
   
