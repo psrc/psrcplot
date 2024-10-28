@@ -1,3 +1,6 @@
+# this is the code that has the most heavy use and should have the most updates
+# we can start with this one, and expand out as desired
+
 #' @importFrom magrittr %<>% %>%
 #' @importFrom rlang .data
 #' @importFrom dplyr select all_of
@@ -21,6 +24,22 @@ NULL
 #' @param interactive Enable hover text and other interactive features - defaults to FALSE
 #' @return static or interactive column or bar chart
 #' @author Craig Helmann, Michael Jensen
+#' 
+
+
+# function call ideas, maybe the function call won't change much?
+# # optional argument for style?
+#static_column_chart(t, required: category_var, numeric_var,fill,
+# optional: title, subtitle, source, category_label, numeric_label, color, moe,dec
+#style='infogram' or style='stats')
+
+# add the styles to psrc_styles
+
+# would it be easiest to start fresh and grab the parts of the code we want?
+# who is taking the lead on the code writing here? need a primary person
+
+
+
 
 generic_column_bar <- function(t, category_var, numeric_var, fill,
                                pos="dodge", est=NULL, moe=NULL, dform="%Y",
@@ -36,6 +55,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Determine the Maximum Value to ensure bar labels are not cut-off
   max_item <- select(t, all_of(numeric_var)) %>% dplyr::pull() %>% max()
   
+  # pull coloring into a separate function
   # Create a color palette from PSRC palette
   grps <- select(t, all_of(fill)) %>% unique() %>% dplyr::pull()
   num.grps <- length(grps)
@@ -63,11 +83,13 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     ggplot2::labs(title=title, subtitle = subtitle, caption = source, alt = alt, x = category_label, y = numeric_label) +
     psrcplot::psrc_style()
                                     
-  
+  # this part crashes code for people a lot and not sure why
   if (xtype=="Date"){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
   }
   
+  
+  # take this out, can we move it to the style or something, make a function
   # If there are margins of error, add error bars
   if (!is.null(moe) & pos == 'dodge') {
     c <- c + ggplot2::geom_errorbar(ggplot2::aes(ymin=.data[[numeric_var]]-.data[[moe]], 
@@ -91,6 +113,9 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
   # Handling static charts with no MOE: they have value labels but no numeric axis labels and no grid lines
   # Add value labels if there is no error bar or moe and remove the category-variable axis since we have the labels
   # placement of the labels is different between column and bar charts to look nicer with hjust or vjust
+  
+  # Make the geom_text be a separate function outside of this function, it's too 
+  # embedded here, needs more flexibility
   if(is.null(moe) & interactive==FALSE & pos == 'dodge'){
     # adjust vjust or hjust depending on chart type
     if(column_vs_bar =='column') {
@@ -165,6 +190,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     }
   }
   # Interactivity
+  # do we remove this entirely now
   if(interactive==TRUE){
     c <- make_interactive(p=c, title=title, subtitle=subtitle)
     # Turn on Source if Provided
@@ -317,6 +343,8 @@ interactive_bar_chart <- function(t, x, y, fill, xlabel=NULL, ylabel=NULL, ...){
 #'                                sep = "\n"))
 #' @export
 #'
+#'
+#'# this needs just a similar overhaul to the one above
 static_facet_column_chart <- function(t,
                                       x, 
                                       y, 
