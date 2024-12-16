@@ -64,7 +64,7 @@ generic_column_bar <- function(t, category_var, numeric_var, fill,
     psrcplot::psrc_style()
                                     
   
-  if (xtype=="Date"){
+  if ("Date" %in% xtype){
     c <- c + ggplot2::scale_x_date(labels = scales::date_format(dform)) + ggplot2::theme(axis.title.x=ggplot2::element_blank())
   }
   
